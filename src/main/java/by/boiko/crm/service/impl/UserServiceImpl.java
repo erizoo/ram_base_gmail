@@ -249,7 +249,11 @@ public class UserServiceImpl implements UserService {
         List<String> listName = lines.stream().filter(p -> p.contains("ФИО:")).collect(Collectors.toList());
         String listNameString = String.join(", ", listName);
         String items[] = listNameString.split(" ");
-        return items[1] + " " + items[2];
+        if (items.length > 2){
+            return items[1] + " " + items[2];
+        }else {
+            return items[1] + " None";
+        }
     }
 
     private String nameToFormatDealByMessage(String[] line){
