@@ -188,11 +188,11 @@ public class UserServiceImpl implements UserService {
                     if (context.contains("Отложенный звонок с сайта")){
                         orderList.add(new Order("Отложенный звонок с сайта", phoneNumberFormatDeferredCall(lines)));
                     }
-                    if (context.contains("оформил заказ у вашей компании «Интернет магазин RAMBY")){
+                    if (context.contains("Здравствуйте, Евгений!")){
                         dealByName = "";
                         for (int y = 0;y <= lines.length - 1; y++){
                             if(lines[y].contains("руб.")){
-                                dealByName = lines[y-2].substring(1, lines[y-2].length()-4);
+                                dealByName = lines[y-2].substring(0, lines[y-2].length()-4);
                                 break;
                             }
                         }
@@ -245,14 +245,11 @@ public class UserServiceImpl implements UserService {
     }
 
     private String nameToFormatDealBy(String[] line) {
-        int numberElementArray = 0;
-        for (int i = 0; i <= line.length-1; i++){
-            if (line[i].equals("ФИО:")){
-                numberElementArray = i + 1;
-                break;
-            }
-        }
-        return line[numberElementArray];
+        List<String> lines = Arrays.asList(line);
+        List<String> listName = lines.stream().filter(p -> p.contains("ФИО:")).collect(Collectors.toList());
+        String listNameString = String.join(", ", listName);
+        String items[] = listNameString.split(" ");
+        return items[1] + " " + items[2];
     }
 
     private String nameToFormatDealByMessage(String[] line){
@@ -275,20 +272,12 @@ public class UserServiceImpl implements UserService {
     }
 
     private String phoneNumberFormatDealBy(String[] line) {
-        int numberElementArray = 0;
-        for (int i = 0; i <= line.length; i++){
-            if (line[i].equals("Телефон:")){
-                numberElementArray = i + 1;
-                break;
-            }
-        }
-        StringBuilder stringBuilder = new StringBuilder();
-        if(line[numberElementArray].contains("+7")){
-            stringBuilder.append(line[numberElementArray]);
-        }else {
-            stringBuilder.append(line[numberElementArray].substring(1,4)).append(" ").append(line[numberElementArray].substring(4,6)).append(" ").append(line[numberElementArray].substring(6,13));
-        }
-        return String.valueOf(stringBuilder);
+        List<String> lines = Arrays.asList(line);
+        List<String> listPhone = lines.stream().filter(p -> p.contains("Телефон:")).collect(Collectors.toList());
+        String listPhoneString = String.join(", ", listPhone);
+        String[] linesItems = listPhoneString.split(" ");
+        StringBuffer result = new StringBuffer();
+        return String.valueOf(result.append(linesItems[1].substring(1,4)).append(" ").append(linesItems[1].substring(4,6)).append(" ").append(linesItems[1].substring(6,13)));
     }
 
     private String productToFormatCall(String[] line) {
