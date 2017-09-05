@@ -224,9 +224,7 @@ public class UserServiceImpl implements UserService {
     private String phoneNumberFormatDeferredCall(String [] lines) {
         try{
             List<String> linesList = Arrays.asList(lines);
-            List<String> item = linesList.stream().filter(p -> p.contains("Отложенный звонок с сайта ram.by на номер")).collect(Collectors.toList());
-            String str = String.join(", ", item);
-            String firstChange = str.substring(42,  str.length()-8);
+            String firstChange = linesList.get(2).substring(0,  linesList.get(2).length()-8);
             String secondShange = firstChange.replaceAll("\\D+", "");
             StringBuffer result = new StringBuffer();
             return String.valueOf(result.append("+375").append(" ").append(secondShange.substring(0,2)).append(" ").append(secondShange.substring(2,secondShange.length())));
