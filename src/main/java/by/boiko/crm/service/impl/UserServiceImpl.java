@@ -225,14 +225,13 @@ public class UserServiceImpl implements UserService {
         try{
             List<String> linesList = Arrays.asList(lines);
             List<String> item = linesList.stream().filter(p -> p.contains("Отложенный звонок с сайта ram.by на номер")).collect(Collectors.toList());
-            String[] items = item.get(0).split(" ");
-            String[] itemsNumbers = items[7].split("-");
-            String[] itemsHooks = itemsNumbers[0].split("\\)");
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("375").append(" ").append(itemsHooks[0].substring(1,itemsHooks[0].length())).append(" ").append(itemsHooks[1]).append(itemsNumbers[1]).append(itemsNumbers[2]);
-            return String.valueOf(stringBuilder);
+            String str = String.join(", ", item);
+            String firstChange = str.substring(42,  str.length()-8);
+            String secondShange = firstChange.replaceAll("\\D+", "");
+            StringBuffer result = new StringBuffer();
+            return String.valueOf(result.append("+375").append(" ").append(secondShange.substring(0,2)).append(" ").append(secondShange.substring(2,secondShange.length())));
         }catch (Exception e){
-            return "Error";
+            return "Error" + e;
         }
     }
 
