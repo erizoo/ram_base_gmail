@@ -184,6 +184,7 @@ public class UserServiceImpl implements UserService {
                     String lines[] = emailList.get(i).getSubject().split("[\\r\\n]+", -1);
                     if (context.contains("покупатель создал новый чат")){
                         orderList.add(new Order("No emails"));
+                        
                     }
                     if (context.contains("Отложенный звонок с сайта")){
                         orderList.add(new Order("Отложенный звонок с сайта", phoneNumberFormatDeferredCall(lines)));
@@ -221,6 +222,11 @@ public class UserServiceImpl implements UserService {
         return orderList;
     }
 
+//    private String getTimeForDeferredCall(String[] lines) {
+//        String firstChange = lines[2];
+//        return firstChange;
+//    }
+
     private String phoneNumberFormatDeferredCall(String [] lines) {
         try{
             List<String> linesList = Arrays.asList(lines);
@@ -242,15 +248,13 @@ public class UserServiceImpl implements UserService {
     }
 
     private String nameToFormatDealBy(String[] line) {
-        List<String> lines = Arrays.asList(line);
-        List<String> listName = lines.stream().filter(p -> p.contains("ФИО:")).collect(Collectors.toList());
-        String listNameString = String.join(", ", listName);
-        String items[] = listNameString.split(" ");
-        if (items.length > 2){
-            return items[1] + " " + items[2];
-        }else {
-            return items[1] + " None";
+        int numberElementArray = 0;
+        for (int i = 0; i <= line.length-1; i++){
+            if (line[i].contains("ФИО:")){
+                numberElementArray = i + 1;
+            }
         }
+        return line[numberElementArray];
     }
 
     private String nameToFormatDealByMessage(String[] line){
@@ -273,12 +277,15 @@ public class UserServiceImpl implements UserService {
     }
 
     private String phoneNumberFormatDealBy(String[] line) {
-        List<String> lines = Arrays.asList(line);
-        List<String> listPhone = lines.stream().filter(p -> p.contains("Телефон:")).collect(Collectors.toList());
-        String listPhoneString = String.join(", ", listPhone);
-        String[] linesItems = listPhoneString.split(" ");
+        int numberElementArray = 0;
+        for (int i = 0; i <= line.length-1; i++){
+            if (line[i].contains("Телефон:")){
+                numberElementArray = i + 1;
+            }
+        }
+        String phoneNumber = line[numberElementArray];
         StringBuffer result = new StringBuffer();
-        return String.valueOf(result.append(linesItems[1].substring(1,4)).append(" ").append(linesItems[1].substring(4,6)).append(" ").append(linesItems[1].substring(6,13)));
+        return String.valueOf(result.append(phoneNumber.substring(0,4)).append(" ").append(phoneNumber.substring(4,6)).append(" ").append(phoneNumber.substring(6,13)));
     }
 
     private String productToFormatCall(String[] line) {
@@ -336,11 +343,13 @@ public class UserServiceImpl implements UserService {
     }
 
     private String emailToFormatDealBy(String[] line) {
-        List<String> lines = Arrays.asList(line);
-        List<String> list = lines.stream().filter(p -> p.contains("Email:")).collect(Collectors.toList());
-        String listString = String.join(", ", list);
-        String[] itemsString = listString.split(" ");
-        return itemsString[1];
+        int numberElementArray = 0;
+        for (int i = 0; i <= line.length-1; i++){
+            if (line[i].contains("Email:")){
+                numberElementArray = i + 1;
+            }
+        }
+        return line[numberElementArray];
     }
 
     private List<Product> orderToFormatDealBy(String line, String[] lines) {
