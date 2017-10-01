@@ -184,7 +184,9 @@ public class UserServiceImpl implements UserService {
                     String lines[] = emailList.get(i).getSubject().split("[\\r\\n]+", -1);
                     if (context.contains("покупатель создал новый чат")){
                         orderList.add(new Order("No emails"));
-                        
+                    }
+                    if (context.contains("Товары свыше лимита были")){
+                        orderList.add(new Order("No emails"));
                     }
                     if (context.contains("Отложенный звонок с сайта")){
                         orderList.add(new Order("Отложенный звонок с сайта", phoneNumberFormatDeferredCall(lines)));
