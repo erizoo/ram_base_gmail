@@ -191,7 +191,7 @@ public class UserServiceImpl implements UserService {
                     if (context.contains("Отложенный звонок с сайта")){
                         orderList.add(new Order("Отложенный звонок с сайта", phoneNumberFormatDeferredCall(lines)));
                     }
-                    if (context.contains("Здравствуйте, Евгений!")){
+                    if (context.contains("покупатель оформил заказ у вашей компании")){
                         dealByName = "";
                         for (int y = 0;y <= lines.length - 1; y++){
                             if(lines[y].contains("руб.")){
