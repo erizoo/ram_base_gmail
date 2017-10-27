@@ -3,6 +3,7 @@ package by.boiko.crm.model;
 
 public class Product {
 
+    private String sku;
     private String nameProduct;
     private String priceProduct;
     private String amountProduct;
@@ -14,6 +15,21 @@ public class Product {
         this.nameProduct = nameProduct;
         this.priceProduct = priceProduct;
         this.amountProduct = amountProduct;
+    }
+
+    public Product(String sku, String nameProduct, String priceProduct, String amountProduct) {
+        this.sku = sku;
+        this.nameProduct = nameProduct;
+        this.priceProduct = priceProduct;
+        this.amountProduct = amountProduct;
+    }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
     }
 
     public String getNameProduct() {

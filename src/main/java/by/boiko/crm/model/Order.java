@@ -15,6 +15,11 @@ public class Order {
     private String errorName;
 
     public Order() {
+
+    }
+
+    public Order(List<Product> nameProduct) {
+        this.nameProduct = nameProduct;
     }
 
     public Order(String error) {

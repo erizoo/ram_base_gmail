@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -185,6 +187,9 @@ public class UserServiceImpl implements UserService {
                     if (context.contains("покупатель создал новый чат")){
                         orderList.add(new Order("No emails"));
                     }
+                    if (context.contains("Заказ компьютера")){
+                        orderList.add(new Order(orderConfig(lines)));
+                    }
                     if (context.contains("Товары свыше лимита были")){
                         orderList.add(new Order("No emails"));
                     }
@@ -259,12 +264,43 @@ public class UserServiceImpl implements UserService {
         return line[numberElementArray];
     }
 
+    private String nameToFormat(String[] line) {
+        List<String> lines = Arrays.asList(line);
+        List<String> list = lines.stream().filter(p -> p.contains("Имя покупателя:")).collect(Collectors.toList());
+        String listString = String.join(", ", list);
+        String[] linesItems = listString.split(" ");
+        if (linesItems.length <= 3) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("None").append(" ").append(linesItems[2]);
+            return String.valueOf(stringBuilder);
+        } else {
+            StringBuilder stringBuilder = new StringBuilder();
+            return String.valueOf(stringBuilder.append(linesItems[2]).append(" ").append(linesItems[3]));
+        }
+
+    }
+
+    private String nameConfig(String [] line){
+        List<String> lines = Arrays.asList(line);
+        List<String> listName = lines.stream().filter(p -> p.contains("ФИО")).collect(Collectors.toList());
+        String listNameString = String.join(", ", listName);
+        return listNameString.substring(4, listNameString.length()-1);
+    }
+
     private String nameToFormatDealByMessage(String[] line){
         List<String> lines = Arrays.asList(line);
         List<String> listName = lines.stream().filter(p -> p.contains("Вам писал:")).collect(Collectors.toList());
         String listNameString = String.join(", ", listName);
         String items[] = listNameString.split(" ");
         return items[2];
+    }
+
+    private String phoneConfig(String[] line) {
+        List<String> lines = Arrays.asList(line);
+        List<String> list = lines.stream().filter(p -> p.contains("Мобильный")).collect(Collectors.toList());
+        String listPhoneNumber = String.join(", ", list);
+        String[] linesItems = listPhoneNumber.split(" ");
+        return linesItems[1]+ " " + linesItems[2] + " " +linesItems[3];
     }
 
     private String phoneNumberFormatCall(String[] line) {
@@ -298,22 +334,6 @@ public class UserServiceImpl implements UserService {
         return linesItems[1];
     }
 
-    private String nameToFormat(String[] line) {
-        List<String> lines = Arrays.asList(line);
-        List<String> list = lines.stream().filter(p -> p.contains("Имя покупателя:")).collect(Collectors.toList());
-        String listString = String.join(", ", list);
-        String[] linesItems = listString.split(" ");
-        if (linesItems.length <= 3) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("None").append(" ").append(linesItems[2]);
-            return String.valueOf(stringBuilder);
-        } else {
-            StringBuilder stringBuilder = new StringBuilder();
-            return String.valueOf(stringBuilder.append(linesItems[2]).append(" ").append(linesItems[3]));
-        }
-
-    }
-
     private String addressToFormat(String[] line) {
         List<String> lines = Arrays.asList(line);
         List<String> list = lines.stream().filter(p -> p.contains("Адрес доставки:")).collect(Collectors.toList());
@@ -335,6 +355,13 @@ public class UserServiceImpl implements UserService {
         return String.valueOf(stringBuilder);
     }
 
+    private String addressConfig(String[] line) {
+        List<String> lines = Arrays.asList(line);
+        List<String> list = lines.stream().filter(p -> p.contains("Адрес")).collect(Collectors.toList());
+        String listString = String.join(", ", list);
+        return listString.substring(6,listString.length()-1);
+    }
+
     private String emailToFormat(String[] line) {
         List<String> lines = Arrays.asList(line);
         List<String> list = lines.stream().filter(p -> p.contains("Email:")).collect(Collectors.toList());
@@ -352,6 +379,16 @@ public class UserServiceImpl implements UserService {
             }
         }
         return line[numberElementArray];
+    }
+
+    private List<Product> orderConfig(String[] line) {
+        String regex = "(?<!\\d)\\d{6}(?!\\d)";
+        for (String items : line) {
+            Matcher m = Pattern.compile(regex).matcher(items);
+            if(m.find())
+                System.out.println(m.group(0).trim().substring(0,6));
+        }
+        return (List) new ArrayList();
     }
 
     private List<Product> orderToFormatDealBy(String line, String[] lines) {
