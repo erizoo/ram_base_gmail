@@ -174,12 +174,7 @@ public class UserServiceImpl implements UserService {
                 for (int i = 0, n = messages.length; i < n; i++) {
                     message = messages[i];
                     int emailNumber = i + 1;
-                    String emailSubject = message.getSubject();
                     String emailFrom = String.valueOf(message.getFrom()[0]);
-                    String[] arrayString = emailFrom.split("<");
-//                    StringBuilder stringBuilder = new StringBuilder();
-//                    stringBuilder.append(arrayString[1].substring(0, arrayString[1].length() - 1));
-//                    emailFrom = String.valueOf(stringBuilder);
                     content = message.getContent();
                     String context = getTextFromMimeMultipart((MimeMultipart) content);
                     emailList.add(new Email(emailNumber, "sdgsd", "dsgsg", context));
@@ -188,7 +183,7 @@ public class UserServiceImpl implements UserService {
                         orderList.add(new Order("No emails"));
                     }
                     if (context.contains("Заказ компьютера")){
-                        orderList.add(new Order(orderConfig(lines)));
+                        orderList.add(new Order(nameConfig(lines), phoneConfig(lines), addressConfig(lines), "Конфигуратор", orderConfig(lines)));
                     }
                     if (context.contains("Товары свыше лимита были")){
                         orderList.add(new Order("No emails"));
@@ -281,10 +276,13 @@ public class UserServiceImpl implements UserService {
     }
 
     private String nameConfig(String [] line){
-        List<String> lines = Arrays.asList(line);
-        List<String> listName = lines.stream().filter(p -> p.contains("ФИО")).collect(Collectors.toList());
-        String listNameString = String.join(", ", listName);
-        return listNameString.substring(4, listNameString.length()-1);
+        String result = null;
+        for (int i = 0; i<=line.length-1; i++){
+            if(line[i].contains("ФИО")){
+                result = line[i+1];
+            }
+        }
+        return result;
     }
 
     private String nameToFormatDealByMessage(String[] line){
@@ -296,11 +294,13 @@ public class UserServiceImpl implements UserService {
     }
 
     private String phoneConfig(String[] line) {
-        List<String> lines = Arrays.asList(line);
-        List<String> list = lines.stream().filter(p -> p.contains("Мобильный")).collect(Collectors.toList());
-        String listPhoneNumber = String.join(", ", list);
-        String[] linesItems = listPhoneNumber.split(" ");
-        return linesItems[1]+ " " + linesItems[2] + " " +linesItems[3];
+        String result = null;
+        for (int i = 0; i<=line.length-1; i++){
+            if(line[i].contains("Мобильный")){
+                result = line[i+1];
+            }
+        }
+        return result;
     }
 
     private String phoneNumberFormatCall(String[] line) {
@@ -356,10 +356,13 @@ public class UserServiceImpl implements UserService {
     }
 
     private String addressConfig(String[] line) {
-        List<String> lines = Arrays.asList(line);
-        List<String> list = lines.stream().filter(p -> p.contains("Адрес")).collect(Collectors.toList());
-        String listString = String.join(", ", list);
-        return listString.substring(6,listString.length()-1);
+        String result = null;
+        for (int i = 0; i<=line.length-1; i++){
+            if(line[i].contains("Адрес")){
+                result = line[i+1];
+            }
+        }
+        return result;
     }
 
     private String emailToFormat(String[] line) {
@@ -381,14 +384,15 @@ public class UserServiceImpl implements UserService {
         return line[numberElementArray];
     }
 
-    private List<Product> orderConfig(String[] line) {
+    private List orderConfig(String[] line) {
         String regex = "(?<!\\d)\\d{6}(?!\\d)";
+        List itemsList = new ArrayList();
         for (String items : line) {
             Matcher m = Pattern.compile(regex).matcher(items);
             if(m.find())
-                System.out.println(m.group(0).trim().substring(0,6));
+                itemsList.add(m.group(0).trim().substring(0,6));
         }
-        return (List) new ArrayList();
+        return itemsList;
     }
 
     private List<Product> orderToFormatDealBy(String line, String[] lines) {

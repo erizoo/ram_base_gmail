@@ -13,6 +13,7 @@ public class Order {
     private String nameProductCall;
     private String source;
     private String errorName;
+    private List listSku;
 
     public Order() {
 
@@ -29,6 +30,14 @@ public class Order {
     public Order(String name, String number) {
         this.name = name;
         this.number = number;
+    }
+
+    public Order(String name, String number, String address, String source, List listSku) {
+        this.name = name;
+        this.number = number;
+        this.address = address;
+        this.source = source;
+        this.listSku = listSku;
     }
 
     public Order(String name, String email, String source ) {
@@ -62,7 +71,18 @@ public class Order {
         this.source = source;
     }
 
+    public Order(String name, List listSku) {
+        this.name = name;
+        this.listSku = listSku;
+    }
 
+    public List getListSku() {
+        return listSku;
+    }
+
+    public void setListSku(List listSku) {
+        this.listSku = listSku;
+    }
 
     public String getErrorName() {
         return errorName;
