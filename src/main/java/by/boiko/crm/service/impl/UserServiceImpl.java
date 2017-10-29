@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     private HSSFWorkbook book;
     private static final String MAIL_STORE_TYPE = "pop.gmail.com";
     private static final String USERNAME = "erizosashka@gmail.com";
-    private static final String PASSWORD = "Alex2096888";
+    private static final String PASSWORD = "Erizo20968";
     private List<Email> emailList = new ArrayList<>();
     private List<Order> orderList = new ArrayList<>();
     private List<String> nameItemList = new ArrayList<>();
@@ -217,7 +217,7 @@ public class UserServiceImpl implements UserService {
 
         } catch (Exception e) {
             orderList.clear();
-            orderList.add(new Order("Error retrieving data" + "," + " " + message.getSubject()));
+            orderList.add(new Order("Error retrieving data" ));
             e.printStackTrace();
             return orderList;
         }
