@@ -183,7 +183,7 @@ public class UserServiceImpl implements UserService {
                         orderList.add(new Order("No emails"));
                     }
                     if (context.contains("Заказ компьютера")){
-                        orderList.add(new Order(nameConfig(lines), phoneConfig(lines), addressConfig(lines), "Конфигуратор", orderConfig(lines)));
+                        orderList.add(new Order(nameConfig(lines), phoneConfig(lines), "Конфигуратор", orderConfig(lines), context));
                     }
                     if (context.contains("Товары свыше лимита были")){
                         orderList.add(new Order("No emails"));

@@ -14,14 +14,7 @@ public class Order {
     private String source;
     private String errorName;
     private List listSku;
-
-    public Order() {
-
-    }
-
-    public Order(List<Product> nameProduct) {
-        this.nameProduct = nameProduct;
-    }
+    private String comments;
 
     public Order(String error) {
         this.error = error;
@@ -32,18 +25,12 @@ public class Order {
         this.number = number;
     }
 
-    public Order(String name, String number, String address, String source, List listSku) {
+    public Order(String name, String number,  String source, List listSku, String comments) {
         this.name = name;
         this.number = number;
-        this.address = address;
         this.source = source;
         this.listSku = listSku;
-    }
-
-    public Order(String name, String email, String source ) {
-        this.name = name;
-        this.email = email;
-        this.source = source;
+        this.comments = comments;
     }
 
     public Order(String name, String number, String nameProductCall, String source) {
@@ -52,7 +39,6 @@ public class Order {
         this.nameProductCall = nameProductCall;
         this.source = source;
     }
-
 
     public Order(String name, String number, String email, String address, List<Product> nameProduct, String source) {
         this.name = name;
@@ -63,17 +49,12 @@ public class Order {
         this.source = source;
     }
 
-    public Order(String name, String number, String email, String nameProductCall, String source) {
-        this.name = name;
-        this.number = number;
-        this.email = email;
-        this.nameProductCall = nameProductCall;
-        this.source = source;
+    public String getComments() {
+        return comments;
     }
 
-    public Order(String name, List listSku) {
-        this.name = name;
-        this.listSku = listSku;
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public List getListSku() {
