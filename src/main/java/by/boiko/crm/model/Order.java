@@ -20,6 +20,16 @@ public class Order {
         this.error = error;
     }
 
+    public Order(String name, String number, String email, String address, String source, List listSku, String comments) {
+        this.name = name;
+        this.number = number;
+        this.email = email;
+        this.address = address;
+        this.source = source;
+        this.listSku = listSku;
+        this.comments = comments;
+    }
+
     public Order(String name, String number) {
         this.name = name;
         this.number = number;
