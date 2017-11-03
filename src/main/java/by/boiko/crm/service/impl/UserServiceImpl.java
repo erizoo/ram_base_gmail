@@ -15,7 +15,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -166,9 +169,9 @@ public class UserServiceImpl implements UserService {
 
             // retrieve the messages from the folder in an array and print it
             Message[] messages = emailFolder.getMessages();
-            if (messages.length == 0){
+            if (messages.length == 0) {
                 orderList.add(new Order("No emails"));
-            }else {
+            } else {
                 System.out.println("messages.length---" + messages.length);
                 Object content = null;
                 for (int i = 0, n = messages.length; i < n; i++) {
@@ -179,35 +182,39 @@ public class UserServiceImpl implements UserService {
                     String context = getTextFromMimeMultipart((MimeMultipart) content);
                     emailList.add(new Email(emailNumber, "sdgsd", "dsgsg", context));
                     String lines[] = emailList.get(i).getSubject().split("[\\r\\n]+", -1);
-                    if (context.contains("покупатель создал новый чат")){
+                    if (context.contains("покупатель создал новый чат")) {
                         orderList.add(new Order("No emails"));
                     }
-                    if (context.contains("Заказ компьютера")){
-                        orderList.add(new Order(nameConfig(lines), phoneConfig(lines), "Конфигуратор", orderConfig(lines), context));
+                    if (context.contains("Заказ компьютера по параметрам")) {
+                        orderList.add(new Order(nameConfig(lines), phoneConfig(lines), "Конфигуратор", orderConfig(lines), "Тест"));
                     }
-                    if (context.contains("Товары свыше лимита были")){
+                    if (context.contains("Заказ компьютера")) {
+                        orderList.add(new Order(nameConfig(lines), phoneConfig(lines), "test", addressConfig(lines), orderConfig(lines), contextConfig(lines)));
+                    }
+                    if (context.contains("Товары свыше лимита были")) {
                         orderList.add(new Order("No emails"));
                     }
-                    if (context.contains("Отложенный звонок с сайта")){
+                    if (context.contains("Отложенный звонок с сайта")) {
                         orderList.add(new Order("Отложенный звонок с сайта", phoneNumberFormatDeferredCall(lines)));
                     }
-                    if (context.contains("оформил заказ у вашей компании")){
+                    if (context.contains("оформил заказ у вашей компании")) {
                         dealByName = "";
-                        for (int y = 0;y <= lines.length - 1; y++){
-                            if(lines[y].contains("руб.")){
-                                dealByName = lines[y-2].substring(0, lines[y-2].length()-4);
+                        for (int y = 0; y <= lines.length - 1; y++) {
+                            if (lines[y].contains("руб.")) {
+                                dealByName = lines[y - 2].substring(0, lines[y - 2].length() - 4);
                                 break;
                             }
                         }
                         // orderList.add(new Order("Error retrieving data"));
                         orderList.add(new Order(nameToFormatDealBy(lines), phoneNumberFormatDealBy(lines),
                                 emailToFormatDealBy(lines), addressToFormatDealBy(lines), orderToFormatDealBy(dealByName, lines), "DEAL.BY"));
-                    }if(context.contains("поступил заказ на звонок")){
-                        orderList.add(new Order(nameToFormatCall(lines), phoneNumberFormatCall(lines),productToFormatCall(lines), "UNISHOP.BY"));
+                    }
+                    if (context.contains("поступил заказ на звонок")) {
+                        orderList.add(new Order(nameToFormatCall(lines), phoneNumberFormatCall(lines), productToFormatCall(lines), "UNISHOP.BY"));
                     }
                     if (context.contains("поступил новый заказ!")) {
                         orderList.add(new Order(nameToFormat(lines), phoneNumberFormat(lines), emailToFormat(lines),
-                                addressToFormat(lines), orderToFormat(lines),"UNISHOP.BY"));
+                                addressToFormat(lines), orderToFormat(lines), "UNISHOP.BY"));
                     }
                 }
                 emailFolder.close(false);
@@ -217,26 +224,34 @@ public class UserServiceImpl implements UserService {
 
         } catch (Exception e) {
             orderList.clear();
-            orderList.add(new Order("Error retrieving data" ));
+            orderList.add(new Order("Error retrieving data"));
             e.printStackTrace();
             return orderList;
         }
         return orderList;
     }
 
-//    private String getTimeForDeferredCall(String[] lines) {
-//        String firstChange = lines[2];
-//        return firstChange;
-//    }
+    private String contextConfig(String[] lines) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i <= lines.length - 1; i++) {
+            if (lines[i].contains("Заказ компьютера #")) {
+                stringBuilder.append(lines[i]).append(" ");
+            }
+            if (lines[i].contains("Сумма заказа:")) {
+                stringBuilder.append(lines[i]);
+            }
+        }
+        return String.valueOf(stringBuilder);
+    }
 
-    private String phoneNumberFormatDeferredCall(String [] lines) {
-        try{
+    private String phoneNumberFormatDeferredCall(String[] lines) {
+        try {
             List<String> linesList = Arrays.asList(lines);
-            String firstChange = linesList.get(2).substring(0,  linesList.get(2).length()-8);
+            String firstChange = linesList.get(2).substring(0, linesList.get(2).length() - 8);
             String secondShange = firstChange.replaceAll("\\D+", "");
             StringBuffer result = new StringBuffer();
-            return String.valueOf(result.append("+375").append(" ").append(secondShange.substring(0,2)).append(" ").append(secondShange.substring(2,secondShange.length())));
-        }catch (Exception e){
+            return String.valueOf(result.append("+375").append(" ").append(secondShange.substring(0, 2)).append(" ").append(secondShange.substring(2, secondShange.length())));
+        } catch (Exception e) {
             return "Error" + e;
         }
     }
@@ -251,8 +266,8 @@ public class UserServiceImpl implements UserService {
 
     private String nameToFormatDealBy(String[] line) {
         int numberElementArray = 0;
-        for (int i = 0; i <= line.length-1; i++){
-            if (line[i].contains("ФИО:")){
+        for (int i = 0; i <= line.length - 1; i++) {
+            if (line[i].contains("ФИО:")) {
                 numberElementArray = i + 1;
             }
         }
@@ -275,17 +290,17 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    private String nameConfig(String [] line){
+    private String nameConfig(String[] line) {
         String result = null;
-        for (int i = 0; i<=line.length-1; i++){
-            if(line[i].contains("ФИО")){
-                result = line[i+1];
+        for (int i = 0; i <= line.length - 1; i++) {
+            if (line[i].contains("ФИО")) {
+                result = line[i + 1];
             }
         }
         return result;
     }
 
-    private String nameToFormatDealByMessage(String[] line){
+    private String nameToFormatDealByMessage(String[] line) {
         List<String> lines = Arrays.asList(line);
         List<String> listName = lines.stream().filter(p -> p.contains("Вам писал:")).collect(Collectors.toList());
         String listNameString = String.join(", ", listName);
@@ -295,9 +310,9 @@ public class UserServiceImpl implements UserService {
 
     private String phoneConfig(String[] line) {
         String result = null;
-        for (int i = 0; i<=line.length-1; i++){
-            if(line[i].contains("Мобильный")){
-                result = line[i+1];
+        for (int i = 0; i <= line.length - 1; i++) {
+            if (line[i].contains("Мобильный")) {
+                result = line[i + 1];
             }
         }
         return result;
@@ -316,14 +331,14 @@ public class UserServiceImpl implements UserService {
 
     private String phoneNumberFormatDealBy(String[] line) {
         int numberElementArray = 0;
-        for (int i = 0; i <= line.length-1; i++){
-            if (line[i].contains("Телефон:")){
+        for (int i = 0; i <= line.length - 1; i++) {
+            if (line[i].contains("Телефон:")) {
                 numberElementArray = i + 1;
             }
         }
         String phoneNumber = line[numberElementArray];
         StringBuffer result = new StringBuffer();
-        return String.valueOf(result.append(phoneNumber.substring(0,4)).append(" ").append(phoneNumber.substring(4,6)).append(" ").append(phoneNumber.substring(6,13)));
+        return String.valueOf(result.append(phoneNumber.substring(0, 4)).append(" ").append(phoneNumber.substring(4, 6)).append(" ").append(phoneNumber.substring(6, 13)));
     }
 
     private String productToFormatCall(String[] line) {
@@ -339,13 +354,14 @@ public class UserServiceImpl implements UserService {
         List<String> list = lines.stream().filter(p -> p.contains("Адрес доставки:")).collect(Collectors.toList());
         list.remove("Адрес");
         list.remove("доставки:");
-        String [] item = list.get(0).split(":");
+        String[] item = list.get(0).split(":");
         return item[1];
     }
+
     private String addressToFormatDealBy(String[] line) {
         int numberElementArray = 0;
-        for (int i = 0; i <= line.length-1; i++){
-            if (line[i].equals("Физический адрес:")){
+        for (int i = 0; i <= line.length - 1; i++) {
+            if (line[i].equals("Физический адрес:")) {
                 numberElementArray = i + 1;
                 break;
             }
@@ -357,9 +373,9 @@ public class UserServiceImpl implements UserService {
 
     private String addressConfig(String[] line) {
         String result = null;
-        for (int i = 0; i<=line.length-1; i++){
-            if(line[i].contains("Адрес")){
-                result = line[i+1];
+        for (int i = 0; i <= line.length - 1; i++) {
+            if (line[i].contains("Адрес")) {
+                result = line[i + 1];
             }
         }
         return result;
@@ -376,8 +392,8 @@ public class UserServiceImpl implements UserService {
 
     private String emailToFormatDealBy(String[] line) {
         int numberElementArray = 0;
-        for (int i = 0; i <= line.length-1; i++){
-            if (line[i].contains("Email:")){
+        for (int i = 0; i <= line.length - 1; i++) {
+            if (line[i].contains("Email:")) {
                 numberElementArray = i + 1;
             }
         }
@@ -389,9 +405,16 @@ public class UserServiceImpl implements UserService {
         List itemsList = new ArrayList();
         for (String items : line) {
             Matcher m = Pattern.compile(regex).matcher(items);
-            if(m.find())
-                itemsList.add(m.group(0).trim().substring(0,6));
+            if (m.find())
+                itemsList.add(m.group(0).trim().substring(0, 6));
         }
+        return itemsList;
+    }
+
+    private List orderPc(String[] line) {
+
+        List itemsList = new ArrayList();
+
         return itemsList;
     }
 
@@ -399,45 +422,45 @@ public class UserServiceImpl implements UserService {
         nameItemList.clear();
         amountItemList.clear();
         priceItemList.clear();
-        String[] orderItems =  line.split(" ");
+        String[] orderItems = line.split(" ");
         List<String> linesList = Arrays.asList(lines);
         List<Product> productList = new ArrayList<>();
         productList.clear();
         List<String> list = linesList.stream().filter(p -> p.contains("руб.")).collect(Collectors.toList());
-        for (int i = 0; i <= list.size()-1; i++){
+        for (int i = 0; i <= list.size() - 1; i++) {
             System.out.println(list.get(i));
         }
-        if (list.size() > 2){
-            for (int i = 0;i <= lines.length - 1; i++){
-                if(lines[i].contains("руб.")){
-                    nameItemList.add(lines[i-3]);
+        if (list.size() > 2) {
+            for (int i = 0; i <= lines.length - 1; i++) {
+                if (lines[i].contains("руб.")) {
+                    nameItemList.add(lines[i - 3]);
                 }
             }
-            for (int k = 0; k < list.size()-1; k++ ){
+            for (int k = 0; k < list.size() - 1; k++) {
                 String str = list.get(k);
                 String[] items = str.split(" ");
-                if (items.length > 8){
+                if (items.length > 8) {
                     String price = items[0] + "" + items[1];
-                    productList.add(new Product(nameItemList.get(k),price, items[4]));
-                }else {
-                    productList.add(new Product(nameItemList.get(k),items[0], items[3]));
+                    productList.add(new Product(nameItemList.get(k), price, items[4]));
+                } else {
+                    productList.add(new Product(nameItemList.get(k), items[0], items[3]));
                 }
             }
-        }else{
+        } else {
             List<String> linesListItem = Arrays.asList(lines);
             List<String> str = linesListItem.stream().filter(p -> p.contains("руб.")).collect(Collectors.toList());
             String[] strItems = String.valueOf(str).split(" ");
-            if (strItems.length > 8){
+            if (strItems.length > 8) {
                 String price = strItems[0] + "" + strItems[1];
                 nameItemList.add(line);
-                amountItemList.add( strItems[3]);
-                priceItemList.add(price.substring(1, price.length()-4));
-                productList.add(new Product(nameItemList.get(0),priceItemList.get(0), amountItemList.get(0)));
-            }else {
+                amountItemList.add(strItems[3]);
+                priceItemList.add(price.substring(1, price.length() - 4));
+                productList.add(new Product(nameItemList.get(0), priceItemList.get(0), amountItemList.get(0)));
+            } else {
                 nameItemList.add(line);
                 amountItemList.add(strItems[3]);
                 priceItemList.add(strItems[0].substring(1, strItems[0].length()));
-                productList.add(new Product(nameItemList.get(0),priceItemList.get(0), amountItemList.get(0)));
+                productList.add(new Product(nameItemList.get(0), priceItemList.get(0), amountItemList.get(0)));
             }
         }
         return productList;
