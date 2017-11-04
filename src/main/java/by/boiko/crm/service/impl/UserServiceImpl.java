@@ -407,7 +407,7 @@ public class UserServiceImpl implements UserService {
             if (m.find() && items.length() == 6)
                 itemsList.add(m.group(0).trim().substring(0, 6));
             if (items.contains("шт")){
-                itemsListTwo.add(items);
+                itemsListTwo.add(items.substring(0,1));
             }
         }
         return zipToMap(itemsList,itemsListTwo);
