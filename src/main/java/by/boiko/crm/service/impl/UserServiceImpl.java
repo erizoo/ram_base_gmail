@@ -15,13 +15,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -400,15 +398,26 @@ public class UserServiceImpl implements UserService {
         return line[numberElementArray];
     }
 
-    private List orderConfig(String[] line) {
+    private Map orderConfig(String[] line) {
         String regex = "(?<!\\d)\\d{6}(?!\\d)";
         List itemsList = new ArrayList();
+        List itemsListTwo = new ArrayList();
         for (String items : line) {
             Matcher m = Pattern.compile(regex).matcher(items);
-            if (m.find())
+            if (m.find() && items.length() == 6)
                 itemsList.add(m.group(0).trim().substring(0, 6));
+            if (items.contains("шт")){
+                itemsListTwo.add(items);
+            }
         }
-        return itemsList;
+        return zipToMap(itemsList,itemsListTwo);
+    }
+
+    private static <K, V> Map<K, V> zipToMap(List<K> keys, List<V> values) {
+        Iterator<K> keyIter = keys.iterator();
+        Iterator<V> valIter = values.iterator();
+        return IntStream.range(0, keys.size()).boxed()
+                .collect(Collectors.toMap(_i -> keyIter.next(), _i -> valIter.next()));
     }
 
     private List orderPc(String[] line) {

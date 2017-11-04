@@ -1,6 +1,7 @@
 package by.boiko.crm.model;
 
 import java.util.List;
+import java.util.Map;
 
 public class Order {
 
@@ -13,14 +14,14 @@ public class Order {
     private String nameProductCall;
     private String source;
     private String errorName;
-    private List listSku;
+    private Map listSku;
     private String comments;
 
     public Order(String error) {
         this.error = error;
     }
 
-    public Order(String name, String number, String email, String address, String source, List listSku, String comments) {
+    public Order(String name, String number, String email, String address, String source, Map listSku, String comments) {
         this.name = name;
         this.number = number;
         this.email = email;
@@ -35,7 +36,7 @@ public class Order {
         this.number = number;
     }
 
-    public Order(String name, String number,  String source, List listSku, String comments) {
+    public Order(String name, String number,  String source, Map listSku, String comments) {
         this.name = name;
         this.number = number;
         this.source = source;
@@ -67,11 +68,11 @@ public class Order {
         this.comments = comments;
     }
 
-    public List getListSku() {
+    public Map getListSku() {
         return listSku;
     }
 
-    public void setListSku(List listSku) {
+    public void setListSku(Map listSku) {
         this.listSku = listSku;
     }
 
