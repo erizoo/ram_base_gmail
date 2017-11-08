@@ -31,17 +31,17 @@ public class Order {
         this.comments = comments;
     }
 
+    public Order(String name, String number, String email, String source, String comments) {
+        this.name = name;
+        this.number = number;
+        this.email = email;
+        this.source = source;
+        this.comments = comments;
+    }
+
     public Order(String name, String number) {
         this.name = name;
         this.number = number;
-    }
-
-    public Order(String name, String number,  String source, Map listSku, String comments) {
-        this.name = name;
-        this.number = number;
-        this.source = source;
-        this.listSku = listSku;
-        this.comments = comments;
     }
 
     public Order(String name, String number, String nameProductCall, String source) {

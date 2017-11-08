@@ -177,16 +177,25 @@ public class UserServiceImpl implements UserService {
                     int emailNumber = i + 1;
                     String emailFrom = String.valueOf(message.getFrom()[0]);
                     content = message.getContent();
-                    String context = getTextFromMimeMultipart((MimeMultipart) content);
+                    String context = null;
+                    if (content instanceof String)
+                    {
+                        context = (String)content;
+                    }
+                    else if (content instanceof Multipart)
+                    {
+                        Multipart mp = (Multipart)content;
+                        context = getTextFromMimeMultipart((MimeMultipart) mp);
+                    }
                     emailList.add(new Email(emailNumber, "sdgsd", "dsgsg", context));
                     String lines[] = emailList.get(i).getSubject().split("[\\r\\n]+", -1);
                     if (context.contains("покупатель создал новый чат")) {
                         orderList.add(new Order("No emails"));
                     }
                     if (context.contains("Заказ компьютера по параметрам")) {
-                        orderList.add(new Order("No emails"));
+                        orderList.add(new Order(nameConfigForParams(lines), phoneConfigForParams(lines), "test", "По параметрам", bildConfigForParams(lines)));
                     }
-                    if (context.contains("Заказ компьютера")) {
+                    if (context.contains("Заказ компьютера #")) {
                         orderList.add(new Order(nameConfig(lines), phoneConfig(lines), "test", addressConfig(lines), "Конфигуратор", orderConfig(lines), contextConfig(lines)));
                     }
                     if (context.contains("Товары свыше лимита были")) {
@@ -203,7 +212,6 @@ public class UserServiceImpl implements UserService {
                                 break;
                             }
                         }
-                        // orderList.add(new Order("Error retrieving data"));
                         orderList.add(new Order(nameToFormatDealBy(lines), phoneNumberFormatDealBy(lines),
                                 emailToFormatDealBy(lines), addressToFormatDealBy(lines), orderToFormatDealBy(dealByName, lines), "DEAL.BY"));
                     }
@@ -227,6 +235,35 @@ public class UserServiceImpl implements UserService {
             return orderList;
         }
         return orderList;
+    }
+
+    private String nameConfigForParams(String[] lines) {
+        for (int i = 0; i <= lines.length - 1; i++) {
+            if (lines[i].contains("Имя")) {
+                String[] result = lines[i+2].split(">");
+                return result[1].substring(0, result[1].length()-4);
+            }
+        }
+        return "Nope";
+    }
+
+    private String phoneConfigForParams(String[] lines) {
+        for (int i = 0; i <= lines.length - 1; i++) {
+            if (lines[i].contains("Мобильный")) {
+                String[] result = lines[i+2].split(">");
+                return result[1].substring(0, result[1].length()-4);
+            }
+        }
+        return "Nope";
+    }
+
+    private String bildConfigForParams(String[] lines) {
+        for (int i = 0; i <= lines.length - 1; i++) {
+            if (lines[i].contains("Сумма заказа")) {
+                return lines[i].substring(4,lines[i].length());
+            }
+        }
+        return "Nope";
     }
 
     private String contextConfig(String[] lines) {
