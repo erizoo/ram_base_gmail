@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
 public class UserServiceImpl implements UserService {
 
     private HSSFWorkbook book;
-    private static final String MAIL_STORE_TYPE = "pop.gmail.com";
+    private static final String MAIL_STORE_TYPE = "imap.gmail.com";
     private static final String USERNAME = "erizosashka@gmail.com";
     private static final String PASSWORD = "Erizo20968";
     private List<Email> emailList = new ArrayList<>();
@@ -151,8 +151,8 @@ public class UserServiceImpl implements UserService {
             //create properties field
             Properties properties = new Properties();
 
-            properties.put("mail.pop3.host", host);
-            properties.put("mail.pop3.port", "995");
+            properties.put("imap.gmail.com", host);
+            properties.put("imap.gmail.com", "993");
             properties.put("mail.pop3.starttls.enable", "true");
             Session emailSession = Session.getDefaultInstance(properties);
 
@@ -193,7 +193,7 @@ public class UserServiceImpl implements UserService {
                         orderList.add(new Order("No emails"));
                     }
                     if (context.contains("Заказ компьютера по параметрам")) {
-                        orderList.add(new Order(nameConfigForParams(lines), phoneConfigForParams(lines), "test", "По параметрам", bildConfigForParams(lines)));
+                        orderList.add(new Order(nameConfigForParams(lines), phoneConfigForParams(lines), "test", "По параметрам", context));
                     }
                     if (context.contains("Заказ компьютера #")) {
                         orderList.add(new Order(nameConfig(lines), phoneConfig(lines), "test", addressConfig(lines), "Конфигуратор", orderConfig(lines), contextConfig(lines)));
@@ -221,6 +221,8 @@ public class UserServiceImpl implements UserService {
                     if (context.contains("поступил новый заказ!")) {
                         orderList.add(new Order(nameToFormat(lines), phoneNumberFormat(lines), emailToFormat(lines),
                                 addressToFormat(lines), orderToFormat(lines), "UNISHOP.BY"));
+                    }else {
+                        orderList.add(new Order("No emails"));
                     }
                 }
                 emailFolder.close(false);
