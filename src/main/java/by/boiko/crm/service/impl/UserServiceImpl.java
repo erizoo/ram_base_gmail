@@ -157,7 +157,7 @@ public class UserServiceImpl implements UserService {
             Session emailSession = Session.getDefaultInstance(properties);
 
             //create the POP3 store object and connect with the pop server
-            Store store = emailSession.getStore("pops");
+            Store store = emailSession.getStore("pop3s");
 
             store.connect(host, username, password);
 
