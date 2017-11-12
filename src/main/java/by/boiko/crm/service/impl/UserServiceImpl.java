@@ -151,8 +151,8 @@ public class UserServiceImpl implements UserService {
             //create properties field
             Properties properties = new Properties();
 
-            properties.put("pop.gmail.com", host);
-            properties.put("pop.gmail.com", "995");
+            properties.put("mail.pop3.host", host);
+            properties.put("mail.pop3.host", "995");
             properties.put("mail.pop3.starttls.enable", "true");
             Session emailSession = Session.getDefaultInstance(properties);
 
