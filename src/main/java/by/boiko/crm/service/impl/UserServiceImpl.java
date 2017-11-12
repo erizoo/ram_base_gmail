@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
 public class UserServiceImpl implements UserService {
 
     private HSSFWorkbook book;
-    private static final String MAIL_STORE_TYPE = "imap.gmail.com";
+    private static final String MAIL_STORE_TYPE = "pop.gmail.com";
     private static final String USERNAME = "erizosashka@gmail.com";
     private static final String PASSWORD = "Erizo20968";
     private List<Email> emailList = new ArrayList<>();
@@ -151,13 +151,13 @@ public class UserServiceImpl implements UserService {
             //create properties field
             Properties properties = new Properties();
 
-            properties.put("imap.gmail.com", host);
-            properties.put("imap.gmail.com", "993");
-//            properties.put("mail.pop3.starttls.enable", "true");
+            properties.put("pop.gmail.com", host);
+            properties.put("pop.gmail.com", "995");
+            properties.put("mail.pop3.starttls.enable", "true");
             Session emailSession = Session.getDefaultInstance(properties);
 
             //create the POP3 store object and connect with the pop server
-            Store store = emailSession.getStore("imaps");
+            Store store = emailSession.getStore("pop3s");
 
             store.connect(host, username, password);
 
