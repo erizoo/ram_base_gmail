@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
     private HSSFWorkbook book;
     private static final String MAIL_STORE_TYPE = "pop.gmail.com";
     private static final String USERNAME = "erizosashka@gmail.com";
-    private static final String PASSWORD = "Erizo20968";
+    private static final String PASSWORD = "Erizo209688";
     private List<Email> emailList = new ArrayList<>();
     private List<Order> orderList = new ArrayList<>();
     private List<String> nameItemList = new ArrayList<>();
