@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Order> getEmails() throws MessagingException {
-        return check(MAIL_STORE_TYPE, MAIL_STORE_TYPE, USERNAME, PASSWORD);
+        return check(MAIL_STORE_TYPE, USERNAME, PASSWORD);
     }
 
     @Override
@@ -144,7 +144,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private List<Order> check(String host, String mail_store_type, String username, String password) throws MessagingException {
+    private List<Order> check(String host, String username, String password) throws MessagingException {
         try {
             orderList.clear();
             emailList.clear();
@@ -153,11 +153,11 @@ public class UserServiceImpl implements UserService {
 
             properties.put("imap.gmail.com", host);
             properties.put("imap.gmail.com", "993");
-            properties.put("mail.pop3.starttls.enable", "true");
+//            properties.put("mail.pop3.starttls.enable", "true");
             Session emailSession = Session.getDefaultInstance(properties);
 
             //create the POP3 store object and connect with the pop server
-            Store store = emailSession.getStore("pop3s");
+            Store store = emailSession.getStore("imaps");
 
             store.connect(host, username, password);
 
