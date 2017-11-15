@@ -375,7 +375,7 @@ public class UserServiceImpl implements UserService {
         }
         String phoneNumber = line[numberElementArray];
         StringBuffer result = new StringBuffer();
-        return String.valueOf(result.append(phoneNumber.substring(0, 4)).append(" ").append(phoneNumber.substring(4, 6)).append(" ").append(phoneNumber.substring(6, 13)));
+        return String.valueOf(result.append(phoneNumber.substring(1, 5)).append(" ").append(phoneNumber.substring(5, 7)).append(" ").append(phoneNumber.substring(7, 14)));
     }
 
     private String productToFormatCall(String[] line) {
