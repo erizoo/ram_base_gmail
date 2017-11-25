@@ -45,5 +45,6 @@
 
 
     <bean id="userService" class="by.boiko.crm.service.impl.UserServiceImpl"/>
+    <bean id="onlinerService" class="by.boiko.crm.service.impl.OnlinerServiceImpl"/>
 
 </beans>
