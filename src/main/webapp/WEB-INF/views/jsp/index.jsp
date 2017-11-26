@@ -16,10 +16,10 @@
     <spring:url value="/start" var="loginUrl"/>
     <spring:url value="/email" var="loginUrlGmail"/>
     <spring:url value="/onliner" var="loginUrlOnliner"/>
-    <form action="${loginUrl}" method="post">
-        <br>
-        <button class="btn btn-lg btn-danger btn-block" onclick="location.href='${loginUrl}'">Парсер Маркет</button>
-    </form>
+    <%--<form action="${loginUrl}" method="post">--%>
+        <%--<br>--%>
+        <%--<button class="btn btn-lg btn-danger btn-block" onclick="location.href='${loginUrl}'">Парсер Маркет</button>--%>
+    <%--</form>--%>
     <form action="${loginUrlGmail}" method="get">
         <br>
         <button class="btn btn-lg btn-danger btn-block" onclick="location.href='${loginUrlGmail}'">Парсер Gmail</button>
