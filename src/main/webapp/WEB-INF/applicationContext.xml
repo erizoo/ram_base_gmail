@@ -19,9 +19,6 @@
         <property name="basename" value="application"/>
     </bean>
 
-    <bean class="java.net.URI" id="dbUrl">
-        <constructor-arg value="mysql://f39zdsxgxin9hknr:jmc84byabn9j4ymu@u3y93bv513l7zv6o.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/nn3jg5hs8kk06no"/>
-    </bean>
     <bean id="localeResolver"
           class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
         <property name="defaultLocale" value="en"/>
