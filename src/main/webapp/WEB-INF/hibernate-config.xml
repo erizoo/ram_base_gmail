@@ -9,8 +9,8 @@
           destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://u3y93bv513l7zv6o.chr7pe7iynqr.eu-west-1.rds.amazonaws.com/nn3jg5hs8kk06nol"/>
-        <property name="username" value="root"/>
-        <property name="password" value="4123"/>
+        <property name="username" value="f39zdsxgxin9hknr"/>
+        <property name="password" value="jmc84byabn9j4ymu"/>
     </bean>
 
     <tx:annotation-driven transaction-manager="txManager" proxy-target-class="true"/>
