@@ -8,17 +8,12 @@
   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
-
-
-
-
+    <import resource="hibernate-config.xml"/>
     <mvc:resources mapping="/resources/**" location="/resources/"/>
 
     <context:component-scan base-package="by.boiko.crm"/>
     <mvc:annotation-driven/>
     <tx:annotation-driven/>
-
-
     <bean id="messageSource"
           class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basename" value="application"/>
@@ -28,11 +23,10 @@
         <property name="defaultLocale" value="en"/>
     </bean>
     <!--<bean-->
-            <!--class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping" />-->
+            <!--class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"/>-->
 
     <bean id="multipartResolver"
-          class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
-
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 
     <bean
             class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -41,10 +35,4 @@
     </bean>
     <bean
             class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
-
-
-
-    <bean id="userService" class="by.boiko.crm.service.impl.UserServiceImpl"/>
-    <bean id="onlinerService" class="by.boiko.crm.service.impl.OnlinerServiceImpl"/>
-
 </beans>

@@ -1,26 +1,39 @@
 package by.boiko.crm.service.impl;
 
+import by.boiko.crm.dao.OnlinerDao;
 import by.boiko.crm.model.Onliner;
+import by.boiko.crm.model.SkuModel;
 import by.boiko.crm.model.Table;
 import by.boiko.crm.service.OnlinerService;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class OnlinerServiceImpl implements OnlinerService {
+
+
+    @Autowired
+    private OnlinerDao onlinerDao;
 
 
     public static void takeNamesAndLinks() {
         WebDriver driver;
-        System.setProperty("webdriver.gecko.driver", "D:\\Projects\\chromedriver.exe ");
-        driver = new FirefoxDriver();
+        DesiredCapabilities caps = new DesiredCapabilities();
+        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+                "F:\\phantomjs\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
+        driver = new PhantomJSDriver(caps);
         driver.navigate().to("https://catalog.onliner.by/videocard");
 
         List<WebElement> allAuthors = driver.findElements(By.className("schema-product__title"));
@@ -38,11 +51,13 @@ public class OnlinerServiceImpl implements OnlinerService {
     }
 
     @Override
-    public List<Onliner> getReviews() {
+    public List<Onliner> getReviews(String decodedUrl) {
         WebDriver driver;
-        System.setProperty("webdriver.gecko.driver", "D:\\Projects\\chromedriver.exe ");
-        driver = new FirefoxDriver();
-        driver.navigate().to("https://catalog.onliner.by/videocard/palit/ne5105ts18g11071/reviews");
+        DesiredCapabilities caps = new DesiredCapabilities();
+        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+                "F:\\phantomjs\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
+        driver = new PhantomJSDriver(caps);
+        driver.navigate().to(decodedUrl + "/reviews");
         List<Onliner> listReviews = new ArrayList<>();
         List<String> listStarsForReviews = new ArrayList<>();
         List<String> listTextForReviews = new ArrayList<>();
@@ -97,8 +112,10 @@ public class OnlinerServiceImpl implements OnlinerService {
     @Override
     public ArrayList<Table> getDescription() {
         WebDriver driver;
-        System.setProperty("webdriver.gecko.driver", "D:\\Projects\\chromedriver.exe ");
-        driver = new FirefoxDriver();
+        DesiredCapabilities caps = new DesiredCapabilities();
+        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+                "F:\\phantomjs\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
+        driver = new PhantomJSDriver(caps);
         driver.navigate().to("https://catalog.onliner.by/videocard/palit/ne5105ts18g11071");
 
         List<WebElement> listReviewsText = driver.findElements(By.cssSelector("table.product-specs__table"));
@@ -135,8 +152,10 @@ public class OnlinerServiceImpl implements OnlinerService {
     @Override
     public List<String> getImages() {
         WebDriver driver;
-        System.setProperty("webdriver.gecko.driver", "D:\\Projects\\chromedriver.exe ");
-        driver = new FirefoxDriver();
+        DesiredCapabilities caps = new DesiredCapabilities();
+        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+                "F:\\phantomjs\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
+        driver = new PhantomJSDriver(caps);
         driver.navigate().to("https://catalog.onliner.by/videocard/palit/ne5105ts18g11071");
 
         List<String> stringList = new ArrayList<>();
@@ -155,65 +174,32 @@ public class OnlinerServiceImpl implements OnlinerService {
     @Override
     public List<String> getNames(String name) {
         WebDriver driver;
-        System.setProperty("webdriver.gecko.driver", "D:\\Projects\\chromedriver.exe ");
-        driver = new FirefoxDriver();
+        DesiredCapabilities caps = new DesiredCapabilities();
+        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+                "F:\\phantomjs\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
+        driver = new PhantomJSDriver(caps);
         driver.navigate().to("https://catalog.onliner.by/videocard");
-        List<String> listNames = new ArrayList<>();
-        List<WebElement> allAuthors = driver.findElements(By.className("schema-product__title"));
-        for (WebElement str : allAuthors) {
-            String title = str.getText();
-            listNames.add(title);
-        }
-
-        driver.close();
-        return listNames;
-    }
-
-    public static void main(String[] args) throws IOException {
-        WebDriver driver;
-        System.setProperty("webdriver.gecko.driver", "D:\\Projects\\chromedriver.exe ");
-        driver = new FirefoxDriver();
-        driver.navigate().to("https://catalog.onliner.by/videocard?page=2");
         List<String> listNames = new ArrayList<>();
         List<String> result = new ArrayList<>();
         List<WebElement> allAuthors = driver.findElements(By.className("schema-product__title"));
-        int count = 0;
-        int min = 0;
         for (WebElement str : allAuthors) {
             String title = str.getText();
             listNames.add(title);
         }
         for (String list : listNames) {
-            if (list.contains("NE5105TS18G1-1071D")){
+            if (list.contains("NE5105TS18G1-1071D")) {
                 result.add(list);
+                break;
             }
-//            String[] items = list.split(" ");
-//            String[] itemsNamesFromOnliner = "Видеокарта GeForce® Palit GTX1050Ti DUAL OC (NE5105TS18G1-1071D) 4Gb".split(" ");
-//            if (itemsNamesFromOnliner.length <= items.length){
-//                min = itemsNamesFromOnliner.length;
-//                for (int i = 0; i <= itemsNamesFromOnliner.length-1; i++){
-//                   for (int k = 0; k <= itemsNamesFromOnliner.length-1; k++){
-//                       if (itemsNamesFromOnliner[i].contains(items[k])){
-//                           count = count + 1;
-//                       }
-//                   }
-//                }
-//            }else {
-//                min = items.length;
-//                for (int i = 0; i <= items.length-1; i++){
-//                    for (int k = 0; k <= items.length-1; k++){
-//                        if (items[i].contains(itemsNamesFromOnliner[k])){
-//                            count = count + 1;
-//                        }
-//                    }
-//                }
-//            }if (count >= min/1.5){
-//                result.add(list);
-//            }
+
+            driver.close();
 
         }
-        driver.close();
-
+        return result;
     }
 
+    @Override
+    public void save(SkuModel skuModel) {
+        onlinerDao.save(skuModel);
+    }
 }
