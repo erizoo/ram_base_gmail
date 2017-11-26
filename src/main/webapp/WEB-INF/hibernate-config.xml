@@ -8,9 +8,9 @@
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
           destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://u3y93bv513l7zv6o.chr7pe7iynqr.eu-west-1.rds.amazonaws.com/nn3jg5hs8kk06nol"/>
-        <property name="username" value="f39zdsxgxin9hknr"/>
-        <property name="password" value="jmc84byabn9j4ymu"/>
+        <property name="url" value="jdbc:mysql://d6ybckq58s9ru745.cbetxkdyhwsb.us-east-1.rds.amazonaws.com/dspk8f2ytzm5zr6i"/>
+        <property name="username" value="xhev2mzbhjn4yzia"/>
+        <property name="password" value="imq4i04011ak6ik6"/>
     </bean>
 
     <tx:annotation-driven transaction-manager="txManager" proxy-target-class="true"/>
