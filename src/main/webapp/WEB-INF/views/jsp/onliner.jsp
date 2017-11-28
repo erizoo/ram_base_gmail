@@ -21,6 +21,7 @@
         </tbody>
     </table>
     <script>
+        var idNumber;
         $(document).ready(function() {
             $.ajax({
                 type: "GET",
@@ -38,16 +39,42 @@
                         newcell = newrow.insertCell(1);
                         newcell.innerText = obj[i].name;
                         newcell = newrow.insertCell(2);
+                        idNumber = obj[i].id;
                         newcell.innerHTML = newcell.innerHTML + " <button type='button' class='btn btn-danger' " +
-                        "onclick = deleteInTrash()>Удалить в корзину</button><br>";
+                        "onclick = deleteInTrash(idNumber)>Удалить в корзину</button><br>";
+                        newcell = newrow.insertCell(3);
+                        newcell.innerHTML = newcell.innerHTML + " <button type='button' class='btn btn-danger' " +
+                        "onclick = moveInTrash(idNumber)>Нет соответствий</button><br>";
                     }
 
                 }
             });
         });
-
-        function deleteInTrash() {
-
+        function moveInTrash(idNumber) {
+            console.log(idNumber);
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                url: "/move_goods" + "/" + idNumber,
+                dataType: "text",
+                success: function (data) {
+                    location.reload();
+                    console.log("HTTP Status 200");
+                }
+            });
+        }
+        function deleteInTrash(id) {
+            console.log(id);
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                url: "/delete_goods" + "/" + id,
+                dataType: "text",
+                success: function (data) {
+                    location.reload();
+                    console.log("HTTP Status 200");
+                }
+            });
         }
     </script>
     <div class="input-group" style="margin-top: 20%">

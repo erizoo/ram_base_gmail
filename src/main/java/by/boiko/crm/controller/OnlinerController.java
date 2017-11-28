@@ -1,5 +1,6 @@
 package by.boiko.crm.controller;
 
+import by.boiko.crm.model.Onliner;
 import by.boiko.crm.model.Table;
 import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.pojo.UnattachedGoods;
@@ -28,8 +29,15 @@ public class OnlinerController {
 
     @ResponseBody
     @RequestMapping(value = "/goods")
-    public List<UnattachedGoods> getAllGoods() {
-        return onlinerService.getAllGoods();
+    public List<UnattachedGoods> getAllUnattachedGoods() {
+        return onlinerService.getAllUnattachedGoods();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/all_goods")
+    public List<Onliner> getAllGoods() {
+        List<SkuModel> skuModelsList = onlinerService.loadGoods();
+        return onlinerService.getAllGoods(skuModelsList);
     }
 
     @RequestMapping(value = "/bind/{sku}/{url}")
@@ -39,9 +47,18 @@ public class OnlinerController {
         skuModel.setSku(sku);
         skuModel.setUrl(decodedUrl);
         onlinerService.save(skuModel);
-        UnattachedGoods unattachedGoods = new UnattachedGoods();
-        unattachedGoods = onlinerService.findBySky(sku);
-        onlinerService.delete(sku);
+        return "redirect:/onliner";
+    }
+
+    @RequestMapping(value = "/delete_goods/{id}")
+    public String deleteGoods(@PathVariable(value = "id") int id) {
+        onlinerService.delete(id);
+        return "redirect:/onliner";
+    }
+
+    @RequestMapping(value = "/move_goods/{id}")
+    public String moveGoods(@PathVariable(value = "id") int id) {
+        onlinerService.moveGoods(id);
         return "redirect:/onliner";
     }
 
@@ -50,16 +67,4 @@ public class OnlinerController {
         return new ModelAndView("onliner");
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/search/{name}")
-    public List<String> searchName(@PathVariable(value = "name") String name) {
-        return onlinerService.getNames(name);
-    }
-
-
-    @ResponseBody
-    @RequestMapping(value = "/description")
-    public ArrayList<Table> getDescription() {
-        return onlinerService.getDescription();
-    }
 }

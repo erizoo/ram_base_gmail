@@ -15,7 +15,11 @@ public interface OnlinerDao {
 
     List loadAllGoods();
 
-    void delete(String sku);
+    void delete(int id);
 
     UnattachedGoods findBySky(String sku);
+
+    void moveGoods(int id);
+
+    List<SkuModel> loadGoods();
 }

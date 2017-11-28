@@ -4,62 +4,40 @@ import java.util.List;
 
 public class Onliner {
 
-
-
-    private String amountStars;
-    private String review;
-    private String plus;
-    private String minus;
+    private List<Review> reviews;
+    private List<Table> tables;
+    private List<String> images;
 
     public Onliner() {
     }
 
-    public Onliner(String amountStars, String review, String plus, String minus) {
-        this.amountStars = amountStars;
-        this.review = review;
-        this.plus = plus;
-        this.minus = minus;
+    public Onliner(List<Review> reviews, List<Table> tables, List<String> images) {
+        this.reviews = reviews;
+        this.tables = tables;
+        this.images = images;
     }
 
-    public String getAmountStars() {
-        return amountStars;
+    public List<String> getImages() {
+        return images;
     }
 
-    public void setAmountStars(String amountStars) {
-        this.amountStars = amountStars;
+    public void setImages(List<String> images) {
+        this.images = images;
     }
 
-    public String getReview() {
-        return review;
+    public List<Table> getTables() {
+        return tables;
     }
 
-    public void setReview(String review) {
-        this.review = review;
+    public void setTables(List<Table> tables) {
+        this.tables = tables;
     }
 
-    public String getPlus() {
-        return plus;
+    public List<Review> getReviews() {
+        return reviews;
     }
 
-    public void setPlus(String plus) {
-        this.plus = plus;
-    }
-
-    public String getMinus() {
-        return minus;
-    }
-
-    public void setMinus(String minus) {
-        this.minus = minus;
-    }
-
-    @Override
-    public String toString() {
-        return "Onliner{" +
-                "amountStars='" + amountStars + '\'' +
-                ", review='" + review + '\'' +
-                ", plus='" + plus + '\'' +
-                ", minus='" + minus + '\'' +
-                '}';
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 }

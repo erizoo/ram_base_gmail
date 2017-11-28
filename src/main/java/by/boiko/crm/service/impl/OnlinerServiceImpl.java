@@ -2,8 +2,9 @@ package by.boiko.crm.service.impl;
 
 import by.boiko.crm.dao.OnlinerDao;
 import by.boiko.crm.model.Onliner;
-import by.boiko.crm.model.pojo.SkuModel;
+import by.boiko.crm.model.Review;
 import by.boiko.crm.model.Table;
+import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.pojo.UnattachedGoods;
 import by.boiko.crm.service.OnlinerService;
 import org.openqa.selenium.By;
@@ -23,41 +24,18 @@ import java.util.List;
 @Transactional
 public class OnlinerServiceImpl implements OnlinerService {
 
-
     @Autowired
     private OnlinerDao onlinerDao;
 
-    public static void takeNamesAndLinks() {
-        WebDriver driver;
-        DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-                "F:\\phantomjs\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
-        driver = new PhantomJSDriver(caps);
-        driver.navigate().to("https://catalog.onliner.by/videocard");
-
-        List<WebElement> allAuthors = driver.findElements(By.className("schema-product__title"));
-        for (WebElement str : allAuthors) {
-            String name = str.getText();
-        }
-        List<WebElement> list = driver.findElements(By.xpath("//div[@class='schema-product__title']/*[@href]"));
-        for (WebElement element : list) {
-            String link = element.getAttribute("href");
-            System.out.println(element.getTagName() + "=" + link + ", " + element.getText());
-        }
-
-        List<WebElement> allTitles = driver.findElements(By.className("tgProductTitleText"));
-        driver.close();
-    }
-
     @Override
-    public List<Onliner> getReviews(String decodedUrl) {
+    public List<Review> getReviews(String decodedUrl) {
         WebDriver driver;
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-                "F:\\phantomjs\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
+                "D:\\phantomjs\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
         driver = new PhantomJSDriver(caps);
         driver.navigate().to(decodedUrl + "/reviews");
-        List<Onliner> listReviews = new ArrayList<>();
+        List<Review> listReviews = new ArrayList<>();
         List<String> listStarsForReviews = new ArrayList<>();
         List<String> listTextForReviews = new ArrayList<>();
         List<String> listTextForPlusReviews = new ArrayList<>();
@@ -101,7 +79,7 @@ public class OnlinerServiceImpl implements OnlinerService {
             listTextForMinusReviews.add(name);
         }
         for (int i = 0; i <= listStarsForReviews.size() - 1; i++) {
-            listReviews.add(new Onliner(listStarsForReviews.get(i), listTextForReviews.get(i), listTextForPlusReviews.get(i), listTextForMinusReviews.get(i)));
+            listReviews.add(new Review(listStarsForReviews.get(i), listTextForReviews.get(i), listTextForPlusReviews.get(i), listTextForMinusReviews.get(i)));
         }
 
         driver.close();
@@ -109,13 +87,13 @@ public class OnlinerServiceImpl implements OnlinerService {
     }
 
     @Override
-    public ArrayList<Table> getDescription() {
+    public ArrayList<Table> getDescription(String url) {
         WebDriver driver;
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-                "F:\\phantomjs\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
+                "D:\\phantomjs\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
         driver = new PhantomJSDriver(caps);
-        driver.navigate().to("https://catalog.onliner.by/videocard/palit/ne5105ts18g11071");
+        driver.navigate().to(url);
 
         List<WebElement> listReviewsText = driver.findElements(By.cssSelector("table.product-specs__table"));
         ArrayList<String> listCategories = new ArrayList<>();
@@ -143,17 +121,15 @@ public class OnlinerServiceImpl implements OnlinerService {
                 i++;
             }
 
-
         }
         return listTable;
     }
 
-    @Override
-    public List<String> getImages() {
+    public List<String> getImages(String url) {
         WebDriver driver;
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-                "F:\\phantomjs\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
+                "D:\\phantomjs\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
         driver = new PhantomJSDriver(caps);
         driver.navigate().to("https://catalog.onliner.by/videocard/palit/ne5105ts18g11071");
 
@@ -171,51 +147,37 @@ public class OnlinerServiceImpl implements OnlinerService {
     }
 
     @Override
-    public List<String> getNames(String name) {
-        WebDriver driver;
-        DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-                "F:\\phantomjs\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
-        driver = new PhantomJSDriver(caps);
-        driver.navigate().to("https://catalog.onliner.by/videocard");
-        List<String> listNames = new ArrayList<>();
-        List<String> result = new ArrayList<>();
-        List<WebElement> allAuthors = driver.findElements(By.className("schema-product__title"));
-        for (WebElement str : allAuthors) {
-            String title = str.getText();
-            listNames.add(title);
-        }
-        for (String list : listNames) {
-            if (list.contains("NE5105TS18G1-1071D")) {
-                result.add(list);
-                break;
-            }
-
-            driver.close();
-
-        }
-        return result;
-    }
-
-
-
-    @Override
     public void save(SkuModel skuModel) {
         onlinerDao.save(skuModel);
     }
 
     @Override
-    public List<UnattachedGoods> getAllGoods() {
-       return onlinerDao.loadAllGoods();
+    public List<UnattachedGoods> getAllUnattachedGoods() {
+        return onlinerDao.loadAllGoods();
     }
 
     @Override
-    public void delete(String sku) {
-        onlinerDao.delete(sku);
+    public void delete(int id) {
+        onlinerDao.delete(id);
     }
 
     @Override
-    public UnattachedGoods findBySky(String sku) {
-        return onlinerDao.findBySky(sku);
+    public void moveGoods(int id) {
+        onlinerDao.moveGoods(id);
+    }
+
+    @Override
+    public List<Onliner> getAllGoods(List<SkuModel> skuModelList) {
+        List<Onliner> onlinerList = new ArrayList<>();
+        for (SkuModel itemList : skuModelList) {
+            onlinerList.add(new Onliner(getReviews(itemList.getUrl()), getDescription(itemList.getUrl()), getImages(itemList.getUrl())));
+
+        }
+        return onlinerList;
+    }
+
+    @Override
+    public List<SkuModel> loadGoods() {
+        return onlinerDao.loadGoods();
     }
 }
