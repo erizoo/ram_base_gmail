@@ -20,16 +20,23 @@
 </head>
 <title>VetClient</title>
 
-<spring:url value="/categories" var="loginUrl"/>
+<spring:url value="/categories" var="getList"/>
 
 
+<%--<nav class="navbar navbar-light bg-faded">--%>
+	<%--<ul class="nav navbar-nav">--%>
+		<%--<li class="nav-item active">--%>
+			<%--<a class="nav-link" onclick="location.href='${loginUrl}'" >Меню категорий<span class="sr-only">(current)</span></a>--%>
+		<%--</li>--%>
+	<%--</ul>--%>
+<%--</nav>--%>
 <nav class="navbar navbar-light bg-faded">
 	<ul class="nav navbar-nav">
 		<li class="nav-item active">
-			<a class="nav-link" onclick="location.href='${loginUrl}'" >Меню категорий<span class="sr-only">(current)</span></a>
+			<a class="nav-link" onclick="location.href='${getList}'">Список привязанных товаров<span
+					class="sr-only">(current)</span></a>
 		</li>
 	</ul>
 </nav>
-
 
 </html>

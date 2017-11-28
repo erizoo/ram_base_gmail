@@ -1,4 +1,4 @@
-package by.boiko.crm.model;
+package by.boiko.crm.model.pojo;
 
 import javax.persistence.*;
 

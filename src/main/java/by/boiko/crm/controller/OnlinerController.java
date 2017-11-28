@@ -1,8 +1,8 @@
 package by.boiko.crm.controller;
 
-import by.boiko.crm.model.Onliner;
-import by.boiko.crm.model.SkuModel;
 import by.boiko.crm.model.Table;
+import by.boiko.crm.model.pojo.SkuModel;
+import by.boiko.crm.model.pojo.UnattachedGoods;
 import by.boiko.crm.service.OnlinerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +26,12 @@ public class OnlinerController {
         return new ModelAndView("onliner");
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/goods")
+    public List<UnattachedGoods> getAllGoods() {
+        return onlinerService.getAllGoods();
+    }
+
     @RequestMapping(value = "/bind/{sku}/{url}")
     public String bindOnliner(@PathVariable(value = "sku") String sku, @PathVariable(value = "url") String url) {
         String decodedUrl = new String(Base64.getDecoder().decode(url));
@@ -33,14 +39,21 @@ public class OnlinerController {
         skuModel.setSku(sku);
         skuModel.setUrl(decodedUrl);
         onlinerService.save(skuModel);
+        UnattachedGoods unattachedGoods = new UnattachedGoods();
+        unattachedGoods = onlinerService.findBySky(sku);
+        onlinerService.delete(sku);
         return "redirect:/onliner";
+    }
 
+    @RequestMapping(value = "/get_list")
+    public ModelAndView getList() {
+        return new ModelAndView("onliner");
     }
 
     @ResponseBody
     @RequestMapping(value = "/search/{name}")
     public List<String> searchName(@PathVariable(value = "name") String name) {
-       return onlinerService.getNames(name);
+        return onlinerService.getNames(name);
     }
 
 

@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+
     <jsp:include page="../fragments/header.jsp"/>
     <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
     <link rel="stylesheet" href="${contextPath}/resources/css/bootstrap.min.css"/>
@@ -9,6 +10,46 @@
 </head>
 <body>
 <div class="container">
+
+    <table class="table" id="my_tab_goods">
+        <tr>
+            <th>Название</th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tbody id="my_body_goods">
+        </tbody>
+    </table>
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                type: "GET",
+                contentType: "application/json",
+                url: "/goods",
+                dataType: "text",
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    console.log(obj);
+                    $('#my_body_goods').html('');
+                    for (var i = 0; i < obj.length; i++) {
+                        newrow = document.all.my_body_goods.insertRow();
+                        newcell = newrow.insertCell(0);
+                        newcell.innerText = obj[i].sku;
+                        newcell = newrow.insertCell(1);
+                        newcell.innerText = obj[i].name;
+                        newcell = newrow.insertCell(2);
+                        newcell.innerHTML = newcell.innerHTML + " <button type='button' class='btn btn-danger' " +
+                        "onclick = deleteInTrash()>Удалить в корзину</button><br>";
+                    }
+
+                }
+            });
+        });
+
+        function deleteInTrash() {
+
+        }
+    </script>
     <div class="input-group" style="margin-top: 20%">
         <input type="search" id="searchName" name="searchText" class="form-control" placeholder="Поиск по имени">
         <span class="input-group-btn">

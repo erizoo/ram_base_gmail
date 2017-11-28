@@ -5,12 +5,20 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
+    <!--<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"-->
+          <!--destroy-method="close">-->
+        <!--<property name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
+        <!--<property name="url" value="jdbc:mysql://u3y93bv513l7zv6o.chr7pe7iynqr.eu-west-1.rds.amazonaws.com/nn3jg5hs8kk06nol"/>-->
+        <!--<property name="username" value="f39zdsxgxin9hknr"/>-->
+        <!--<property name="password" value="jmc84byabn9j4ymu"/>-->
+    <!--</bean>-->
+
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
           destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://u3y93bv513l7zv6o.chr7pe7iynqr.eu-west-1.rds.amazonaws.com/nn3jg5hs8kk06nol"/>
-        <property name="username" value="f39zdsxgxin9hknr"/>
-        <property name="password" value="jmc84byabn9j4ymu"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/onliner"/>
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>
     </bean>
 
     <tx:annotation-driven transaction-manager="txManager" proxy-target-class="true"/>
@@ -21,7 +29,7 @@
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
                 <prop key="hibernate.show_sql">true</prop>
-                <prop key="hibernate.hbm2ddl.auto">create</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
                 <prop key="current_session_context_class">thread</prop>
                 <prop key="hibernate.c3p0.min_size">5</prop>
                 <prop key="hibernate.c3p0.max_size">20</prop>

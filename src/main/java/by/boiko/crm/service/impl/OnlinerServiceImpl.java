@@ -2,8 +2,9 @@ package by.boiko.crm.service.impl;
 
 import by.boiko.crm.dao.OnlinerDao;
 import by.boiko.crm.model.Onliner;
-import by.boiko.crm.model.SkuModel;
+import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.Table;
+import by.boiko.crm.model.pojo.UnattachedGoods;
 import by.boiko.crm.service.OnlinerService;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +26,6 @@ public class OnlinerServiceImpl implements OnlinerService {
 
     @Autowired
     private OnlinerDao onlinerDao;
-
 
     public static void takeNamesAndLinks() {
         WebDriver driver;
@@ -198,8 +197,25 @@ public class OnlinerServiceImpl implements OnlinerService {
         return result;
     }
 
+
+
     @Override
     public void save(SkuModel skuModel) {
         onlinerDao.save(skuModel);
+    }
+
+    @Override
+    public List<UnattachedGoods> getAllGoods() {
+       return onlinerDao.loadAllGoods();
+    }
+
+    @Override
+    public void delete(String sku) {
+        onlinerDao.delete(sku);
+    }
+
+    @Override
+    public UnattachedGoods findBySky(String sku) {
+        return onlinerDao.findBySky(sku);
     }
 }
