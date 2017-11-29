@@ -22,7 +22,8 @@
     </table>
     <script>
         var idNumber;
-        $(document).ready(function() {
+        $(document).ready(function () {
+            console.log("uотово");
             $.ajax({
                 type: "GET",
                 contentType: "application/json",
@@ -41,15 +42,16 @@
                         newcell = newrow.insertCell(2);
                         idNumber = obj[i].id;
                         newcell.innerHTML = newcell.innerHTML + " <button type='button' class='btn btn-danger' " +
-                        "onclick = deleteInTrash(idNumber)>Удалить в корзину</button><br>";
+                            "onclick = deleteInTrash(idNumber)>Удалить в корзину</button><br>";
                         newcell = newrow.insertCell(3);
                         newcell.innerHTML = newcell.innerHTML + " <button type='button' class='btn btn-danger' " +
-                        "onclick = moveInTrash(idNumber)>Нет соответствий</button><br>";
+                            "onclick = moveInTrash(idNumber)>Нет соответствий</button><br>";
                     }
 
                 }
             });
         });
+
         function moveInTrash(idNumber) {
             console.log(idNumber);
             $.ajax({
@@ -63,6 +65,7 @@
                 }
             });
         }
+
         function deleteInTrash(id) {
             console.log(id);
             $.ajax({
@@ -85,6 +88,13 @@
     </span> Search!</button>
     </span>
     </div>
+    <br><br>
+    <div class="form-group">
+        <div class="col-md-3">
+            <input type="text" class="form-control " id="setSkuText" placeholder="Введите ску">
+        </div>
+    </div>
+    <br>
     <table class="table" id="mytab">
         <tr>
             <th>Название</th>
@@ -95,7 +105,8 @@
         </tbody>
     </table>
     <script>
-        var url;
+        var urlJson;
+
         function getData(name) {
             $.ajax({
                 type: "GET",
@@ -114,30 +125,29 @@
                             newcell = newrow.insertCell(0);
                             newcell.innerText = obj.products[i].name_prefix + " " + obj.products[i].full_name;
                             newcellurl = newrow.insertCell(1);
-                            url = obj.products[i].html_url;
+                            urlJson = obj.products[i].html_url;
                             newcellurl.innerHTML = newcellurl.innerHTML + " <button type='button' class='btn btn-danger' " +
                                 "onclick = window.open('" + obj.products[i].html_url + "') >Ссылка на ОНЛАЙНЕР</button><br>";
-
                             newcell = newrow.insertCell(2);
-                            newcell.innerHTML = newcell.innerHTML + "<div class='input-group'> <input type='search' id='setSkuText' name='setSku' class='form-control' " +
-                                "placeholder='Введите ску'> <span class='input-group-btn'> <button class='btn btn-primary' type='submit' " +
-                                "onclick='setSku()'><span class='glyphicon glyphicon-search' aria-hidden='true'> </span> Привязать</button> </span> </div>";
+                            newcell.innerHTML = newcell.innerHTML + "<button class='btn btn-primary' type='submit' " +
+                                "onclick=setSku('" + obj.products[i].html_url + "') " +
+                                "<span class='glyphicon glyphicon-search' aria-hidden='true'> </span> Привязать</button> </span> </div>";
                         }
                     }
                 }
             });
         }
-        function setSku() {
+
+        function setSku(url) {
             var sku = document.getElementById('setSkuText').value;
             var encodeUrl = btoa(url);
-            console.log(encodeUrl);
+            console.log(url);
             $.ajax({
                 type: "POST",
                 url: "/bind/" + sku + "/" + encodeUrl,
                 dataType: "text",
                 success: function (data) {
                     location.reload();
-                    console.log("HTTP Status 200");
                 }
             });
         }

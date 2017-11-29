@@ -19,7 +19,7 @@ public interface OnlinerService {
 
     List<String> getImages(String url);
 
-    void save(SkuModel skuModel);
+    void save(String skm, String url);
 
     List<UnattachedGoods> getAllUnattachedGoods();
 

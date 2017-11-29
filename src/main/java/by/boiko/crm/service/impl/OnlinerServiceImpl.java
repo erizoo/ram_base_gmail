@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -131,7 +132,7 @@ public class OnlinerServiceImpl implements OnlinerService {
         caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
                 "D:\\phantomjs\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
         driver = new PhantomJSDriver(caps);
-        driver.navigate().to("https://catalog.onliner.by/videocard/palit/ne5105ts18g11071");
+        driver.navigate().to(url);
 
         List<String> stringList = new ArrayList<>();
         List<WebElement> listImages = driver.findElements(By.xpath("//div[@class='product-gallery__shaft']"));
@@ -147,7 +148,11 @@ public class OnlinerServiceImpl implements OnlinerService {
     }
 
     @Override
-    public void save(SkuModel skuModel) {
+    public void save(String sku, String url) {
+        String decodedUrl = new String(Base64.getDecoder().decode(url));
+        SkuModel skuModel = new SkuModel();
+        skuModel.setSku(sku);
+        skuModel.setUrl(decodedUrl);
         onlinerDao.save(skuModel);
     }
 
