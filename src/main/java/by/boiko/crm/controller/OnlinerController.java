@@ -27,6 +27,18 @@ public class OnlinerController {
         this.onlinerService = onlinerService;
     }
 
+
+
+    /**
+     * Move to page onliner.jsp.
+     *
+     * @return jsp page
+     */
+    @GetMapping(value = "/getData")
+    public ModelAndView toPageCategory() {
+        return new ModelAndView("loadCategory");
+    }
+
     /**
      * Move to page onliner.jsp.
      *

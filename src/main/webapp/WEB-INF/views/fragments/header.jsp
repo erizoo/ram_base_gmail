@@ -21,7 +21,7 @@
 <title>VetClient</title>
 
 <spring:url value="/categories" var="getList"/>
-
+<spring:url value="/getData" var="getData"/>
 
 <%--<nav class="navbar navbar-light bg-faded">--%>
 	<%--<ul class="nav navbar-nav">--%>
@@ -34,6 +34,10 @@
 	<ul class="nav navbar-nav">
 		<li class="nav-item active">
 			<a class="nav-link" onclick="location.href='${getList}'">Список привязанных товаров<span
+					class="sr-only">(current)</span></a>
+		</li>
+		<li class="nav-item active">
+			<a class="nav-link" onclick="location.href='${getData}'">Загрузка непривязанных товаров<span
 					class="sr-only">(current)</span></a>
 		</li>
 	</ul>
