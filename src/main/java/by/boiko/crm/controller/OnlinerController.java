@@ -1,6 +1,7 @@
 package by.boiko.crm.controller;
 
 import by.boiko.crm.model.Onliner;
+import by.boiko.crm.model.Person;
 import by.boiko.crm.model.Table;
 import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.pojo.UnattachedGoods;
@@ -27,7 +28,11 @@ public class OnlinerController {
         this.onlinerService = onlinerService;
     }
 
-
+    @PostMapping(value = "/loadCategory")
+    public String loadCategory(Person person) {
+        System.out.println(person.getName());
+        return "redirect:/onliner";
+    }
 
     /**
      * Move to page onliner.jsp.

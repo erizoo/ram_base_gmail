@@ -26,16 +26,33 @@
 </div>
 <script>
     function getDataForCategoty(number) {
+        var person = {};
         $.ajax({
             type: "POST",
-            dataType: 'json',
+            dataType: 'text',
             contentType: "application/json",
-            url: "https://ram.by/api/undescription?key=RXxALRCKZKw8j2dUCf6uTsgnSp31FG5VzyDl&category=" + number,
+            url: "http://ram.by/api/undescription?key=RXxALRCKZKw8j2dUCf6uTsgnSp31FG5VzyDl&category=" + number,
             success: function (data) {
                 var obj = JSON.parse(data);
-                console.log(obj);
+                obj.forEach(function(item) {
+                    person.name = item.name;
+                    person.sku = item.sku;
+
+                });
+                $.ajax({
+                    type: "POST",
+                    data: person,
+                    dataType: 'text',
+                    contentType: "application/json",
+                    url: "/loadCategory",
+                    success: function (data) {
+
+                    }
+                });
+
             }
         });
+
     }
 </script>
 </div>

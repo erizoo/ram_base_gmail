@@ -23,33 +23,51 @@
     <script>
         var idNumber;
         $(document).ready(function () {
-            console.log("uотово");
             $.ajax({
-                type: "GET",
+                type: "POST",
+                dataType: 'text',
                 contentType: "application/json",
-                url: "/goods",
-                dataType: "text",
+                url: "http://ram.by/api/undescription?key=RXxALRCKZKw8j2dUCf6uTsgnSp31FG5VzyDl&category=" + 245,
                 success: function (data) {
                     var obj = JSON.parse(data);
                     console.log(obj);
-                    $('#my_body_goods').html('');
-                    for (var i = 0; i < obj.length; i++) {
+                    for (var i = 0; i < 100; i++) {
                         newrow = document.all.my_body_goods.insertRow();
                         newcell = newrow.insertCell(0);
                         newcell.innerText = obj[i].sku;
                         newcell = newrow.insertCell(1);
                         newcell.innerText = obj[i].name;
                         newcell = newrow.insertCell(2);
-                        idNumber = obj[i].id;
-                        newcell.innerHTML = newcell.innerHTML + " <button type='button' class='btn btn-danger' " +
-                            "onclick = deleteInTrash(idNumber)>Удалить в корзину</button><br>";
-                        newcell = newrow.insertCell(3);
-                        newcell.innerHTML = newcell.innerHTML + " <button type='button' class='btn btn-danger' " +
-                            "onclick = moveInTrash(idNumber)>Нет соответствий</button><br>";
                     }
-
                 }
             });
+//            console.log("uотово");
+//            $.ajax({
+//                type: "GET",
+//                contentType: "application/json",
+//                url: "/goods",
+//                dataType: "text",
+//                success: function (data) {
+//                    var obj = JSON.parse(data);
+//                    console.log(obj);
+//                    $('#my_body_goods').html('');
+//                    for (var i = 0; i < obj.length; i++) {
+//                        newrow = document.all.my_body_goods.insertRow();
+//                        newcell = newrow.insertCell(0);
+//                        newcell.innerText = obj[i].sku;
+//                        newcell = newrow.insertCell(1);
+//                        newcell.innerText = obj[i].name;
+//                        newcell = newrow.insertCell(2);
+//                        idNumber = obj[i].id;
+//                        newcell.innerHTML = newcell.innerHTML + " <button type='button' class='btn btn-danger' " +
+//                            "onclick = deleteInTrash(idNumber)>Удалить в корзину</button><br>";
+//                        newcell = newrow.insertCell(3);
+//                        newcell.innerHTML = newcell.innerHTML + " <button type='button' class='btn btn-danger' " +
+//                            "onclick = moveInTrash(idNumber)>Нет соответствий</button><br>";
+//                    }
+//
+//                }
+//            });
         });
 
         function moveInTrash(idNumber) {
