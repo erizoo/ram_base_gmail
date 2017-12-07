@@ -30,7 +30,7 @@
             type: "POST",
             dataType: 'json',
             contentType: "application/json",
-            url: "http://ram.by/api/undescription?key=RXxALRCKZKw8j2dUCf6uTsgnSp31FG5VzyDl&category=" + number,
+            url: "https://ram.by/api/undescription?key=RXxALRCKZKw8j2dUCf6uTsgnSp31FG5VzyDl&category=" + number,
             success: function (data) {
                 var obj = JSON.parse(data);
                 console.log(obj);
