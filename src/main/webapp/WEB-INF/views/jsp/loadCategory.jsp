@@ -19,14 +19,13 @@
 <div class="input-group" style="margin-top: 20%">
     <input type="search" id="getCategoty" name="getCategoty" class="form-control" placeholder="Введите номер категории">
     <span class="input-group-btn">
-    <button class="btn btn-primary" type="submit" onclick="getDataForCategoty($('#getCategoty').val())"><span
+    <button class="btn btn-primary" type="submit" onclick="getGoods($('#getCategoty').val())"><span
             class="glyphicon glyphicon-search" aria-hidden="true">
     </span> LOAD!</button>
     </span>
 </div>
 <script>
-    function getDataForCategoty(number) {
-        var person = {};
+    function getGoods(number) {
         $.ajax({
             type: "POST",
             dataType: 'text',
@@ -35,24 +34,23 @@
             success: function (data) {
                 var obj = JSON.parse(data);
                 obj.forEach(function(item) {
-                    person.name = item.name;
-                    person.sku = item.sku;
+                    var encodeUrl = (encodeURIComponent(item.name));
+                    var encode = btoa(encodeUrl);
+                    console.log(item.name);
+                    console.log(encodeUrl);
+                    console.log(encode);
+                    $.ajax({
+                        type: "POST",
+                        dataType: 'text',
+                        contentType: "application/json",
+                        url: "/goods/" + item.sku + "/" + encode,
+                        success: function (data) {},
 
-                });
-                $.ajax({
-                    type: "POST",
-                    data: person,
-                    dataType: 'text',
-                    contentType: "application/json",
-                    url: "/loadCategory",
-                    success: function (data) {
-
-                    }
+                    });
                 });
 
             }
         });
-
     }
 </script>
 </div>

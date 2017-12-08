@@ -10,6 +10,8 @@
 </head>
 <body>
 <div class="container">
+    <div id="data-container"></div>
+    <div id="pagination-container"></div>
 
     <table class="table" id="my_tab_goods">
         <tr>
@@ -20,111 +22,59 @@
         <tbody id="my_body_goods">
         </tbody>
     </table>
+    <ul id="pagination-demo" class="pagination-sm"></ul>
+    <br><br>
     <script>
-        var idNumber;
-        $(document).ready(function () {
+        var paramPage = 1;
+        var countAll = ${counts};
+        var pages = Math.ceil(countAll / 10);
+        $('#pagination-demo').twbsPagination({
+            totalPages: pages,
+            visiblePages: 5,
+            loop: true,
+            onPageClick: function (event, page) {
+                paramPage = page;
+                getGoodsForPagination(page);
+            }
+        });
+        function deleteGoods(id) {
             $.ajax({
                 type: "POST",
+                url: "/delete_goods/" + id,
+                dataType: "text",
+                success: function (data) {
+                    location.reload();
+                }
+            });
+        }
+
+        function getGoodsForPagination(page) {
+            $.ajax({
+                type: "GET",
                 dataType: 'text',
                 contentType: "application/json",
-                url: "http://ram.by/api/undescription?key=RXxALRCKZKw8j2dUCf6uTsgnSp31FG5VzyDl&category=" + 245,
+                url: "/goods/" + page,
                 success: function (data) {
                     var obj = JSON.parse(data);
-                    console.log(obj);
-                    for (var i = 0; i < 100; i++) {
+                    $('#my_body_goods').html('');
+                    obj.forEach(function (item) {
                         newrow = document.all.my_body_goods.insertRow();
                         newcell = newrow.insertCell(0);
-                        newcell.innerText = obj[i].sku;
+                        newcell.innerText = item.sku;
                         newcell = newrow.insertCell(1);
-                        newcell.innerText = obj[i].name;
+                        newcell.innerText = item.name;
                         newcell = newrow.insertCell(2);
-                    }
-                }
-            });
-//            console.log("uотово");
-//            $.ajax({
-//                type: "GET",
-//                contentType: "application/json",
-//                url: "/goods",
-//                dataType: "text",
-//                success: function (data) {
-//                    var obj = JSON.parse(data);
-//                    console.log(obj);
-//                    $('#my_body_goods').html('');
-//                    for (var i = 0; i < obj.length; i++) {
-//                        newrow = document.all.my_body_goods.insertRow();
-//                        newcell = newrow.insertCell(0);
-//                        newcell.innerText = obj[i].sku;
-//                        newcell = newrow.insertCell(1);
-//                        newcell.innerText = obj[i].name;
-//                        newcell = newrow.insertCell(2);
-//                        idNumber = obj[i].id;
-//                        newcell.innerHTML = newcell.innerHTML + " <button type='button' class='btn btn-danger' " +
-//                            "onclick = deleteInTrash(idNumber)>Удалить в корзину</button><br>";
-//                        newcell = newrow.insertCell(3);
-//                        newcell.innerHTML = newcell.innerHTML + " <button type='button' class='btn btn-danger' " +
-//                            "onclick = moveInTrash(idNumber)>Нет соответствий</button><br>";
-//                    }
-//
-//                }
-//            });
-        });
+                        newcell.innerHTML = newcell.innerHTML + " <button type='button' class='btn btn-danger' " +
+                            "onclick = deleteGoods('" + item.id + "') >Удалить</button><br>";
+                    });
 
-        function moveInTrash(idNumber) {
-            console.log(idNumber);
-            $.ajax({
-                type: "POST",
-                contentType: "application/json",
-                url: "/move_goods" + "/" + idNumber,
-                dataType: "text",
-                success: function (data) {
-                    location.reload();
-                    console.log("HTTP Status 200");
                 }
+
             });
         }
 
-        function deleteInTrash(id) {
-            console.log(id);
-            $.ajax({
-                type: "POST",
-                contentType: "application/json",
-                url: "/delete_goods" + "/" + id,
-                dataType: "text",
-                success: function (data) {
-                    location.reload();
-                    console.log("HTTP Status 200");
-                }
-            });
-        }
-    </script>
-    <div class="input-group" style="margin-top: 20%">
-        <input type="search" id="searchName" name="searchText" class="form-control" placeholder="Поиск по имени">
-        <span class="input-group-btn">
-    <button class="btn btn-primary" type="submit" onclick="getData($('#searchName').val())"><span
-            class="glyphicon glyphicon-search" aria-hidden="true">
-    </span> Search!</button>
-    </span>
-    </div>
-    <br><br>
-    <div class="form-group">
-        <div class="col-md-3">
-            <input type="text" class="form-control " id="setSkuText" placeholder="Введите ску">
-        </div>
-    </div>
-    <br>
-    <table class="table" id="mytab">
-        <tr>
-            <th>Название</th>
-            <th></th>
-            <th></th>
-        </tr>
-        <tbody id="mybody">
-        </tbody>
-    </table>
-    <script>
+
         var urlJson;
-
         function getData(name) {
             $.ajax({
                 type: "GET",
@@ -169,6 +119,33 @@
                 }
             });
         }
+    </script>
+    <div class="input-group">
+        <input type="search" id="searchName" name="searchText" class="form-control" placeholder="Поиск по имени">
+        <span class="input-group-btn">
+    <button class="btn btn-primary" type="submit" onclick="getData($('#searchName').val())"><span
+            class="glyphicon glyphicon-search" aria-hidden="true">
+    </span> Search!</button>
+    </span>
+    </div>
+    <br><br>
+    <div class="form-group">
+        <div class="col-md-3">
+            <input type="text" class="form-control " id="setSkuText" placeholder="Введите ску">
+        </div>
+    </div>
+    <br>
+    <table class="table" id="mytab">
+        <tr>
+            <th>Название</th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tbody id="mybody">
+        </tbody>
+    </table>
+    <script>
+
     </script>
 </div>
 </body>

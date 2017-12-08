@@ -25,13 +25,31 @@ public class OnlinerDaoImpl implements OnlinerDao {
     }
 
     @Override
-    public List<UnattachedGoods> loadAllGoods() {
-        return sessionFactory.getCurrentSession().createQuery("from UnattachedGoods").list();
+    public List<UnattachedGoods> loadAllGoods(int page) {
+        if (page == 1){
+            return sessionFactory.getCurrentSession().createQuery("from UnattachedGoods").setFirstResult(1).setMaxResults(10).list();
+        }else {
+            return sessionFactory.getCurrentSession().createQuery("from UnattachedGoods").setFirstResult(page * 10 - 10 + 1).setMaxResults(10).list();
+        }
+
     }
 
     @Override
     public List<SkuModel> loadGoods() {
         return sessionFactory.getCurrentSession().createQuery("from SkuModel").list();
+    }
+
+    @Override
+    public void saveGoods(String sku, String name) {
+        UnattachedGoods unattachedGoods = new UnattachedGoods();
+        unattachedGoods.setSku(sku);
+        unattachedGoods.setName(name);
+        sessionFactory.getCurrentSession().save(unattachedGoods);
+    }
+
+    @Override
+    public int getAllCount() {
+        return ((Long) sessionFactory.getCurrentSession().createQuery("select count(*) from UnattachedGoods").uniqueResult()).intValue();
     }
 
     @Override

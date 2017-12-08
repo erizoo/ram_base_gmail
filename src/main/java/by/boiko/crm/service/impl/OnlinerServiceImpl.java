@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -157,8 +159,8 @@ public class OnlinerServiceImpl implements OnlinerService {
     }
 
     @Override
-    public List<UnattachedGoods> getAllUnattachedGoods() {
-        return onlinerDao.loadAllGoods();
+    public List<UnattachedGoods> getAllUnattachedGoods(int page) {
+        return onlinerDao.loadAllGoods(page);
     }
 
     @Override
@@ -184,5 +186,17 @@ public class OnlinerServiceImpl implements OnlinerService {
     @Override
     public List<SkuModel> loadGoods() {
         return onlinerDao.loadGoods();
+    }
+
+    @Override
+    public void saveGoods(String sku, String name) throws UnsupportedEncodingException {
+        String decodedUrl = new String(Base64.getDecoder().decode(name));
+        String result = URLDecoder.decode(decodedUrl, "UTF-8");
+        onlinerDao.saveGoods(sku, result);
+    }
+
+    @Override
+    public int getAllCount() {
+        return onlinerDao.getAllCount();
     }
 }

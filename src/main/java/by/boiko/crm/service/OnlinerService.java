@@ -4,9 +4,9 @@ import by.boiko.crm.model.Onliner;
 import by.boiko.crm.model.Review;
 import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.Table;
-import by.boiko.crm.model.pojo.UnattachedGoods;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +21,7 @@ public interface OnlinerService {
 
     void save(String skm, String url);
 
-    List<UnattachedGoods> getAllUnattachedGoods();
+    List getAllUnattachedGoods(int page);
 
     void delete(int sku);
 
@@ -30,4 +30,8 @@ public interface OnlinerService {
     List<Onliner> getAllGoods(List<SkuModel> decodedUrl);
 
     List<SkuModel> loadGoods();
+
+    void saveGoods(String sku, String name) throws UnsupportedEncodingException;
+
+    int getAllCount();
 }

@@ -1,8 +1,6 @@
 package by.boiko.crm.controller;
 
 import by.boiko.crm.model.Onliner;
-import by.boiko.crm.model.Person;
-import by.boiko.crm.model.Table;
 import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.pojo.UnattachedGoods;
 import by.boiko.crm.service.OnlinerService;
@@ -11,8 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.Base64;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -28,10 +25,10 @@ public class OnlinerController {
         this.onlinerService = onlinerService;
     }
 
-    @PostMapping(value = "/loadCategory")
-    public String loadCategory(Person person) {
-        System.out.println(person.getName());
-        return "redirect:/onliner";
+    @ResponseBody
+    @GetMapping(value = "/getGoods")
+    public List<SkuModel> getGoods() {
+        return onlinerService.loadGoods();
     }
 
     /**
@@ -51,7 +48,9 @@ public class OnlinerController {
      */
     @GetMapping(value = "/onliner")
     public ModelAndView toPageOnliner() {
-        return new ModelAndView("onliner");
+        ModelAndView mv = new ModelAndView("onliner");
+        mv.addObject("counts", onlinerService.getAllCount());
+        return mv;
     }
 
     /**
@@ -60,9 +59,9 @@ public class OnlinerController {
      * @return JSON
      */
     @ResponseBody
-    @GetMapping(value = "/goods")
-    public List<UnattachedGoods> getAllUnattachedGoods() {
-        return onlinerService.getAllUnattachedGoods();
+    @GetMapping(value = "/goods/{page}")
+    public List<UnattachedGoods> getAllUnattachedGoods(@PathVariable(value = "page") int page) {
+        return onlinerService.getAllUnattachedGoods(page);
     }
 
     /**
@@ -87,6 +86,12 @@ public class OnlinerController {
     @PostMapping(value = "/bind/{sku}/{url}")
     public String bindOnliner(@PathVariable(value = "sku") String sku, @PathVariable(value = "url") String url) {
         onlinerService.save(sku, url);
+        return "redirect:/onliner";
+    }
+
+    @PostMapping(value = "/goods/{sku}/{name}")
+    public String getGoods(@PathVariable(value = "sku") String sku, @PathVariable(value = "name") String name) throws UnsupportedEncodingException {
+        onlinerService.saveGoods(sku, name);
         return "redirect:/onliner";
     }
 

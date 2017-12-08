@@ -13,7 +13,7 @@ public interface OnlinerDao {
 
     void save(SkuModel skuModel);
 
-    List loadAllGoods();
+    List loadAllGoods(int page);
 
     void delete(int id);
 
@@ -22,4 +22,8 @@ public interface OnlinerDao {
     void moveGoods(int id);
 
     List<SkuModel> loadGoods();
+
+    void saveGoods(String sku, String name);
+
+    int getAllCount();
 }
