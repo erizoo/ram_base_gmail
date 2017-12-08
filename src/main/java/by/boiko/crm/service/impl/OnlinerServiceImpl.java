@@ -163,6 +163,7 @@ public class OnlinerServiceImpl implements OnlinerService {
     @Override
     public List<Onliner> getAllGoods(List<SkuModel> skuModelList) throws URISyntaxException, IOException {
         WebDriver driver;
+        PhantomJsDriverManager.getInstance().setup();
         driver = new PhantomJSDriver();
         List<Onliner> onlinerList = new ArrayList<>();
         for (SkuModel itemList : skuModelList) {
