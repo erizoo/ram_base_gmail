@@ -7,17 +7,18 @@ import by.boiko.crm.model.Table;
 import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.pojo.UnattachedGoods;
 import by.boiko.crm.service.OnlinerService;
+import io.github.bonigarcia.wdm.PhantomJsDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriverService;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -31,12 +32,8 @@ public class OnlinerServiceImpl implements OnlinerService {
     private OnlinerDao onlinerDao;
 
     @Override
-    public List<Review> getReviews(String decodedUrl) {
-        WebDriver driver;
-        DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-                "D:\\phantomjs\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
-        driver = new PhantomJSDriver(caps);
+    public List<Review> getReviews(String decodedUrl, WebDriver driver) throws URISyntaxException, IOException {
+
         driver.navigate().to(decodedUrl + "/reviews");
         List<Review> listReviews = new ArrayList<>();
         List<String> listStarsForReviews = new ArrayList<>();
@@ -84,18 +81,13 @@ public class OnlinerServiceImpl implements OnlinerService {
         for (int i = 0; i <= listStarsForReviews.size() - 1; i++) {
             listReviews.add(new Review(listStarsForReviews.get(i), listTextForReviews.get(i), listTextForPlusReviews.get(i), listTextForMinusReviews.get(i)));
         }
-
-        driver.close();
+        System.out.println(listReviews);
         return listReviews;
     }
 
     @Override
-    public ArrayList<Table> getDescription(String url) {
-        WebDriver driver;
-        DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-                "D:\\phantomjs\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
-        driver = new PhantomJSDriver(caps);
+    public ArrayList<Table> getDescription(String url, WebDriver driver) {
+
         driver.navigate().to(url);
 
         List<WebElement> listReviewsText = driver.findElements(By.cssSelector("table.product-specs__table"));
@@ -125,15 +117,11 @@ public class OnlinerServiceImpl implements OnlinerService {
             }
 
         }
+        System.out.println(listTable);
         return listTable;
     }
 
-    public List<String> getImages(String url) {
-        WebDriver driver;
-        DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-                "D:\\phantomjs\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
-        driver = new PhantomJSDriver(caps);
+    public List<String> getImages(String url, WebDriver driver) {
         driver.navigate().to(url);
 
         List<String> stringList = new ArrayList<>();
@@ -145,7 +133,6 @@ public class OnlinerServiceImpl implements OnlinerService {
                 stringList.add(linkImage);
             }
         }
-        driver.close();
         return stringList;
     }
 
@@ -174,13 +161,24 @@ public class OnlinerServiceImpl implements OnlinerService {
     }
 
     @Override
-    public List<Onliner> getAllGoods(List<SkuModel> skuModelList) {
+    public List<Onliner> getAllGoods(List<SkuModel> skuModelList) throws URISyntaxException, IOException {
+        WebDriver driver;
+        driver = new PhantomJSDriver();
         List<Onliner> onlinerList = new ArrayList<>();
         for (SkuModel itemList : skuModelList) {
-            onlinerList.add(new Onliner(getReviews(itemList.getUrl()), getDescription(itemList.getUrl()), getImages(itemList.getUrl())));
+            onlinerList.add(new Onliner(itemList.getSku(), getShortDescription(itemList.getUrl(), driver),getReviews(itemList.getUrl(), driver), getDescription(itemList.getUrl(), driver), getImages(itemList.getUrl(), driver)));
 
         }
+        driver.close();
         return onlinerList;
+    }
+
+    private String getShortDescription(String url, WebDriver driver) {
+        driver.navigate().to(url);
+        WebElement webElement = driver.findElement(By.xpath("//div[@class='offers-description__specs']"));
+        String shortDescription = webElement.getText();
+        System.out.println(shortDescription);
+        return shortDescription;
     }
 
     @Override

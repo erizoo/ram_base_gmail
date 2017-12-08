@@ -4,6 +4,8 @@ import java.util.List;
 
 public class Onliner {
 
+    private String sku;
+    private String description;
     private List<Review> reviews;
     private List<Table> tables;
     private List<String> images;
@@ -15,6 +17,30 @@ public class Onliner {
         this.reviews = reviews;
         this.tables = tables;
         this.images = images;
+    }
+
+    public Onliner(String sku, String description, List<Review> reviews, List<Table> tables, List<String> images) {
+        this.sku = sku;
+        this.description = description;
+        this.reviews = reviews;
+        this.tables = tables;
+        this.images = images;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
     }
 
     public List<String> getImages() {

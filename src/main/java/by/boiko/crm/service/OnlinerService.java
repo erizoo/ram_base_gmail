@@ -4,20 +4,23 @@ import by.boiko.crm.model.Onliner;
 import by.boiko.crm.model.Review;
 import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.Table;
+import org.openqa.selenium.WebDriver;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public interface OnlinerService {
 
-    List<Review> getReviews(String decodedUrl);
+    List<Review> getReviews(String decodedUrl, WebDriver driver) throws URISyntaxException, IOException;
 
-    ArrayList<Table> getDescription(String url);
+    ArrayList<Table> getDescription(String url, WebDriver driver);
 
-    List<String> getImages(String url);
+    List<String> getImages(String url, WebDriver driver);
 
     void save(String skm, String url);
 
@@ -27,7 +30,7 @@ public interface OnlinerService {
 
     void moveGoods(int id);
 
-    List<Onliner> getAllGoods(List<SkuModel> decodedUrl);
+    List<Onliner> getAllGoods(List<SkuModel> decodedUrl) throws URISyntaxException, IOException;
 
     List<SkuModel> loadGoods();
 

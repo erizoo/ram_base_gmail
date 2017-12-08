@@ -4,12 +4,15 @@ import by.boiko.crm.model.Onliner;
 import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.pojo.UnattachedGoods;
 import by.boiko.crm.service.OnlinerService;
+import io.github.bonigarcia.wdm.PhantomJsDriverManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 /**
@@ -71,7 +74,7 @@ public class OnlinerController {
      */
     @ResponseBody
     @GetMapping(value = "/all_goods")
-    public List<Onliner> getAllGoods() {
+    public List<Onliner> getAllGoods() throws URISyntaxException, IOException {
         List<SkuModel> skuModelsList = onlinerService.loadGoods();
         return onlinerService.getAllGoods(skuModelsList);
     }
