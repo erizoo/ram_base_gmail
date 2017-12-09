@@ -162,9 +162,7 @@ public class OnlinerServiceImpl implements OnlinerService {
 
     @Override
     public List<Onliner> getAllGoods(List<SkuModel> skuModelList) throws URISyntaxException, IOException {
-        WebDriver driver;
-        PhantomJsDriverManager.getInstance().setup();
-        driver = new PhantomJSDriver();
+        WebDriver driver = new PhantomJSDriver();
         List<Onliner> onlinerList = new ArrayList<>();
         for (SkuModel itemList : skuModelList) {
             onlinerList.add(new Onliner(itemList.getSku(), getShortDescription(itemList.getUrl(), driver),getReviews(itemList.getUrl(), driver), getDescription(itemList.getUrl(), driver), getImages(itemList.getUrl(), driver)));
