@@ -225,7 +225,7 @@
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
-            <version>1.4.7</version>
+            <version>1.4.7</version>d
         </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>
@@ -240,7 +240,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>22.0</version>
+            <version>21.0</version>
         </dependency>
 
         <dependency>
