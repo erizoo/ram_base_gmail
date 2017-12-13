@@ -297,8 +297,8 @@ public class UserServiceImpl implements UserService {
         List<String> lines = Arrays.asList(line);
         List<String> listName = lines.stream().filter(p -> p.contains("Имя покупателя:")).collect(Collectors.toList());
         String listNameString = String.join(", ", listName);
-        String items[] = listNameString.split(" ");
-        return items[2];
+        String items[] = listNameString.split(":");
+        return items[1];
     }
 
     private String nameToFormatDealBy(String[] line) {
