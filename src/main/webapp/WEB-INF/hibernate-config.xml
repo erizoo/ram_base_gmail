@@ -5,6 +5,13 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+          destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://vlvlnl1grfzh34vj.chr7pe7iynqr.eu-west-1.rds.amazonaws.com/rrnb74rbemv9jexn"/>
+        <property name="username" value="g0debs2c16ju2gs3"/>
+        <property name="password" value="p3mc5wz3mkiii7d5"/>
+    </bean>
 
     <!--<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"-->
           <!--destroy-method="close">-->
@@ -14,13 +21,6 @@
         <!--<property name="password" value="root"/>-->
     <!--</bean>-->
 
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
-    destroy-method="close">
-    <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-    <property name="url" value="jdbc:mysql://localhost:3306/onliner"/>
-    <property name="username" value="root"/>
-    <property name="password" value=""/>
-    </bean>
 
     <tx:annotation-driven transaction-manager="txManager" proxy-target-class="true"/>
     <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
