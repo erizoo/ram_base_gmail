@@ -165,11 +165,11 @@ public class OnlinerServiceImpl implements OnlinerService {
     @Override
     public List<Onliner> getAllGoods(List<SkuModel> skuModelList) throws URISyntaxException, IOException {
 
-        ClassLoader classLoader = getClass().getClassLoader();
+
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setJavascriptEnabled(true);
         caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-                "D:\\phantomjs\\phantomjs.exe");
+                "D:\\phantomjs\\bin\\phantomjs.exe");
         WebDriver driver = new PhantomJSDriver(caps);
 
         List<Onliner> onlinerList = new ArrayList<>();
