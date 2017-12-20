@@ -168,7 +168,8 @@ public class OnlinerServiceImpl implements OnlinerService {
         ClassLoader classLoader = getClass().getClassLoader();
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setJavascriptEnabled(true);
-        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, classLoader.getResource("/phantomjs/bin/phantomjs.exe").getFile());
+        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+                "D:\\phantomjs\\phantomjs.exe");
         WebDriver driver = new PhantomJSDriver(caps);
 
         List<Onliner> onlinerList = new ArrayList<>();
