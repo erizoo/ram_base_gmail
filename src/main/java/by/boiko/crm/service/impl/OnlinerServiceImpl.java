@@ -8,6 +8,8 @@ import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.pojo.UnattachedGoods;
 import by.boiko.crm.service.OnlinerService;
 import io.github.bonigarcia.wdm.PhantomJsDriverManager;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
@@ -169,7 +172,7 @@ public class OnlinerServiceImpl implements OnlinerService {
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setJavascriptEnabled(true);
         caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-                "D:\\phantomjs\\bin\\phantomjs.exe");
+                "D:\\phantomjs\\phantomjs\\bin\\phantomjs.exe");
         WebDriver driver = new PhantomJSDriver(caps);
 
         List<Onliner> onlinerList = new ArrayList<>();
@@ -178,6 +181,36 @@ public class OnlinerServiceImpl implements OnlinerService {
 
         }
         driver.close();
+        JSONArray jsonArray = new JSONArray();
+        JSONObject obj = new JSONObject();
+        JSONArray jsonArrayTables = new JSONArray();
+        JSONArray listRow = new JSONArray();
+        for (Onliner list:onlinerList) {
+            obj.put("images", list.getImages());
+            obj.put("reviews", list.getReviews());
+            for (Table items: list.getTables()) {
+                jsonArrayTables.add(items.getCategory());
+                for (Table.TypeTrTable rows:items.getListRow()) {
+
+                }
+
+            }
+
+            obj.put("tables",jsonArrayTables);
+            obj.put("description", list.getDescription());
+            obj.put("sku", list.getSku());
+            jsonArray.add(obj);
+        }
+
+        System.out.println(obj);
+        try (FileWriter file = new FileWriter("d:\\test.json")) {
+
+            file.write(jsonArray.toJSONString());
+            file.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return onlinerList;
     }
 

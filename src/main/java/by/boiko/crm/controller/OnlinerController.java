@@ -6,14 +6,22 @@ import by.boiko.crm.model.pojo.UnattachedGoods;
 import by.boiko.crm.service.OnlinerService;
 import io.github.bonigarcia.wdm.PhantomJsDriverManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.resource.HttpResource;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.util.List;
+
+import static org.apache.commons.io.FileUtils.getFile;
 
 /**
  * Controller for parsing if Onliner.by.
@@ -72,11 +80,26 @@ public class OnlinerController {
      *
      * @return JSON
      */
-    @ResponseBody
+//    @ResponseBody
+//    @GetMapping(value = "/all_goods")
+//    public List<Onliner> getAllGoods() throws URISyntaxException, IOException {
+//        List<SkuModel> skuModelsList = onlinerService.loadGoods();
+//        return onlinerService.getAllGoods(skuModelsList);
+//    }
     @GetMapping(value = "/all_goods")
-    public List<Onliner> getAllGoods() throws URISyntaxException, IOException {
+    public @ResponseBody HttpEntity<byte[]> downloadB() throws IOException, URISyntaxException {
+
         List<SkuModel> skuModelsList = onlinerService.loadGoods();
-        return onlinerService.getAllGoods(skuModelsList);
+        onlinerService.getAllGoods(skuModelsList);
+        File file = getFile();
+        byte[] document = FileCopyUtils.copyToByteArray(file);
+
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(new MediaType("application", "pdf"));
+        header.set("Content-Disposition", "inline; filename=" + file.getName());
+        header.setContentLength(document.length);
+
+        return new HttpEntity<byte[]>(document, header);
     }
 
     /**
