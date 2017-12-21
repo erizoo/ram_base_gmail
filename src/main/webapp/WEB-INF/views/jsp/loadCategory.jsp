@@ -1,3 +1,4 @@
+<%--suppress ALL --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
@@ -24,6 +25,9 @@
     </span> LOAD!</button>
     </span>
 </div>
+    <div style="margin-top: 10%">
+        <button class="btn btn-primary" type="submit" onclick="writeJsonInFile()">LOAD</button>
+    </div>
 <script>
     function getGoods(number) {
         $.ajax({
@@ -44,7 +48,9 @@
                         dataType: 'text',
                         contentType: "application/json",
                         url: "/goods/" + item.sku + "/" + encode,
-                        success: function (data) {},
+                        success: function (data) {
+
+                        }
 
                     });
                 });
@@ -52,6 +58,30 @@
             }
         });
     }
+
+    function writeJsonInFile() {
+        var json;
+        $.ajax({
+            type: "GET",
+            dataType: 'text',
+            contentType: "application/json",
+            url: "/all_goods",
+            success: function (data) {
+                console.log(data);
+                function download(text, name, type) {
+                    var a = document.createElement("a");
+                    var file = new Blob([text], {type: type});
+                    a.href = URL.createObjectURL(file);
+                    a.download = name;
+                    a.click();
+                }
+
+                download(data, 'test.json', 'text/plain');
+            }
+        });
+    }
+
+//
 </script>
 </div>
 

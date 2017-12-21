@@ -37,4 +37,6 @@ public interface OnlinerService {
     void saveGoods(String sku, String name) throws UnsupportedEncodingException;
 
     int getAllCount();
+
+    void writeToFile(String str);
 }

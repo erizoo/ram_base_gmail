@@ -8,6 +8,7 @@ import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.pojo.UnattachedGoods;
 import by.boiko.crm.service.OnlinerService;
 import io.github.bonigarcia.wdm.PhantomJsDriverManager;
+import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openqa.selenium.By;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -172,45 +174,15 @@ public class OnlinerServiceImpl implements OnlinerService {
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setJavascriptEnabled(true);
         caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-                "D:\\phantomjs\\phantomjs\\bin\\phantomjs.exe");
+                "D:\\phantomjs\\bin\\phantomjs.exe");
         WebDriver driver = new PhantomJSDriver(caps);
 
         List<Onliner> onlinerList = new ArrayList<>();
         for (SkuModel itemList : skuModelList) {
-            onlinerList.add(new Onliner(itemList.getSku(), getShortDescription(itemList.getUrl(), driver),getReviews(itemList.getUrl(), driver), getDescription(itemList.getUrl(), driver), getImages(itemList.getUrl(), driver)));
+            onlinerList.add(new Onliner(itemList.getSku(), getShortDescription(itemList.getUrl(), driver), getReviews(itemList.getUrl(), driver), getDescription(itemList.getUrl(), driver), getImages(itemList.getUrl(), driver)));
 
         }
         driver.close();
-        JSONArray jsonArray = new JSONArray();
-        JSONObject obj = new JSONObject();
-        JSONArray jsonArrayTables = new JSONArray();
-        JSONArray listRow = new JSONArray();
-        for (Onliner list:onlinerList) {
-            obj.put("images", list.getImages());
-            obj.put("reviews", list.getReviews());
-            for (Table items: list.getTables()) {
-                jsonArrayTables.add(items.getCategory());
-                for (Table.TypeTrTable rows:items.getListRow()) {
-
-                }
-
-            }
-
-            obj.put("tables",jsonArrayTables);
-            obj.put("description", list.getDescription());
-            obj.put("sku", list.getSku());
-            jsonArray.add(obj);
-        }
-
-        System.out.println(obj);
-        try (FileWriter file = new FileWriter("d:\\test.json")) {
-
-            file.write(jsonArray.toJSONString());
-            file.flush();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         return onlinerList;
     }
 
@@ -237,5 +209,17 @@ public class OnlinerServiceImpl implements OnlinerService {
     @Override
     public int getAllCount() {
         return onlinerDao.getAllCount();
+    }
+
+    @Override
+    public void writeToFile(String str) {
+        String decodedUrl = new String(Base64.getDecoder().decode(str));
+        try {
+            String result = URLDecoder.decode(decodedUrl, "UTF-8");
+            FileUtils.writeStringToFile(new File("test.json"), result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
