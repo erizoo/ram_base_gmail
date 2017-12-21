@@ -27,9 +27,12 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -221,5 +224,18 @@ public class OnlinerServiceImpl implements OnlinerService {
             e.printStackTrace();
         }
 
+    }
+
+    public static void main(String[] args) {
+        String fileName = "D://lines.txt";
+
+        //read file into stream, try-with-resources
+        try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
+
+            stream.forEach(System.out::println);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
