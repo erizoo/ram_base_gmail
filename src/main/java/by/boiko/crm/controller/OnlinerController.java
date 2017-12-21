@@ -76,6 +76,12 @@ public class OnlinerController {
         return onlinerService.getAllUnattachedGoods(page);
     }
 
+    @GetMapping(value = "/save_goods")
+    public String saveGoods() throws URISyntaxException, IOException {
+        onlinerService.saveToDb();
+        return "redirect:/onliner";
+    }
+
     /**
      * Get all the parameters of the attached products.
      *

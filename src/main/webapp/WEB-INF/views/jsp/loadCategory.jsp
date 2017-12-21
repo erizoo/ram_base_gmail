@@ -28,6 +28,11 @@
     <div style="margin-top: 10%">
         <button class="btn btn-primary" type="submit" onclick="writeJsonInFile()">LOAD</button>
     </div>
+
+    /div>
+    <div style="margin-top: 10%">
+        <button class="btn btn-primary" type="submit" onclick="saveGoods()">SAVE</button>
+    </div>
 <script>
     function getGoods(number) {
         $.ajax({
@@ -58,6 +63,20 @@
             }
         });
     }
+
+    function saveGoods() {
+        $.ajax({
+            type: "GET",
+            dataType: 'text',
+            contentType: "application/json",
+            url: "/save_goods",
+            success: function (data) {
+
+
+            }
+        });
+    }
+
 
     function writeJsonInFile() {
         var json;

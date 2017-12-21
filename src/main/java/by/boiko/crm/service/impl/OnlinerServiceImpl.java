@@ -9,6 +9,10 @@ import by.boiko.crm.model.pojo.UnattachedGoods;
 import by.boiko.crm.service.OnlinerService;
 import io.github.bonigarcia.wdm.PhantomJsDriverManager;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openqa.selenium.By;
@@ -21,18 +25,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import javax.net.ssl.HttpsURLConnection;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.apache.http.HttpHeaders.USER_AGENT;
 
 @Service
 @Transactional
@@ -228,11 +237,39 @@ public class OnlinerServiceImpl implements OnlinerService {
 
     public static void main(String[] args) {
         String fileName = "D://lines.txt";
-
+        List<String> stringList = new ArrayList<>();
+        List<String> skuList = new ArrayList<>();
+        List<String> nameList = new ArrayList<>();
         //read file into stream, try-with-resources
         try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
+            stringList = stream.collect(Collectors.toList());
+            for (String items :stringList) {
+                skuList.add(items.substring(0,6));
+                nameList.add(items.substring(7, items.length()));
+            }
 
-            stream.forEach(System.out::println);
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveToDb() {
+        String fileName = "D://lines.txt";
+        List<String> stringList = new ArrayList<>();
+        List<String> skuList = new ArrayList<>();
+        List<String> nameList = new ArrayList<>();
+        //read file into stream, try-with-resources
+        try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
+            stringList = stream.collect(Collectors.toList());
+            for (String items :stringList) {
+                skuList.add(items.substring(0,6));
+                nameList.add(items.substring(7, items.length()));
+            }
+            for (int i = 0; i < nameList.size()-1 ; i++) {
+                onlinerDao.saveGoods(skuList.get(i), nameList.get(i));
+            }
 
         } catch (IOException e) {
             e.printStackTrace();

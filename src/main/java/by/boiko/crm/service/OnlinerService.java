@@ -39,4 +39,6 @@ public interface OnlinerService {
     int getAllCount();
 
     void writeToFile(String str);
+
+    void saveToDb();
 }
