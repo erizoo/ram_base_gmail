@@ -224,26 +224,6 @@ public class OnlinerServiceImpl implements OnlinerService {
 
     }
 
-//    public static void main(String[] args) {
-//        String fileName = "D://lines.txt";
-//        List<String> stringList = new ArrayList<>();
-//        List<String> skuList = new ArrayList<>();
-//        List<String> nameList = new ArrayList<>();
-//        //read file into stream, try-with-resources
-//        try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
-//            stringList = stream.collect(Collectors.toList());
-//            for (String items :stringList) {
-//                skuList.add(items.substring(0,6));
-//                nameList.add(items.substring(7, items.length()));
-//            }
-//
-//
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     public void saveToDb() {
         String fileName = "D://lines.txt";
         List<String> stringList = new ArrayList<>();
@@ -297,7 +277,7 @@ public class OnlinerServiceImpl implements OnlinerService {
                     JSONObject url = products.getJSONObject(0);
                     String strUrl = url.getString("url");
                     deleteGoods.add(id);
-                    skuModels.add(new SkuModel(sku, strUrl));
+                    skuModels.add(new SkuModel(sku, name, strUrl));
 
                 }
                 System.out.println(sb);
@@ -305,13 +285,14 @@ public class OnlinerServiceImpl implements OnlinerService {
                 e.printStackTrace();
             }
         }
-        for (Integer idItems:deleteGoods) {
+        for (Integer idItems : deleteGoods) {
             onlinerDao.delete(idItems);
         }
 
         for (SkuModel items : skuModels) {
             SkuModel skuModel = new SkuModel();
             skuModel.setSku(items.getSku());
+            skuModel.setName(items.getName());
             skuModel.setUrl(items.getUrl());
             onlinerDao.save(skuModel);
         }

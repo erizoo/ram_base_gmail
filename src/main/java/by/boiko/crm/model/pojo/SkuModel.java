@@ -17,15 +17,32 @@ public class SkuModel {
     @Column(name = "SKU")
     private String sku;
 
+    @Column(name = "NAME")
+    private String name;
+
     @Column(name = "URL")
     private String url;
 
     public SkuModel() {
     }
 
+    public SkuModel(String sku, String name, String url) {
+        this.sku = sku;
+        this.name = name;
+        this.url = url;
+    }
+
     public SkuModel(String sku, String url) {
         this.sku = sku;
         this.url = url;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Integer getId() {
