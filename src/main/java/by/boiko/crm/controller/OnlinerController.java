@@ -82,6 +82,12 @@ public class OnlinerController {
         return "redirect:/onliner";
     }
 
+    @GetMapping(value = "/equals")
+    public String equalsGoods() throws URISyntaxException, IOException {
+        onlinerService.equalsToDb();
+        return "redirect:/onliner";
+    }
+
     /**
      * Get all the parameters of the attached products.
      *

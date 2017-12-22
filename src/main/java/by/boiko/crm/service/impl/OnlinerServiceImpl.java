@@ -7,14 +7,11 @@ import by.boiko.crm.model.Table;
 import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.pojo.UnattachedGoods;
 import by.boiko.crm.service.OnlinerService;
-import io.github.bonigarcia.wdm.PhantomJsDriverManager;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.commons.io.FileUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -25,9 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
-import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -35,13 +31,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static org.apache.http.HttpHeaders.USER_AGENT;
 
 @Service
 @Transactional
@@ -235,25 +227,25 @@ public class OnlinerServiceImpl implements OnlinerService {
 
     }
 
-    public static void main(String[] args) {
-        String fileName = "D://lines.txt";
-        List<String> stringList = new ArrayList<>();
-        List<String> skuList = new ArrayList<>();
-        List<String> nameList = new ArrayList<>();
-        //read file into stream, try-with-resources
-        try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
-            stringList = stream.collect(Collectors.toList());
-            for (String items :stringList) {
-                skuList.add(items.substring(0,6));
-                nameList.add(items.substring(7, items.length()));
-            }
-
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void main(String[] args) {
+//        String fileName = "D://lines.txt";
+//        List<String> stringList = new ArrayList<>();
+//        List<String> skuList = new ArrayList<>();
+//        List<String> nameList = new ArrayList<>();
+//        //read file into stream, try-with-resources
+//        try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
+//            stringList = stream.collect(Collectors.toList());
+//            for (String items :stringList) {
+//                skuList.add(items.substring(0,6));
+//                nameList.add(items.substring(7, items.length()));
+//            }
+//
+//
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public void saveToDb() {
         String fileName = "D://lines.txt";
@@ -274,5 +266,35 @@ public class OnlinerServiceImpl implements OnlinerService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void equalsToDb() {
+        List<UnattachedGoods> loadAllUnattachedGoods = onlinerDao.loadAllUnattachedGoods();
+        System.out.println(loadAllUnattachedGoods);
+
+    }
+
+    public static void main(String[] args) {
+        try {
+            URL oracle = new URL("https://catalog.api.onliner.by/search/products?query=Lewitt DGT 450");
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(oracle.openStream()));
+
+            String inputLine;
+            StringBuilder sb = new StringBuilder();
+            while ((inputLine = in.readLine()) != null)
+                sb.append(inputLine);
+            in.close();
+            String str = String.valueOf(sb);
+            JsonParser parser = new JsonParser();
+            JsonObject mainObject = parser.parse(str).getAsJsonObject();
+            String ageJohn = mainObject.getString("Age");
+            JsonObject url = (JsonObject) mainObject.get("id");
+            JsonArray pItem = mainObject.getAsJsonArray("p_item");
+            System.out.println(sb);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

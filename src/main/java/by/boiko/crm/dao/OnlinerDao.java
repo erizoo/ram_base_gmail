@@ -26,4 +26,6 @@ public interface OnlinerDao {
     void saveGoods(String sku, String name);
 
     int getAllCount();
+
+    List<UnattachedGoods> loadAllUnattachedGoods();
 }

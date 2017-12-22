@@ -29,9 +29,11 @@
         <button class="btn btn-primary" type="submit" onclick="writeJsonInFile()">LOAD</button>
     </div>
 
-    /div>
     <div style="margin-top: 10%">
         <button class="btn btn-primary" type="submit" onclick="saveGoods()">SAVE</button>
+    </div>
+    <div style="margin-top: 10%">
+        <button class="btn btn-primary" type="submit" onclick="equalsGoods()">Сравнить названия</button>
     </div>
 <script>
     function getGoods(number) {
@@ -70,10 +72,15 @@
             dataType: 'text',
             contentType: "application/json",
             url: "/save_goods",
-            success: function (data) {
+        });
+    }
 
-
-            }
+    function equalsGoods() {
+        $.ajax({
+            type: "GET",
+            dataType: 'text',
+            contentType: "application/json",
+            url: "/equals",
         });
     }
 

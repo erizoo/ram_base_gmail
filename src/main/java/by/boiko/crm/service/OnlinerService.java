@@ -41,4 +41,6 @@ public interface OnlinerService {
     void writeToFile(String str);
 
     void saveToDb();
+
+    void equalsToDb();
 }

@@ -26,11 +26,17 @@ public class OnlinerDaoImpl implements OnlinerDao {
 
     @Override
     public List<UnattachedGoods> loadAllGoods(int page) {
-        if (page == 1){
+        if (page == 1) {
             return sessionFactory.getCurrentSession().createQuery("from UnattachedGoods").setFirstResult(1).setMaxResults(10).list();
-        }else {
+        } else {
             return sessionFactory.getCurrentSession().createQuery("from UnattachedGoods").setFirstResult(page * 10 - 10 + 1).setMaxResults(10).list();
         }
+
+    }
+
+    @Override
+    public List<UnattachedGoods> loadAllUnattachedGoods() {
+        return sessionFactory.getCurrentSession().createQuery("from UnattachedGoods").list();
 
     }
 
@@ -56,7 +62,7 @@ public class OnlinerDaoImpl implements OnlinerDao {
     public void delete(int id) {
         UnattachedGoods unattachedGoods = (UnattachedGoods) sessionFactory.getCurrentSession().createQuery("select u from UnattachedGoods u where id = :id")
                 .setParameter("id", id).uniqueResult();
-            sessionFactory.getCurrentSession().delete(unattachedGoods);
+        sessionFactory.getCurrentSession().delete(unattachedGoods);
 
     }
 
