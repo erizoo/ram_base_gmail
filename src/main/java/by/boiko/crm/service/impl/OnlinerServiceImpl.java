@@ -7,11 +7,9 @@ import by.boiko.crm.model.Table;
 import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.pojo.UnattachedGoods;
 import by.boiko.crm.service.OnlinerService;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.apache.commons.io.FileUtils;
+import org.cloudinary.json.JSONArray;
+import org.cloudinary.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -23,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -255,11 +252,11 @@ public class OnlinerServiceImpl implements OnlinerService {
         //read file into stream, try-with-resources
         try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
             stringList = stream.collect(Collectors.toList());
-            for (String items :stringList) {
-                skuList.add(items.substring(0,6));
+            for (String items : stringList) {
+                skuList.add(items.substring(0, 6));
                 nameList.add(items.substring(7, items.length()));
             }
-            for (int i = 0; i < nameList.size()-1 ; i++) {
+            for (int i = 0; i < nameList.size() - 1; i++) {
                 onlinerDao.saveGoods(skuList.get(i), nameList.get(i));
             }
 
@@ -269,32 +266,56 @@ public class OnlinerServiceImpl implements OnlinerService {
     }
 
     public void equalsToDb() {
+        List<SkuModel> skuModels = new ArrayList<>();
+        List<Integer> deleteGoods = new ArrayList<>();
         List<UnattachedGoods> loadAllUnattachedGoods = onlinerDao.loadAllUnattachedGoods();
-        System.out.println(loadAllUnattachedGoods);
+        for (UnattachedGoods unattachedGoods : loadAllUnattachedGoods) {
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Integer id = unattachedGoods.getId();
+            String name = unattachedGoods.getName();
+            String sku = unattachedGoods.getSku();
 
-    }
 
-    public static void main(String[] args) {
-        try {
-            URL oracle = new URL("https://catalog.api.onliner.by/search/products?query=Lewitt DGT 450");
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(oracle.openStream()));
+            try {
+                URL oracle = new URL("https://catalog.api.onliner.by/search/products?query=" + name);
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(oracle.openStream()));
 
-            String inputLine;
-            StringBuilder sb = new StringBuilder();
-            while ((inputLine = in.readLine()) != null)
-                sb.append(inputLine);
-            in.close();
-            String str = String.valueOf(sb);
-            JsonParser parser = new JsonParser();
-            JsonObject mainObject = parser.parse(str).getAsJsonObject();
-            String ageJohn = mainObject.getString("Age");
-            JsonObject url = (JsonObject) mainObject.get("id");
-            JsonArray pItem = mainObject.getAsJsonArray("p_item");
-            System.out.println(sb);
-        } catch (IOException e) {
-            e.printStackTrace();
+                String inputLine;
+                StringBuilder sb = new StringBuilder();
+                while ((inputLine = in.readLine()) != null)
+                    sb.append(inputLine);
+                in.close();
+                String str = String.valueOf(sb);
+                JSONObject json = new JSONObject(str);
+                JSONArray products = json.getJSONArray("products");
+                if (products.length() == 1) {
+                    JSONObject url = products.getJSONObject(0);
+                    String strUrl = url.getString("url");
+                    deleteGoods.add(id);
+                    skuModels.add(new SkuModel(sku, strUrl));
+
+                }
+                System.out.println(sb);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        for (Integer idItems:deleteGoods) {
+            onlinerDao.delete(idItems);
         }
 
+        for (SkuModel items : skuModels) {
+            SkuModel skuModel = new SkuModel();
+            skuModel.setSku(items.getSku());
+            skuModel.setUrl(items.getUrl());
+            onlinerDao.save(skuModel);
+        }
     }
+
+
 }
