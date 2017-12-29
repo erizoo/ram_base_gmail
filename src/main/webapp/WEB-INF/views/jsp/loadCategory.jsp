@@ -35,6 +35,9 @@
     <div style="margin-top: 10%">
         <button class="btn btn-primary" type="submit" onclick="equalsGoods()">Сравнить названия</button>
     </div>
+    <div style="margin-top: 10%">
+        <button class="btn btn-primary" type="submit" onclick="saveImages()">Сохранить изображения</button>
+    </div>
 <script>
     function getGoods(number) {
         $.ajax({
@@ -81,6 +84,15 @@
             dataType: 'text',
             contentType: "application/json",
             url: "/equals",
+        });
+    }
+
+    function saveImages() {
+        $.ajax({
+            type: "GET",
+            dataType: 'text',
+            contentType: "application/json",
+            url: "/save_images",
         });
     }
 

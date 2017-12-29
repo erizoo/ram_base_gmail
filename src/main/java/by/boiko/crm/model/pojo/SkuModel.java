@@ -23,7 +23,17 @@ public class SkuModel {
     @Column(name = "URL")
     private String url;
 
+    @Column(name = "URL_API")
+    private String urlApi;
+
     public SkuModel() {
+    }
+
+    public SkuModel(String sku, String name, String url, String urlApi) {
+        this.sku = sku;
+        this.name = name;
+        this.url = url;
+        this.urlApi = urlApi;
     }
 
     public SkuModel(String sku, String name, String url) {
@@ -35,6 +45,14 @@ public class SkuModel {
     public SkuModel(String sku, String url) {
         this.sku = sku;
         this.url = url;
+    }
+
+    public String getUrlApi() {
+        return urlApi;
+    }
+
+    public void setUrlApi(String urlApi) {
+        this.urlApi = urlApi;
     }
 
     public String getName() {

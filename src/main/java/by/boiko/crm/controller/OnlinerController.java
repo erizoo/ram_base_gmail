@@ -144,4 +144,11 @@ public class OnlinerController {
         return "redirect:/onliner";
     }
 
+    @GetMapping(value = "/save_images")
+    public String saveImages() throws IOException {
+        List<SkuModel> skuModelsList = onlinerService.loadGoods();
+        onlinerService.saveImagesToDisk(skuModelsList);
+        return "redirect:/onliner";
+    }
+
 }

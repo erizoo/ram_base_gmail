@@ -7,8 +7,10 @@ import by.boiko.crm.model.Table;
 import org.openqa.selenium.WebDriver;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,8 @@ public interface OnlinerService {
     ArrayList<Table> getDescription(String url, WebDriver driver);
 
     List<String> getImages(String url, WebDriver driver);
+
+    void saveImagesToDisk(List<SkuModel> skuModelsList) throws IOException;
 
     void save(String skm, String url);
 

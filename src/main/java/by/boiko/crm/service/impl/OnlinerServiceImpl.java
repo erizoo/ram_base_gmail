@@ -20,7 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -50,46 +53,50 @@ public class OnlinerServiceImpl implements OnlinerService {
         List<String> listTextForMinusReviews = new ArrayList<>();
         String stars = null;
 
-        List<WebElement> list = driver.findElements(By.xpath("//div[@class='rev-rating']/img[1]"));
-        List<WebElement> listReviewsText = driver.findElements(By.className("rev-content"));
-        List<WebElement> listPlusReviewsText = driver.findElements(By.xpath("//div[@class='revpc pros']"));
-        List<WebElement> listMinusReviewsText = driver.findElements(By.xpath("//div[@class='revpc cons']"));
-        for (WebElement element : list) {
-            String link = element.getAttribute("src");
-            System.out.println(element.getTagName() + "=" + link + ", " + element.getText());
-            if (link.contains("_4")) {
-                stars = "4";
+        try {
+            List<WebElement> list = driver.findElements(By.xpath("//div[@class='rev-rating']/img[1]"));
+            List<WebElement> listReviewsText = driver.findElements(By.className("rev-content"));
+            List<WebElement> listPlusReviewsText = driver.findElements(By.xpath("//div[@class='revpc pros']"));
+            List<WebElement> listMinusReviewsText = driver.findElements(By.xpath("//div[@class='revpc cons']"));
+            for (WebElement element : list) {
+                String link = element.getAttribute("src");
+                if (link.contains("_4")) {
+                    stars = "4";
+                }
+                if (link.contains("_5")) {
+                    stars = "5";
+                }
+                if (link.contains("_3")) {
+                    stars = "3";
+                }
+                if (link.contains("_2")) {
+                    stars = "2";
+                }
+                if (link.contains("_1")) {
+                    stars = "1";
+                }
+                listStarsForReviews.add(stars);
             }
-            if (link.contains("_5")) {
-                stars = "5";
+            for (WebElement str : listReviewsText) {
+                String name = str.getText();
+                listTextForReviews.add(name);
             }
-            if (link.contains("_3")) {
-                stars = "3";
+            for (WebElement str : listPlusReviewsText) {
+                String name = str.getText();
+                listTextForPlusReviews.add(name);
             }
-            if (link.contains("_2")) {
-                stars = "2";
+            for (WebElement str : listMinusReviewsText) {
+                String name = str.getText();
+                listTextForMinusReviews.add(name);
             }
-            if (link.contains("_1")) {
-                stars = "1";
+            for (int i = 0; i <= listStarsForReviews.size() - 1; i++) {
+                listReviews.add(new Review(listStarsForReviews.get(i), listTextForReviews.get(i), listTextForPlusReviews.get(i), listTextForMinusReviews.get(i)));
             }
-            listStarsForReviews.add(stars);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-        for (WebElement str : listReviewsText) {
-            String name = str.getText();
-            listTextForReviews.add(name);
-        }
-        for (WebElement str : listPlusReviewsText) {
-            String name = str.getText();
-            listTextForPlusReviews.add(name);
-        }
-        for (WebElement str : listMinusReviewsText) {
-            String name = str.getText();
-            listTextForMinusReviews.add(name);
-        }
-        for (int i = 0; i <= listStarsForReviews.size() - 1; i++) {
-            listReviews.add(new Review(listStarsForReviews.get(i), listTextForReviews.get(i), listTextForPlusReviews.get(i), listTextForMinusReviews.get(i)));
-        }
-        System.out.println(listReviews);
+
         return listReviews;
     }
 
@@ -97,49 +104,56 @@ public class OnlinerServiceImpl implements OnlinerService {
     public ArrayList<Table> getDescription(String url, WebDriver driver) {
 
         driver.navigate().to(url);
-
-        List<WebElement> listReviewsText = driver.findElements(By.cssSelector("table.product-specs__table"));
-        ArrayList<String> listCategories = new ArrayList<>();
         ArrayList<Table> listTable = new ArrayList<>();
         List<Table.TypeTrTable> listTableTr = null;
-        int i = 0;
-        for (WebElement list : listReviewsText) {
-            List<WebElement> TBodyCollection = list.findElements(By.tagName("tbody"));
-            for (WebElement tbody : TBodyCollection) {
-                String[] tbodyItem = tbody.getText().split("\\n");
-                listCategories.add(tbodyItem[0]);
-                List<WebElement> TRCollection = tbody.findElements(By.tagName("tr"));
-                listTableTr = new ArrayList<>();
-                for (WebElement tr : TRCollection) {
-                    if (tr.getText().contains("\n")) {
-                        String[] item = tr.getText().split("\n");
-                        ArrayList<String> listParameters = new ArrayList<>();
-                        ArrayList<String> listValues = new ArrayList<>();
-                        listParameters.add(item[0]);
-                        listValues.add(item[1]);
-                        listTableTr.add(new Table.TypeTrTable(listParameters.get(0), listValues.get(0)));
-                    }
-                }
-                listTable.add(new Table(listCategories.get(i), listTableTr));
-                i++;
-            }
 
+        try {
+            List<WebElement> listReviewsText = driver.findElements(By.cssSelector("table.product-specs__table"));
+            ArrayList<String> listCategories = new ArrayList<>();
+            int i = 0;
+            for (WebElement list : listReviewsText) {
+                List<WebElement> TBodyCollection = list.findElements(By.tagName("tbody"));
+                for (WebElement tbody : TBodyCollection) {
+                    String[] tbodyItem = tbody.getText().split("\\n");
+                    listCategories.add(tbodyItem[0]);
+                    List<WebElement> TRCollection = tbody.findElements(By.tagName("tr"));
+                    listTableTr = new ArrayList<>();
+                    for (WebElement tr : TRCollection) {
+                        if (tr.getText().contains("\n")) {
+                            String[] item = tr.getText().split("\n");
+                            ArrayList<String> listParameters = new ArrayList<>();
+                            ArrayList<String> listValues = new ArrayList<>();
+                            listParameters.add(item[0]);
+                            listValues.add(item[1]);
+                            listTableTr.add(new Table.TypeTrTable(listParameters.get(0), listValues.get(0)));
+                        }
+                    }
+                    listTable.add(new Table(listCategories.get(i), listTableTr));
+                    i++;
+                }
+
+            }
+        } catch (Exception e) {
+            listTable.add(new Table("null", listTableTr));
         }
-        System.out.println(listTable);
+
         return listTable;
     }
 
     public List<String> getImages(String url, WebDriver driver) {
         driver.navigate().to(url);
-
         List<String> stringList = new ArrayList<>();
-        List<WebElement> listImages = driver.findElements(By.xpath("//div[@class='product-gallery__shaft']"));
-        for (WebElement list : listImages) {
-            List<WebElement> link = list.findElements(By.className("product-gallery__thumb"));
-            for (WebElement listImag : link) {
-                String linkImage = listImag.getAttribute("data-original");
-                stringList.add(linkImage);
+        try {
+            List<WebElement> listImages = driver.findElements(By.xpath("//div[@class='product-gallery__shaft']"));
+            for (WebElement list : listImages) {
+                List<WebElement> link = list.findElements(By.className("product-gallery__thumb"));
+                for (WebElement listImag : link) {
+                    String linkImage = listImag.getAttribute("data-original");
+                    stringList.add(linkImage);
+                }
             }
+        } catch (Exception e) {
+            stringList.add("null");
         }
         return stringList;
     }
@@ -180,7 +194,22 @@ public class OnlinerServiceImpl implements OnlinerService {
 
         List<Onliner> onlinerList = new ArrayList<>();
         for (SkuModel itemList : skuModelList) {
-            onlinerList.add(new Onliner(itemList.getSku(), getShortDescription(itemList.getUrl(), driver), getReviews(itemList.getUrl(), driver), getDescription(itemList.getUrl(), driver), getImages(itemList.getUrl(), driver)));
+            String shortDescription;
+            try {
+                shortDescription = getShortDescription(itemList.getUrl(), driver);
+                System.out.println(shortDescription);
+            } catch (Exception e) {
+                shortDescription = "nope";
+                System.out.println(shortDescription);
+            }
+            System.out.println(itemList.getSku() + " " + itemList.getName());
+            List<Review> reviews = getReviews(itemList.getUrl(), driver);
+            System.out.println(reviews);
+            ArrayList<Table> description = getDescription(itemList.getUrl(), driver);
+            System.out.println(description);
+            List<String> images = getImages(itemList.getUrl(), driver);
+            System.out.println(images);
+            onlinerList.add(new Onliner(itemList.getSku(), shortDescription, reviews, description, images));
 
         }
         driver.close();
@@ -190,9 +219,7 @@ public class OnlinerServiceImpl implements OnlinerService {
     private String getShortDescription(String url, WebDriver driver) {
         driver.navigate().to(url);
         WebElement webElement = driver.findElement(By.xpath("//div[@class='offers-description__specs']"));
-        String shortDescription = webElement.getText();
-        System.out.println(shortDescription);
-        return shortDescription;
+        return webElement.getText();
     }
 
     @Override
@@ -250,16 +277,16 @@ public class OnlinerServiceImpl implements OnlinerService {
         List<Integer> deleteGoods = new ArrayList<>();
         List<UnattachedGoods> loadAllUnattachedGoods = onlinerDao.loadAllUnattachedGoods();
         for (UnattachedGoods unattachedGoods : loadAllUnattachedGoods) {
+
             try {
-                Thread.sleep(4000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
             Integer id = unattachedGoods.getId();
-            String name = unattachedGoods.getName();
+            String name = unattachedGoods.getName().replaceAll(" ", "%20");
             String sku = unattachedGoods.getSku();
-
-
             try {
                 URL oracle = new URL("https://catalog.api.onliner.by/search/products?query=" + name);
                 BufferedReader in = new BufferedReader(
@@ -275,12 +302,14 @@ public class OnlinerServiceImpl implements OnlinerService {
                 JSONArray products = json.getJSONArray("products");
                 if (products.length() == 1) {
                     JSONObject url = products.getJSONObject(0);
-                    String strUrl = url.getString("url");
+                    String strUrl = url.getString("html_url");
+                    System.out.println(strUrl);
+                    String urlStr = url.getString("url");
                     deleteGoods.add(id);
-                    skuModels.add(new SkuModel(sku, name, strUrl));
+                    skuModels.add(new SkuModel(sku, name, strUrl, urlStr));
 
                 }
-                System.out.println(sb);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -298,5 +327,138 @@ public class OnlinerServiceImpl implements OnlinerService {
         }
     }
 
+    public static void main(String[] args) throws IOException {
 
+//
+//        // overlay settings
+//        File input = new File("D://duke.jpeg");
+//        File overlay = new File("D://logo.png");
+//        File output = new File("D://duke-image-watermarked.png");
+//
+//        // adding text as overlay to an image
+//        addImageWatermark(overlay, "png", input, output);
+//    }
+//
+//    private static void addImageWatermark(File watermark, String type, File source, File destination) throws IOException {
+//        BufferedImage image = ImageIO.read(source);
+//        BufferedImage overlay = resize(ImageIO.read(watermark), 70, 220);
+//
+//        // determine image type and handle correct transparency
+//        int imageType = "png".equalsIgnoreCase(type) ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
+//        BufferedImage watermarked = new BufferedImage(image.getWidth(), image.getHeight(), imageType);
+//
+//        // initializes necessary graphic properties
+//        Graphics2D w = (Graphics2D) watermarked.getGraphics();
+//        w.drawImage(image, 0, 0, null);
+//        AlphaComposite alphaChannel = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f);
+//        w.setComposite(alphaChannel);
+//
+//        // calculates the coordinate where the String is painted
+//        int centerX = image.getWidth() - 200;
+//        int centerY = image.getHeight() - 80;
+//
+//        // add text watermark to the image
+//        w.drawImage(overlay, centerX, centerY, null);
+//        ImageIO.write(watermarked, type, destination);
+//        w.dispose();
+//    }
+//
+//    private static BufferedImage resize(BufferedImage img, int height, int width) {
+//        Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+//        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+//        Graphics2D g2d = resized.createGraphics();
+//        g2d.drawImage(tmp, 0, 0, null);
+//        g2d.dispose();
+//        return resized;
+
+        List<String> stringList = new ArrayList<>();
+        stringList.add("123534");
+        stringList.add("342342");
+        stringList.add("123325");
+        DesiredCapabilities caps = new DesiredCapabilities();
+        caps.setJavascriptEnabled(true);
+        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+                "D:\\phantomjs\\bin\\phantomjs.exe");
+
+        WebDriver driver = new PhantomJSDriver(caps);
+
+        for (String str : stringList) {
+            File folders = new File("D:\\onliner_images\\" + str);
+            folders.mkdir();
+
+
+            driver.navigate().to("https://catalog.onliner.by/microphones/lewitt/lct240");
+            List<String> stringArrayList = new ArrayList<>();
+
+            List<WebElement> listImages = driver.findElements(By.xpath("//div[@class='product-gallery__shaft']"));
+            for (WebElement list : listImages) {
+                List<WebElement> link = list.findElements(By.className("product-gallery__thumb"));
+                for (WebElement listImag : link) {
+                    String linkImage = listImag.getAttribute("data-original");
+                    stringArrayList.add(linkImage);
+                }
+            }
+
+            for (String images : stringArrayList) {
+                URL url = new URL(images);
+                InputStream in = new BufferedInputStream(url.openStream());
+                OutputStream out = new BufferedOutputStream(new FileOutputStream("D:\\onliner_images\\" + str + "\\" + "Image-Porkeri_001.jpg"));
+                out.write(in.read());
+                in.close();
+                out.close();
+            }
+
+        }
+
+//        String fileName = "test.txt";
+//        try {
+//            PrintWriter out = new PrintWriter(new FileWriter(folder.toString() + "/" + fileName));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    }
+
+    public void saveImagesToDisk(List<SkuModel> skuModelsList) throws IOException {
+
+        DesiredCapabilities caps = new DesiredCapabilities();
+        caps.setJavascriptEnabled(true);
+        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+                "D:\\phantomjs\\bin\\phantomjs.exe");
+
+        WebDriver driverr = new PhantomJSDriver(caps);
+
+        List<String> stringList = new ArrayList<>();
+        stringList.add("123534");
+
+
+        for (SkuModel str : skuModelsList) {
+            File folders = new File("D:\\onliner_images\\" + str.getSku());
+            folders.mkdir();
+
+            driverr.navigate().to(str.getUrl());
+            List<String> stringListArray = new ArrayList<>();
+
+            List<WebElement> listImages = driverr.findElements(By.xpath("//div[@class='product-gallery__shaft']"));
+            for (WebElement list : listImages) {
+                List<WebElement> link = list.findElements(By.className("product-gallery__thumb"));
+                for (WebElement listImag : link) {
+                    String linkImage = listImag.getAttribute("data-original");
+                    if (linkImage.trim().length() != 0){
+                        stringListArray.add(linkImage);
+                    }
+                }
+            }
+            for (String images : stringListArray) {
+                BufferedImage image = null;
+                URL urlImages = new URL(images);
+                System.out.println(images);
+                image = ImageIO.read(urlImages);
+                String[] nameImage = images.split("/");
+                ImageIO.write(image, "jpg", new File("D:\\onliner_images\\" + str.getSku() + "\\" + nameImage[5]   + ".jpg"));
+            }
+        }
+    }
 }
+
+
+

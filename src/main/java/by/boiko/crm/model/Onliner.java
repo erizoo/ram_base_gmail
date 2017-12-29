@@ -1,5 +1,6 @@
 package by.boiko.crm.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Onliner {
@@ -22,6 +23,13 @@ public class Onliner {
     public Onliner(String sku, String description, List<Review> reviews, List<Table> tables, List<String> images) {
         this.sku = sku;
         this.description = description;
+        this.reviews = reviews;
+        this.tables = tables;
+        this.images = images;
+    }
+
+    public Onliner(String sku, List<Review> reviews, ArrayList<Table> description, List<String> images) {
+        this.sku = sku;
         this.reviews = reviews;
         this.tables = tables;
         this.images = images;
