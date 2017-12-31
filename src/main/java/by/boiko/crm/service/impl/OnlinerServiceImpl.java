@@ -53,50 +53,46 @@ public class OnlinerServiceImpl implements OnlinerService {
         List<String> listTextForMinusReviews = new ArrayList<>();
         String stars = null;
 
-        try {
-            List<WebElement> list = driver.findElements(By.xpath("//div[@class='rev-rating']/img[1]"));
-            List<WebElement> listReviewsText = driver.findElements(By.className("rev-content"));
-            List<WebElement> listPlusReviewsText = driver.findElements(By.xpath("//div[@class='revpc pros']"));
-            List<WebElement> listMinusReviewsText = driver.findElements(By.xpath("//div[@class='revpc cons']"));
-            for (WebElement element : list) {
-                String link = element.getAttribute("src");
-                if (link.contains("_4")) {
-                    stars = "4";
-                }
-                if (link.contains("_5")) {
-                    stars = "5";
-                }
-                if (link.contains("_3")) {
-                    stars = "3";
-                }
-                if (link.contains("_2")) {
-                    stars = "2";
-                }
-                if (link.contains("_1")) {
-                    stars = "1";
-                }
-                listStarsForReviews.add(stars);
+        List<WebElement> list = driver.findElements(By.xpath("//div[@class='rev-rating']/img[1]"));
+        List<WebElement> listReviewsText = driver.findElements(By.className("rev-content"));
+        List<WebElement> listPlusReviewsText = driver.findElements(By.xpath("//div[@class='revpc pros']"));
+        List<WebElement> listMinusReviewsText = driver.findElements(By.xpath("//div[@class='revpc cons']"));
+        for (WebElement element : list) {
+            String link = element.getAttribute("src");
+            System.out.println(element.getTagName() + "=" + link + ", " + element.getText());
+            if (link.contains("_4")) {
+                stars = "4";
             }
-            for (WebElement str : listReviewsText) {
-                String name = str.getText();
-                listTextForReviews.add(name);
+            if (link.contains("_5")) {
+                stars = "5";
             }
-            for (WebElement str : listPlusReviewsText) {
-                String name = str.getText();
-                listTextForPlusReviews.add(name);
+            if (link.contains("_3")) {
+                stars = "3";
             }
-            for (WebElement str : listMinusReviewsText) {
-                String name = str.getText();
-                listTextForMinusReviews.add(name);
+            if (link.contains("_2")) {
+                stars = "2";
             }
-            for (int i = 0; i <= listStarsForReviews.size() - 1; i++) {
-                listReviews.add(new Review(listStarsForReviews.get(i), listTextForReviews.get(i), listTextForPlusReviews.get(i), listTextForMinusReviews.get(i)));
+            if (link.contains("_1")) {
+                stars = "1";
             }
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+            listStarsForReviews.add(stars);
         }
-
+        for (WebElement str : listReviewsText) {
+            String name = str.getText();
+            listTextForReviews.add(name);
+        }
+        for (WebElement str : listPlusReviewsText) {
+            String name = str.getText();
+            listTextForPlusReviews.add(name);
+        }
+        for (WebElement str : listMinusReviewsText) {
+            String name = str.getText();
+            listTextForMinusReviews.add(name);
+        }
+        for (int i = 0; i <= listStarsForReviews.size() - 1; i++) {
+            listReviews.add(new Review(listStarsForReviews.get(i), listTextForReviews.get(i), listTextForPlusReviews.get(i), listTextForMinusReviews.get(i)));
+        }
+        System.out.println(listReviews);
         return listReviews;
     }
 
