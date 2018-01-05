@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -119,9 +118,39 @@ public class OnlinerServiceImpl implements OnlinerService {
                             String[] item = tr.getText().split("\n");
                             ArrayList<String> listParameters = new ArrayList<>();
                             ArrayList<String> listValues = new ArrayList<>();
-                            listParameters.add(item[0]);
-                            listValues.add(item[1]);
+                            if (item.length > 2) {
+                                String str = null;
+                                int count = 0;
+                                for (int j = 1; j < item.length; j++) {
+                                    if (item[j].trim().isEmpty()) {
+                                        System.out.println("Null");
+                                        count++;
+                                    } else {
+                                        str = item[j];
+                                    }
+                                }
+                                if (count == 0) {
+                                    listParameters.add("Комплект поставки");
+                                    StringBuilder stringBuilder = new StringBuilder();
+                                    for (String anItem : item) {
+                                        String[] strItem = anItem.split("-");
+                                        stringBuilder.append(strItem[1]);
+                                    }
+                                    listValues.add(String.valueOf(stringBuilder));
+                                } else {
+                                    listParameters.add(item[0]);
+                                    listValues.add(str);
+                                }
+                            } else {
+                                listParameters.add(item[0]);
+                                listValues.add(item[1]);
+                            }
                             listTableTr.add(new Table.TypeTrTable(listParameters.get(0), listValues.get(0)));
+                        }
+                        if (tbodyItem.length <= 2){
+                            String[] strings = tbodyItem[1].split(" ");
+                            listTableTr.add(new Table.TypeTrTable(strings[0], strings[1]));
+                            break;
                         }
                     }
                     listTable.add(new Table(listCategories.get(i), listTableTr));
@@ -188,6 +217,8 @@ public class OnlinerServiceImpl implements OnlinerService {
                 "D:\\phantomjs\\bin\\phantomjs.exe");
         WebDriver driver = new PhantomJSDriver(caps);
 
+
+
         List<Onliner> onlinerList = new ArrayList<>();
         for (SkuModel itemList : skuModelList) {
             String shortDescription;
@@ -206,7 +237,6 @@ public class OnlinerServiceImpl implements OnlinerService {
             List<String> images = getImages(itemList.getUrl(), driver);
             System.out.println(images);
             onlinerList.add(new Onliner(itemList.getSku(), shortDescription, reviews, description, images));
-
         }
         driver.close();
         return onlinerList;
@@ -324,7 +354,6 @@ public class OnlinerServiceImpl implements OnlinerService {
     }
 
     public static void main(String[] args) throws IOException {
-
 //
 //        // overlay settings
 //        File input = new File("D://duke.jpeg");
@@ -367,44 +396,44 @@ public class OnlinerServiceImpl implements OnlinerService {
 //        g2d.dispose();
 //        return resized;
 
-        List<String> stringList = new ArrayList<>();
-        stringList.add("123534");
-        stringList.add("342342");
-        stringList.add("123325");
-        DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setJavascriptEnabled(true);
-        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-                "D:\\phantomjs\\bin\\phantomjs.exe");
-
-        WebDriver driver = new PhantomJSDriver(caps);
-
-        for (String str : stringList) {
-            File folders = new File("D:\\onliner_images\\" + str);
-            folders.mkdir();
-
-
-            driver.navigate().to("https://catalog.onliner.by/microphones/lewitt/lct240");
-            List<String> stringArrayList = new ArrayList<>();
-
-            List<WebElement> listImages = driver.findElements(By.xpath("//div[@class='product-gallery__shaft']"));
-            for (WebElement list : listImages) {
-                List<WebElement> link = list.findElements(By.className("product-gallery__thumb"));
-                for (WebElement listImag : link) {
-                    String linkImage = listImag.getAttribute("data-original");
-                    stringArrayList.add(linkImage);
-                }
-            }
-
-            for (String images : stringArrayList) {
-                URL url = new URL(images);
-                InputStream in = new BufferedInputStream(url.openStream());
-                OutputStream out = new BufferedOutputStream(new FileOutputStream("D:\\onliner_images\\" + str + "\\" + "Image-Porkeri_001.jpg"));
-                out.write(in.read());
-                in.close();
-                out.close();
-            }
-
-        }
+//        List<String> stringList = new ArrayList<>();
+//        stringList.add("123534");
+//        stringList.add("342342");
+//        stringList.add("123325");
+//        DesiredCapabilities caps = new DesiredCapabilities();
+//        caps.setJavascriptEnabled(true);
+//        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+//                "D:\\phantomjs\\bin\\phantomjs.exe");
+//
+//        WebDriver driver = new PhantomJSDriver(caps);
+//
+//        for (String str : stringList) {
+//            File folders = new File("D:\\onliner_images\\" + str);
+//            folders.mkdir();
+//
+//
+//            driver.navigate().to("https://catalog.onliner.by/microphones/lewitt/lct240");
+//            List<String> stringArrayList = new ArrayList<>();
+//
+//            List<WebElement> listImages = driver.findElements(By.xpath("//div[@class='product-gallery__shaft']"));
+//            for (WebElement list : listImages) {
+//                List<WebElement> link = list.findElements(By.className("product-gallery__thumb"));
+//                for (WebElement listImag : link) {
+//                    String linkImage = listImag.getAttribute("data-original");
+//                    stringArrayList.add(linkImage);
+//                }
+//            }
+//
+//            for (String images : stringArrayList) {
+//                URL url = new URL(images);
+//                InputStream in = new BufferedInputStream(url.openStream());
+//                OutputStream out = new BufferedOutputStream(new FileOutputStream("D:\\onliner_images\\" + str + "\\" + "Image-Porkeri_001.jpg"));
+//                out.write(in.read());
+//                in.close();
+//                out.close();
+//            }
+//
+//        }
 
 //        String fileName = "test.txt";
 //        try {
@@ -439,7 +468,7 @@ public class OnlinerServiceImpl implements OnlinerService {
                 List<WebElement> link = list.findElements(By.className("product-gallery__thumb"));
                 for (WebElement listImag : link) {
                     String linkImage = listImag.getAttribute("data-original");
-                    if (linkImage.trim().length() != 0){
+                    if (linkImage.trim().length() != 0) {
                         stringListArray.add(linkImage);
                     }
                 }
@@ -450,7 +479,7 @@ public class OnlinerServiceImpl implements OnlinerService {
                 System.out.println(images);
                 image = ImageIO.read(urlImages);
                 String[] nameImage = images.split("/");
-                ImageIO.write(image, "jpg", new File("D:\\onliner_images\\" + str.getSku() + "\\" + nameImage[5]   + ".jpg"));
+                ImageIO.write(image, "jpg", new File("D:\\onliner_images\\" + str.getSku() + "\\" + nameImage[5] + ".jpg"));
             }
         }
     }
