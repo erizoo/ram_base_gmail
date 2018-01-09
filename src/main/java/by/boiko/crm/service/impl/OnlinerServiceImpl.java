@@ -8,6 +8,9 @@ import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.pojo.UnattachedGoods;
 import by.boiko.crm.service.OnlinerService;
 import org.apache.commons.io.FileUtils;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.cloudinary.json.JSONArray;
 import org.cloudinary.json.JSONObject;
 import org.openqa.selenium.By;
@@ -414,6 +417,11 @@ public class OnlinerServiceImpl implements OnlinerService {
                 listTableTr = new ArrayList<>();
                 String label = null;
                 for (WebElement tr : TRCollection) {
+                    if (tr.findElement(By.className("i-x")) != null){
+                        listTableTr.add(new Table.TypeTrTable(tr.getText(), "нет"));
+                    }if (tr.findElement(By.className("i-tip")) != null){
+                        listTableTr.add(new Table.TypeTrTable(tr.getText(), "есть"));
+                    }else {
                         if (tr.getText().contains("\n")) {
                             String[] item = tr.getText().split("\n");
                             ArrayList<String> listParameters = new ArrayList<>();
@@ -446,24 +454,45 @@ public class OnlinerServiceImpl implements OnlinerService {
                             }
                             listTableTr.add(new Table.TypeTrTable(listParameters.get(0), listValues.get(0)));
                         }
-                        if (tbodyItem.length <= 2) {
+                        if (tbodyItem.length < 2) {
                             String[] strings = tbodyItem[1].split(" ");
                             listTableTr.add(new Table.TypeTrTable(strings[0], strings[1]));
                             break;
                         }
                         if (tbodyItem[0].contains("Размеры и вес")) {
-                            for (int j = 1; j < tbodyItem.length; j++) {
-                                String[] strings = tbodyItem[j].split(" ");
-                                if (strings.length > 2) {
-                                    listTableTr.add(new Table.TypeTrTable(strings[0], strings[1] + " " + strings[2]));
-                                } else {
-                                    listTableTr.add(new Table.TypeTrTable(strings[0], strings[1]));
+                            if (tbodyItem.length > 5) {
+                                for (int j = 1; j < tbodyItem.length; j++) {
+                                    if (tbodyItem[j].contains("Длина")) {
+                                        String[] strings = tbodyItem[j + 1].split(" ");
+                                        listTableTr.add(new Table.TypeTrTable("Длина", strings[0] + " " + strings[1]));
+                                    }
+                                    if (tbodyItem[j].contains("Ширина")) {
+                                        String[] strings = tbodyItem[j + 1].split(" ");
+                                        listTableTr.add(new Table.TypeTrTable("Ширина", strings[0] + " " + strings[1]));
+                                    }
+                                    if (tbodyItem[j].contains("Толщина")) {
+                                        String[] strings = tbodyItem[j + 1].split(" ");
+                                        listTableTr.add(new Table.TypeTrTable("Толщина", strings[0] + " " + strings[1]));
+                                    }
+                                    if (tbodyItem[j].contains("Вес")) {
+                                        String[] strings = tbodyItem[j + 1].split(" ");
+                                        listTableTr.add(new Table.TypeTrTable("Вес", strings[0] + " " + strings[1]));
+                                    }
+                                }
+                            } else {
+                                for (int j = 1; j < tbodyItem.length; j++) {
+                                    String[] strings = tbodyItem[j].split(" ");
+                                    if (strings.length > 2) {
+                                        listTableTr.add(new Table.TypeTrTable(strings[0], strings[1] + " " + strings[2]));
+                                    } else {
+                                        listTableTr.add(new Table.TypeTrTable(strings[0], strings[1]));
+                                    }
                                 }
                             }
+
                             break;
                         }
-
-
+                    }
                 }
                 listTable.add(new Table(listCategories.get(i), listTableTr));
                 i++;
@@ -475,7 +504,10 @@ public class OnlinerServiceImpl implements OnlinerService {
 
     }
 
+
     public static void main(String[] args) throws IOException {
+
+    }
 
 
 //
@@ -566,8 +598,6 @@ public class OnlinerServiceImpl implements OnlinerService {
 //            e.printStackTrace();
 //        }
 
-
-    }
 
     public void saveImagesToDisk(List<SkuModel> skuModelsList) throws IOException {
 
