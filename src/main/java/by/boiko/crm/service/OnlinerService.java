@@ -47,4 +47,6 @@ public interface OnlinerService {
     void saveToDb();
 
     void equalsToDb();
+
+    List<Table> test();
 }
