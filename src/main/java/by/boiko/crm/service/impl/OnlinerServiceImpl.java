@@ -44,7 +44,7 @@ public class OnlinerServiceImpl implements OnlinerService {
     @Override
     public List<Review> getReviews(String decodedUrl, WebDriver driver) throws URISyntaxException, IOException {
 
-        driver.navigate().to(decodedUrl + "/reviews");
+
         List<Review> listReviews = new ArrayList<>();
         List<String> listStarsForReviews = new ArrayList<>();
         List<String> listTextForReviews = new ArrayList<>();
@@ -52,53 +52,80 @@ public class OnlinerServiceImpl implements OnlinerService {
         List<String> listTextForMinusReviews = new ArrayList<>();
         String stars = null;
 
-        List<WebElement> list = driver.findElements(By.xpath("//div[@class='rev-rating']/img[1]"));
-        List<WebElement> listReviewsText = driver.findElements(By.className("rev-content"));
-        List<WebElement> listPlusReviewsText = driver.findElements(By.xpath("//div[@class='revpc pros']"));
-        List<WebElement> listMinusReviewsText = driver.findElements(By.xpath("//div[@class='revpc cons']"));
-        for (WebElement element : list) {
-            String link = element.getAttribute("src");
-            System.out.println(element.getTagName() + "=" + link + ", " + element.getText());
-            if (link.contains("_4")) {
-                stars = "4";
+        String[] urls = decodedUrl.split("/");
+
+
+        try {
+            URL oracle = new URL("https://catalog.api.onliner.by/products/" + urls[urls.length - 1]);
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(oracle.openStream()));
+
+            String inputLine;
+            StringBuilder sb = new StringBuilder();
+            while ((inputLine = in.readLine()) != null)
+                sb.append(inputLine);
+            in.close();
+            String str = String.valueOf(sb);
+            JSONObject json = new JSONObject(str);
+            JSONObject reviews = json.getJSONObject("reviews");
+            if (reviews.getInt("count") > 0) {
+                driver.navigate().to(decodedUrl + "/reviews?region=minsk");
+                List<WebElement> list = driver.findElements(By.xpath("//div[@class='rev-rating']/img[1]"));
+                List<WebElement> listReviewsText = driver.findElements(By.className("rev-content"));
+                List<WebElement> listPlusReviewsText = driver.findElements(By.xpath("//div[@class='revpc pros']"));
+                List<WebElement> listMinusReviewsText = driver.findElements(By.xpath("//div[@class='revpc cons']"));
+                for (WebElement element : list) {
+                    String link = element.getAttribute("src");
+                    System.out.println(element.getTagName() + "=" + link + ", " + element.getText());
+                    if (link.contains("_4")) {
+                        stars = "4";
+                    }
+                    if (link.contains("_5")) {
+                        stars = "5";
+                    }
+                    if (link.contains("_3")) {
+                        stars = "3";
+                    }
+                    if (link.contains("_2")) {
+                        stars = "2";
+                    }
+                    if (link.contains("_1")) {
+                        stars = "1";
+                    }
+                    listStarsForReviews.add(stars);
+                }
+                for (WebElement str1 : listReviewsText) {
+                    String name = str1.getText();
+                    listTextForReviews.add(name);
+                }
+                for (WebElement str2 : listPlusReviewsText) {
+                    String name = str2.getText();
+                    listTextForPlusReviews.add(name);
+                }
+                for (WebElement str3 : listMinusReviewsText) {
+                    String name = str3.getText();
+                    listTextForMinusReviews.add(name);
+                }
+                for (int i = 0; i <= listStarsForReviews.size() - 1; i++) {
+                    listReviews.add(new Review(listStarsForReviews.get(i), listTextForReviews.get(i), listTextForPlusReviews.get(i), listTextForMinusReviews.get(i)));
+                }
+                System.out.println("Больше нуля");
+                System.out.println(listReviews);
+            } else {
+                listReviews.add(new Review("empty", "empty", "empty", "empty"));
+                System.out.println("Равно нулю");
             }
-            if (link.contains("_5")) {
-                stars = "5";
-            }
-            if (link.contains("_3")) {
-                stars = "3";
-            }
-            if (link.contains("_2")) {
-                stars = "2";
-            }
-            if (link.contains("_1")) {
-                stars = "1";
-            }
-            listStarsForReviews.add(stars);
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        for (WebElement str : listReviewsText) {
-            String name = str.getText();
-            listTextForReviews.add(name);
-        }
-        for (WebElement str : listPlusReviewsText) {
-            String name = str.getText();
-            listTextForPlusReviews.add(name);
-        }
-        for (WebElement str : listMinusReviewsText) {
-            String name = str.getText();
-            listTextForMinusReviews.add(name);
-        }
-        for (int i = 0; i <= listStarsForReviews.size() - 1; i++) {
-            listReviews.add(new Review(listStarsForReviews.get(i), listTextForReviews.get(i), listTextForPlusReviews.get(i), listTextForMinusReviews.get(i)));
-        }
-        System.out.println(listReviews);
         return listReviews;
     }
 
     @Override
     public ArrayList<Table> getDescription(String url, WebDriver driver) {
 
-        driver.navigate().to(url);
+        driver.navigate().to("https://catalog.onliner.by/gps/prestigio/geovisiontour2");
         ArrayList<Table> listTable = new ArrayList<>();
         List<Table.TypeTrTable> listTableTr = null;
 
@@ -123,7 +150,6 @@ public class OnlinerServiceImpl implements OnlinerService {
                                 int count = 0;
                                 for (int j = 1; j < item.length; j++) {
                                     if (item[j].trim().isEmpty()) {
-                                        System.out.println("Null");
                                         count++;
                                     } else {
                                         str = item[j];
@@ -147,9 +173,20 @@ public class OnlinerServiceImpl implements OnlinerService {
                             }
                             listTableTr.add(new Table.TypeTrTable(listParameters.get(0), listValues.get(0)));
                         }
-                        if (tbodyItem.length <= 2){
+                        if (tbodyItem.length <= 2) {
                             String[] strings = tbodyItem[1].split(" ");
                             listTableTr.add(new Table.TypeTrTable(strings[0], strings[1]));
+                            break;
+                        }
+                        if (tbodyItem[0].contains("Размеры и вес")) {
+                            for (int j = 1; j < tbodyItem.length; j++) {
+                                String[] strings = tbodyItem[j].split(" ");
+                                if (strings.length > 2) {
+                                    listTableTr.add(new Table.TypeTrTable(strings[0], strings[1] + " " + strings[2]));
+                                } else {
+                                    listTableTr.add(new Table.TypeTrTable(strings[0], strings[1]));
+                                }
+                            }
                             break;
                         }
                     }
@@ -216,7 +253,6 @@ public class OnlinerServiceImpl implements OnlinerService {
         caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
                 "D:\\phantomjs\\bin\\phantomjs.exe");
         WebDriver driver = new PhantomJSDriver(caps);
-
 
 
         List<Onliner> onlinerList = new ArrayList<>();
@@ -353,7 +389,95 @@ public class OnlinerServiceImpl implements OnlinerService {
         }
     }
 
+    @Override
+    public List<Table> test() {
+
+        DesiredCapabilities caps = new DesiredCapabilities();
+        caps.setJavascriptEnabled(true);
+        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+                "D:\\phantomjs\\bin\\phantomjs.exe");
+        WebDriver driver = new PhantomJSDriver(caps);
+
+        driver.navigate().to("https://catalog.onliner.by/gps/prestigio/geovisiontour2");
+        ArrayList<Table> listTable = new ArrayList<>();
+        List<Table.TypeTrTable> listTableTr = null;
+
+        List<WebElement> listReviewsText = driver.findElements(By.cssSelector("table.product-specs__table"));
+        ArrayList<String> listCategories = new ArrayList<>();
+        int i = 0;
+        for (WebElement list : listReviewsText) {
+            List<WebElement> TBodyCollection = list.findElements(By.tagName("tbody"));
+            for (WebElement tbody : TBodyCollection) {
+                String[] tbodyItem = tbody.getText().split("\\n");
+                listCategories.add(tbodyItem[0]);
+                List<WebElement> TRCollection = tbody.findElements(By.tagName("tr"));
+                listTableTr = new ArrayList<>();
+                String label = null;
+                for (WebElement tr : TRCollection) {
+                        if (tr.getText().contains("\n")) {
+                            String[] item = tr.getText().split("\n");
+                            ArrayList<String> listParameters = new ArrayList<>();
+                            ArrayList<String> listValues = new ArrayList<>();
+                            if (item.length > 2) {
+                                String str = null;
+                                int count = 0;
+                                for (int j = 1; j < item.length; j++) {
+                                    if (item[j].trim().isEmpty()) {
+                                        count++;
+                                    } else {
+                                        str = item[j];
+                                    }
+                                }
+                                if (count == 0) {
+                                    listParameters.add("Комплект поставки");
+                                    StringBuilder stringBuilder = new StringBuilder();
+                                    for (String anItem : item) {
+                                        String[] strItem = anItem.split("-");
+                                        stringBuilder.append(strItem[1]);
+                                    }
+                                    listValues.add(String.valueOf(stringBuilder));
+                                } else {
+                                    listParameters.add(item[0]);
+                                    listValues.add(str);
+                                }
+                            } else {
+                                listParameters.add(item[0]);
+                                listValues.add(item[1]);
+                            }
+                            listTableTr.add(new Table.TypeTrTable(listParameters.get(0), listValues.get(0)));
+                        }
+                        if (tbodyItem.length <= 2) {
+                            String[] strings = tbodyItem[1].split(" ");
+                            listTableTr.add(new Table.TypeTrTable(strings[0], strings[1]));
+                            break;
+                        }
+                        if (tbodyItem[0].contains("Размеры и вес")) {
+                            for (int j = 1; j < tbodyItem.length; j++) {
+                                String[] strings = tbodyItem[j].split(" ");
+                                if (strings.length > 2) {
+                                    listTableTr.add(new Table.TypeTrTable(strings[0], strings[1] + " " + strings[2]));
+                                } else {
+                                    listTableTr.add(new Table.TypeTrTable(strings[0], strings[1]));
+                                }
+                            }
+                            break;
+                        }
+
+
+                }
+                listTable.add(new Table(listCategories.get(i), listTableTr));
+                i++;
+            }
+
+        }
+
+        return listTable;
+
+    }
+
     public static void main(String[] args) throws IOException {
+
+
 //
 //        // overlay settings
 //        File input = new File("D://duke.jpeg");
@@ -441,6 +565,8 @@ public class OnlinerServiceImpl implements OnlinerService {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
+
+
     }
 
     public void saveImagesToDisk(List<SkuModel> skuModelsList) throws IOException {

@@ -1,6 +1,7 @@
 package by.boiko.crm.controller;
 
 import by.boiko.crm.model.Onliner;
+import by.boiko.crm.model.Table;
 import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.pojo.UnattachedGoods;
 import by.boiko.crm.service.OnlinerService;
@@ -144,11 +145,11 @@ public class OnlinerController {
         return "redirect:/onliner";
     }
 
-    @GetMapping(value = "/save_images")
-    public String saveImages() throws IOException {
-        List<SkuModel> skuModelsList = onlinerService.loadGoods();
-        onlinerService.saveImagesToDisk(skuModelsList);
-        return "redirect:/onliner";
+
+    @ResponseBody
+    @GetMapping(value = "/test")
+    public List<Table> test() throws IOException {
+        return onlinerService.test();
     }
 
 }
