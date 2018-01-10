@@ -48,5 +48,5 @@ public interface OnlinerService {
 
     void equalsToDb();
 
-    List<Table> test();
+    void test() throws IOException;
 }
