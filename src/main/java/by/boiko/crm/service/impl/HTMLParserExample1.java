@@ -1,13 +1,12 @@
 package by.boiko.crm.service.impl;
 
 import by.boiko.crm.model.GazProm;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,13 +16,48 @@ public class HTMLParserExample1 {
 
     public static void main(String[] args) throws IOException {
 
-        Document doc;
+        String fileName = "F:\\shell.txt";
+        List<String> lines = Files.readAllLines(Paths.get(fileName));
+        List<GazProm> gazProms = new ArrayList<>();
+        for (String item : lines) {
+            String[] strings = item.split(",");
+            String[] name = strings[2].split(" ");
+            try {
+                gazProms.add(new GazProm(name[2].substring(0, name[2].length()-1).replace(".", ""), strings[1].trim(), strings[0].trim()));
+            }catch (Exception e){
+                System.out.println(Arrays.toString(strings));
+            }
 
-        doc = Jsoup.connect("http://neftm.ru/#map").get();
+        }
+        File fileDir = new File("F:\\shell.csv");
+            Writer out = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(fileDir), "cp1251"));
 
-        Elements info = doc.select("div#point-ctl-1");
-        Elements links = doc.getElementsByClass("span");
-        System.out.println(links);
+            for (GazProm d : gazProms) {
+                out.write("Шелл");
+                out.append(";");
+                out.append("Заправка");
+                out.append(";");
+                out.append(d.getAddress());
+                out.append(";");
+                out.append(d.getLatitud());
+                out.append(";");
+                out.append(d.getLongitud());
+                out.append(";");
+                out.append('\n');
+            }
+
+            out.flush();
+            out.close();
+        System.out.println(lines);
+
+//        Document doc;
+//
+//        doc = Jsoup.connect("http://neftm.ru/#map").get();
+//
+//        Elements info = doc.select("div#point-ctl-1");
+//        Elements links = doc.getElementsByClass("span");
+//        System.out.println(links);
 
 //        Document doc;
 //        try {
