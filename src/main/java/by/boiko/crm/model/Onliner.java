@@ -20,10 +20,9 @@ public class Onliner {
         this.images = images;
     }
 
-    public Onliner(String sku, String description, List<Review> reviews, List<Table> tables, List<String> images) {
+    public Onliner(String sku, String description, List<Table> tables, List<String> images) {
         this.sku = sku;
         this.description = description;
-        this.reviews = reviews;
         this.tables = tables;
         this.images = images;
     }

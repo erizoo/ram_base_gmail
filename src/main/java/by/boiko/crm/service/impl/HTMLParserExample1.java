@@ -1,13 +1,11 @@
 package by.boiko.crm.service.impl;
 
-import by.boiko.crm.model.GazProm;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.IOException;
 
 /**
  * Created by Erizo on 09.01.2018.
@@ -16,40 +14,48 @@ public class HTMLParserExample1 {
 
     public static void main(String[] args) throws IOException {
 
-        String fileName = "F:\\shell.txt";
-        List<String> lines = Files.readAllLines(Paths.get(fileName));
-        List<GazProm> gazProms = new ArrayList<>();
-        for (String item : lines) {
-            String[] strings = item.split(",");
-            String[] name = strings[2].split(" ");
-            try {
-                gazProms.add(new GazProm(name[2].substring(0, name[2].length()-1).replace(".", ""), strings[1].trim(), strings[0].trim()));
-            }catch (Exception e){
-                System.out.println(Arrays.toString(strings));
-            }
+        Document doc;
 
-        }
-        File fileDir = new File("F:\\shell.csv");
-            Writer out = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(fileDir), "cp1251"));
+        doc = Jsoup.connect("https://catalog.onliner.by/gps/prestigio/geovisiontour2").get();
 
-            for (GazProm d : gazProms) {
-                out.write("Шелл");
-                out.append(";");
-                out.append("Заправка");
-                out.append(";");
-                out.append(d.getAddress());
-                out.append(";");
-                out.append(d.getLatitud());
-                out.append(";");
-                out.append(d.getLongitud());
-                out.append(";");
-                out.append('\n');
-            }
 
-            out.flush();
-            out.close();
-        System.out.println(lines);
+        Elements divMiddleI = doc.getElementsByClass("g-middle-i");
+        Elements divCatalog = divMiddleI.get(0).children();
+        System.out.println("dsg");
+//        String fileName = "F:\\shell.txt";
+//        List<String> lines = Files.readAllLines(Paths.get(fileName));
+//        List<GazProm> gazProms = new ArrayList<>();
+//        for (String item : lines) {
+//            String[] strings = item.split(",");
+//            String[] name = strings[2].split(" ");
+//            try {
+//                gazProms.add(new GazProm(name[2].substring(0, name[2].length()-1).replace(".", ""), strings[1].trim(), strings[0].trim()));
+//            }catch (Exception e){
+//                System.out.println(Arrays.toString(strings));
+//            }
+//
+//        }
+//        File fileDir = new File("F:\\shell.csv");
+//            Writer out = new BufferedWriter(new OutputStreamWriter(
+//                    new FileOutputStream(fileDir), "cp1251"));
+//
+//            for (GazProm d : gazProms) {
+//                out.write("Шелл");
+//                out.append(";");
+//                out.append("Заправка");
+//                out.append(";");
+//                out.append(d.getAddress());
+//                out.append(";");
+//                out.append(d.getLatitud());
+//                out.append(";");
+//                out.append(d.getLongitud());
+//                out.append(";");
+//                out.append('\n');
+//            }
+//
+//            out.flush();
+//            out.close();
+//        System.out.println(lines);
 
 //        Document doc;
 //

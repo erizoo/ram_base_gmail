@@ -1,7 +1,6 @@
 package by.boiko.crm.service.impl;
 
 import by.boiko.crm.dao.OnlinerDao;
-import by.boiko.crm.model.GazProm;
 import by.boiko.crm.model.Onliner;
 import by.boiko.crm.model.Review;
 import by.boiko.crm.model.Table;
@@ -126,7 +125,7 @@ public class OnlinerServiceImpl implements OnlinerService {
     @Override
     public ArrayList<Table> getDescription(String url, WebDriver driver) {
 
-        driver.navigate().to("https://catalog.onliner.by/gps/prestigio/geovisiontour2");
+        driver.navigate().to(url);
         ArrayList<Table> listTable = new ArrayList<>();
         List<Table.TypeTrTable> listTableTr = null;
 
@@ -134,6 +133,7 @@ public class OnlinerServiceImpl implements OnlinerService {
             List<WebElement> listReviewsText = driver.findElements(By.cssSelector("table.product-specs__table"));
             ArrayList<String> listCategories = new ArrayList<>();
             int i = 0;
+            String picture = null;
             for (WebElement list : listReviewsText) {
                 List<WebElement> TBodyCollection = list.findElements(By.tagName("tbody"));
                 for (WebElement tbody : TBodyCollection) {
@@ -142,53 +142,29 @@ public class OnlinerServiceImpl implements OnlinerService {
                     List<WebElement> TRCollection = tbody.findElements(By.tagName("tr"));
                     listTableTr = new ArrayList<>();
                     for (WebElement tr : TRCollection) {
-                        if (tr.getText().contains("\n")) {
-                            String[] item = tr.getText().split("\n");
-                            ArrayList<String> listParameters = new ArrayList<>();
-                            ArrayList<String> listValues = new ArrayList<>();
-                            if (item.length > 2) {
-                                String str = null;
-                                int count = 0;
-                                for (int j = 1; j < item.length; j++) {
-                                    if (item[j].trim().isEmpty()) {
-                                        count++;
+                        List<WebElement> webElementList = tr.findElements(By.tagName("td"));
+                        if (webElementList.size() == 1) {
+                            System.out.println(webElementList.get(0).getText());
+                        } else {
+                            String nameParam = webElementList.get(0).getText();
+                            List<WebElement> valueParam = webElementList.get(1).findElements(By.tagName("span"));
+                            if (valueParam.size() == 1) {
+                                String valuStr = null;
+                                if (valueParam.get(0).getText().equals("")) {
+                                    String strw = valueParam.get(0).getAttribute("class");
+                                    if (strw.equals("i-tip")) {
+                                        picture = "Есть";
                                     } else {
-                                        str = item[j];
+                                        picture = "Нет";
                                     }
-                                }
-                                if (count == 0) {
-                                    listParameters.add("Комплект поставки");
-                                    StringBuilder stringBuilder = new StringBuilder();
-                                    for (String anItem : item) {
-                                        String[] strItem = anItem.split("-");
-                                        stringBuilder.append(strItem[1]);
-                                    }
-                                    listValues.add(String.valueOf(stringBuilder));
+                                    listTableTr.add(new Table.TypeTrTable(nameParam, picture));
                                 } else {
-                                    listParameters.add(item[0]);
-                                    listValues.add(str);
+                                    valuStr = valueParam.get(0).getText();
+                                    listTableTr.add(new Table.TypeTrTable(nameParam, valuStr));
                                 }
                             } else {
-                                listParameters.add(item[0]);
-                                listValues.add(item[1]);
+                                listTableTr.add(new Table.TypeTrTable(nameParam, "Есть" + "," + " " + valueParam.get(1).getText()));
                             }
-                            listTableTr.add(new Table.TypeTrTable(listParameters.get(0), listValues.get(0)));
-                        }
-                        if (tbodyItem.length <= 2) {
-                            String[] strings = tbodyItem[1].split(" ");
-                            listTableTr.add(new Table.TypeTrTable(strings[0], strings[1]));
-                            break;
-                        }
-                        if (tbodyItem[0].contains("Размеры и вес")) {
-                            for (int j = 1; j < tbodyItem.length; j++) {
-                                String[] strings = tbodyItem[j].split(" ");
-                                if (strings.length > 2) {
-                                    listTableTr.add(new Table.TypeTrTable(strings[0], strings[1] + " " + strings[2]));
-                                } else {
-                                    listTableTr.add(new Table.TypeTrTable(strings[0], strings[1]));
-                                }
-                            }
-                            break;
                         }
                     }
                     listTable.add(new Table(listCategories.get(i), listTableTr));
@@ -199,7 +175,6 @@ public class OnlinerServiceImpl implements OnlinerService {
         } catch (Exception e) {
             listTable.add(new Table("null", listTableTr));
         }
-
         return listTable;
     }
 
@@ -252,7 +227,7 @@ public class OnlinerServiceImpl implements OnlinerService {
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setJavascriptEnabled(true);
         caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-                "D:\\phantomjs\\phantomjs\\bin\\phantomjs.exe");
+                "D:\\phantomjs\\bin\\phantomjs.exe");
         WebDriver driver = new PhantomJSDriver(caps);
 
 
@@ -267,13 +242,13 @@ public class OnlinerServiceImpl implements OnlinerService {
                 System.out.println(shortDescription);
             }
             System.out.println(itemList.getSku() + " " + itemList.getName());
-            List<Review> reviews = getReviews(itemList.getUrl(), driver);
-            System.out.println(reviews);
+//            List<Review> reviews = getReviews(itemList.getUrl(), driver);
+//            System.out.println(reviews);
             ArrayList<Table> description = getDescription(itemList.getUrl(), driver);
             System.out.println(description);
             List<String> images = getImages(itemList.getUrl(), driver);
             System.out.println(images);
-            onlinerList.add(new Onliner(itemList.getSku(), shortDescription, reviews, description, images));
+            onlinerList.add(new Onliner(itemList.getSku(), shortDescription, description, images));
         }
         driver.close();
         return onlinerList;
@@ -392,18 +367,14 @@ public class OnlinerServiceImpl implements OnlinerService {
 
     @Override
     public void test() throws IOException {
+    }
 
-        DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setJavascriptEnabled(true);
-        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-                "D:\\phantomjs\\bin\\phantomjs.exe");
-        WebDriver driver = new PhantomJSDriver(caps);
 
-        driver.navigate().to("https://www.bp.com/ru_ru/on-the-road/russia/find-nearest-bp.html");
-        WebElement divElement = driver.findElement(By.className("page-container"));
-        WebElement nvPage = driver.findElement(By.className("nv-page-content"));
-        System.out.println("dg");
-        WebElement nvPageContent = driver.findElement(By.className("nv-page-content-wrap"));
+//        driver.navigate().to("https://www.bp.com/ru_ru/on-the-road/russia/find-nearest-bp.html");
+//        WebElement divElement = driver.findElement(By.className("page-container"));
+//        WebElement nvPage = driver.findElement(By.className("nv-page-content"));
+//        System.out.println("dg");
+//        WebElement nvPageContent = driver.findElement(By.className("nv-page-content-wrap"));
 
 //
 //        WebElement divElement = driver.findElement(By.className("slider-filter__list"));
@@ -444,7 +415,7 @@ public class OnlinerServiceImpl implements OnlinerService {
 //            out.close();
 //        System.out.println("sg");
 
-    }
+
 
 //
 //        DesiredCapabilities caps = new DesiredCapabilities();
