@@ -138,43 +138,56 @@ public class OnlinerServiceImpl implements OnlinerService {
                 List<WebElement> TBodyCollection = list.findElements(By.tagName("tbody"));
                 for (WebElement tbody : TBodyCollection) {
                     String[] tbodyItem = tbody.getText().split("\\n");
-                    listCategories.add(tbodyItem[0]);
-                    List<WebElement> TRCollection = tbody.findElements(By.tagName("tr"));
                     listTableTr = new ArrayList<>();
-                    for (WebElement tr : TRCollection) {
-                        List<WebElement> webElementList = tr.findElements(By.tagName("td"));
-                        if (webElementList.size() == 1) {
-                            System.out.println(webElementList.get(0).getText());
-                        } else {
-                            String nameParam = webElementList.get(0).getText();
-                            List<WebElement> valueParam = webElementList.get(1).findElements(By.tagName("span"));
-                            if (valueParam.size() == 1) {
-                                String valuStr = null;
-                                if (valueParam.get(0).getText().equals("")) {
-                                    String strw = valueParam.get(0).getAttribute("class");
-                                    if (strw.equals("i-tip")) {
-                                        picture = "Есть";
-                                    } else {
-                                        picture = "Нет";
-                                    }
-                                    listTableTr.add(new Table.TypeTrTable(nameParam, picture));
-                                } else {
-                                    valuStr = valueParam.get(0).getText();
-                                    listTableTr.add(new Table.TypeTrTable(nameParam, valuStr));
-                                }
+                    if (tbodyItem[1].contains("Описание")){
+                        listCategories.add(tbodyItem[0]);
+                        listTableTr.add(new Table.TypeTrTable("Описание", tbodyItem[2]));
+                        listTable.add(new Table(listCategories.get(i), listTableTr));
+                    }else {
+                        listCategories.add(tbodyItem[0]);
+                        List<WebElement> TRCollection = tbody.findElements(By.tagName("tr"));
+                        for (WebElement tr : TRCollection) {
+                            List<WebElement> webElementList = tr.findElements(By.tagName("td"));
+                            if (webElementList.size() == 1) {
+                                System.out.println(webElementList.get(0).getText());
                             } else {
-                                listTableTr.add(new Table.TypeTrTable(nameParam, "Есть" + "," + " " + valueParam.get(1).getText()));
+                                String nameParam = webElementList.get(0).getText();
+                                List<WebElement> valueParam = webElementList.get(1).findElements(By.tagName("span"));
+                                if (valueParam.size() == 1) {
+                                    String valuStr = null;
+                                    if (valueParam.get(0).getText().equals("")) {
+                                        String strw = valueParam.get(0).getAttribute("class");
+                                        if (strw.equals("i-tip")) {
+                                            picture = "Есть";
+                                        } else {
+                                            picture = "Нет";
+                                        }
+                                        listTableTr.add(new Table.TypeTrTable(nameParam, picture));
+                                    } else {
+                                        valuStr = valueParam.get(0).getText();
+                                        listTableTr.add(new Table.TypeTrTable(nameParam, valuStr));
+                                    }
+                                } else {
+                                    listTableTr.add(new Table.TypeTrTable(nameParam, "Есть" + "," + " " + valueParam.get(1).getText()));
+                                }
                             }
                         }
+                        if (listCategories.get(0).contains("Общая информация")){
+                            listTable.add(new Table(listCategories.get(i + 1), listTableTr));
+                            i++;
+                        }else {
+                            listTable.add(new Table(listCategories.get(i), listTableTr));
+                            i++;
+                        }
+
                     }
-                    listTable.add(new Table(listCategories.get(i), listTableTr));
-                    i++;
                 }
 
             }
         } catch (Exception e) {
             listTable.add(new Table("null", listTableTr));
         }
+
         return listTable;
     }
 
@@ -366,7 +379,78 @@ public class OnlinerServiceImpl implements OnlinerService {
     }
 
     @Override
-    public void test() throws IOException {
+    public List<Table> test() throws IOException {
+        DesiredCapabilities caps = new DesiredCapabilities();
+        caps.setJavascriptEnabled(true);
+        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+                "D:\\phantomjs\\phantomjs\\bin\\phantomjs.exe");
+        WebDriver driver = new PhantomJSDriver(caps);
+
+        driver.navigate().to("https://catalog.onliner.by/drills/bosch/gbm132reprof");
+        ArrayList<Table> listTable = new ArrayList<>();
+        List<Table.TypeTrTable> listTableTr = null;
+
+        try {
+            List<WebElement> listReviewsText = driver.findElements(By.cssSelector("table.product-specs__table"));
+            ArrayList<String> listCategories = new ArrayList<>();
+            int i = 0;
+            String picture = null;
+            for (WebElement list : listReviewsText) {
+                List<WebElement> TBodyCollection = list.findElements(By.tagName("tbody"));
+                for (WebElement tbody : TBodyCollection) {
+                    String[] tbodyItem = tbody.getText().split("\\n");
+                    listTableTr = new ArrayList<>();
+                    if (tbodyItem[1].contains("Описание")){
+                        listCategories.add(tbodyItem[0]);
+                        listTableTr.add(new Table.TypeTrTable("Описание", tbodyItem[2]));
+                        listTable.add(new Table(listCategories.get(i), listTableTr));
+                    }else {
+                        listCategories.add(tbodyItem[0]);
+                        List<WebElement> TRCollection = tbody.findElements(By.tagName("tr"));
+                        for (WebElement tr : TRCollection) {
+                            List<WebElement> webElementList = tr.findElements(By.tagName("td"));
+                            if (webElementList.size() == 1) {
+                                System.out.println(webElementList.get(0).getText());
+                            } else {
+                                String nameParam = webElementList.get(0).getText();
+                                List<WebElement> valueParam = webElementList.get(1).findElements(By.tagName("span"));
+                                if (valueParam.size() == 1) {
+                                    String valuStr = null;
+                                    if (valueParam.get(0).getText().equals("")) {
+                                        String strw = valueParam.get(0).getAttribute("class");
+                                        if (strw.equals("i-tip")) {
+                                            picture = "Есть";
+                                        } else {
+                                            picture = "Нет";
+                                        }
+                                        listTableTr.add(new Table.TypeTrTable(nameParam, picture));
+                                    } else {
+                                        valuStr = valueParam.get(0).getText();
+                                        listTableTr.add(new Table.TypeTrTable(nameParam, valuStr));
+                                    }
+                                } else {
+                                    listTableTr.add(new Table.TypeTrTable(nameParam, "Есть" + "," + " " + valueParam.get(1).getText()));
+                                }
+                            }
+                        }
+                        if (listCategories.get(0).contains("Общая информация")){
+                            listTable.add(new Table(listCategories.get(i + 1), listTableTr));
+                            i++;
+                        }else {
+                            listTable.add(new Table(listCategories.get(i), listTableTr));
+                            i++;
+                        }
+
+                    }
+                }
+
+            }
+        } catch (Exception e) {
+            listTable.add(new Table("null", listTableTr));
+        }
+
+        driver.close();
+        return listTable;
     }
 
 

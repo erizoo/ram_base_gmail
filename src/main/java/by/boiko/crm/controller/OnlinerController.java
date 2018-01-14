@@ -148,8 +148,8 @@ public class OnlinerController {
 
     @ResponseBody
     @GetMapping(value = "/test")
-    public String test() throws IOException {
-        return "redirect:/onliner";
+    public List<Table> test() throws IOException {
+        return onlinerService.test();
     }
 
 }
