@@ -129,11 +129,13 @@ public class OnlinerServiceImpl implements OnlinerService {
         ArrayList<Table> listTable = new ArrayList<>();
         List<Table.TypeTrTable> listTableTr = null;
 
+
         try {
             List<WebElement> listReviewsText = driver.findElements(By.cssSelector("table.product-specs__table"));
             ArrayList<String> listCategories = new ArrayList<>();
             int i = 0;
             String picture = null;
+            int countTdElements = 0;
             for (WebElement list : listReviewsText) {
                 List<WebElement> TBodyCollection = list.findElements(By.tagName("tbody"));
                 for (WebElement tbody : TBodyCollection) {
@@ -148,6 +150,7 @@ public class OnlinerServiceImpl implements OnlinerService {
                         List<WebElement> TRCollection = tbody.findElements(By.tagName("tr"));
                         for (WebElement tr : TRCollection) {
                             List<WebElement> webElementList = tr.findElements(By.tagName("td"));
+                            countTdElements = webElementList.size();
                             if (webElementList.size() == 1) {
                                 System.out.println(webElementList.get(0).getText());
                             } else {
@@ -172,7 +175,7 @@ public class OnlinerServiceImpl implements OnlinerService {
                                 }
                             }
                         }
-                        if (listCategories.get(0).contains("Общая информация")){
+                        if (listCategories.get(0).contains("Общая информация") && countTdElements == 1){
                             listTable.add(new Table(listCategories.get(i + 1), listTableTr));
                             i++;
                         }else {
@@ -240,7 +243,7 @@ public class OnlinerServiceImpl implements OnlinerService {
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setJavascriptEnabled(true);
         caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-                "D:\\phantomjs\\phantomjs\\bin\\phantomjs.exe");
+                "D:\\phantomjs\\bin\\phantomjs.exe");
         WebDriver driver = new PhantomJSDriver(caps);
 
 
@@ -383,10 +386,10 @@ public class OnlinerServiceImpl implements OnlinerService {
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setJavascriptEnabled(true);
         caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-                "D:\\phantomjs\\phantomjs\\bin\\phantomjs.exe");
+                "D:\\phantomjs\\bin\\phantomjs.exe");
         WebDriver driver = new PhantomJSDriver(caps);
 
-        driver.navigate().to("https://catalog.onliner.by/drills/bosch/gbm132reprof");
+        driver.navigate().to("https://catalog.onliner.by/notebook/hp/1za81ea");
         ArrayList<Table> listTable = new ArrayList<>();
         List<Table.TypeTrTable> listTableTr = null;
 
@@ -395,6 +398,7 @@ public class OnlinerServiceImpl implements OnlinerService {
             ArrayList<String> listCategories = new ArrayList<>();
             int i = 0;
             String picture = null;
+            int countTdElements = 0;
             for (WebElement list : listReviewsText) {
                 List<WebElement> TBodyCollection = list.findElements(By.tagName("tbody"));
                 for (WebElement tbody : TBodyCollection) {
@@ -409,6 +413,7 @@ public class OnlinerServiceImpl implements OnlinerService {
                         List<WebElement> TRCollection = tbody.findElements(By.tagName("tr"));
                         for (WebElement tr : TRCollection) {
                             List<WebElement> webElementList = tr.findElements(By.tagName("td"));
+                            countTdElements = webElementList.size();
                             if (webElementList.size() == 1) {
                                 System.out.println(webElementList.get(0).getText());
                             } else {
@@ -433,7 +438,7 @@ public class OnlinerServiceImpl implements OnlinerService {
                                 }
                             }
                         }
-                        if (listCategories.get(0).contains("Общая информация")){
+                        if (listCategories.get(0).contains("Общая информация") && countTdElements == 1){
                             listTable.add(new Table(listCategories.get(i + 1), listTableTr));
                             i++;
                         }else {
