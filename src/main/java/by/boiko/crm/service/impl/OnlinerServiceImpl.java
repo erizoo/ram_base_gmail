@@ -251,7 +251,7 @@ public class OnlinerServiceImpl implements OnlinerService {
         for (SkuModel itemList : skuModelList) {
             String shortDescription;
             try {
-                shortDescription = getShortDescription(itemList.getUrl(), driver);
+                shortDescription = getShortDescription("https://catalog.onliner.by/notebook/lenovo/80ml009dpb", driver);
                 System.out.println(shortDescription);
             } catch (Exception e) {
                 shortDescription = "nope";
@@ -260,11 +260,11 @@ public class OnlinerServiceImpl implements OnlinerService {
             System.out.println(itemList.getSku() + " " + itemList.getName());
 //            List<Review> reviews = getReviews(itemList.getUrl(), driver);
 //            System.out.println(reviews);
-            ArrayList<Table> description = getDescription(itemList.getUrl(), driver);
+            ArrayList<Table> description = getDescription("https://catalog.onliner.by/notebook/lenovo/80ml009dpb", driver);
             System.out.println(description);
-            List<String> images = getImages(itemList.getUrl(), driver);
+            List<String> images = getImages("https://catalog.onliner.by/notebook/lenovo/80ml009dpb", driver);
             System.out.println(images);
-            onlinerList.add(new Onliner(itemList.getSku(), shortDescription, description, images));
+            onlinerList.add(new Onliner("302092", shortDescription, description, images));
         }
         driver.close();
         return onlinerList;

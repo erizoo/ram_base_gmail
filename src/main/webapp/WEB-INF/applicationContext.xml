@@ -11,6 +11,7 @@
     <import resource="hibernate-config.xml"/>
     <mvc:resources mapping="/resources/**" location="/resources/"/>
 
+
     <context:component-scan base-package="by.boiko.crm"/>
     <mvc:annotation-driven/>
     <tx:annotation-driven/>

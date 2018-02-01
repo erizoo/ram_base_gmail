@@ -42,7 +42,7 @@ public class OnlinerDaoImpl implements OnlinerDao {
 
     @Override
     public List<SkuModel> loadGoods() {
-        return sessionFactory.getCurrentSession().createQuery("from SkuModel").setFirstResult(6501).setMaxResults(260).list();
+        return sessionFactory.getCurrentSession().createQuery("from SkuModel").setFirstResult(1).setMaxResults(1).list();
     }
 
     @Override
