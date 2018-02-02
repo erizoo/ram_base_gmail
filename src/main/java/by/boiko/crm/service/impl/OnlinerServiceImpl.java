@@ -141,11 +141,11 @@ public class OnlinerServiceImpl implements OnlinerService {
                 for (WebElement tbody : TBodyCollection) {
                     String[] tbodyItem = tbody.getText().split("\\n");
                     listTableTr = new ArrayList<>();
-                    if (tbodyItem[1].contains("Описание")){
+                    if (tbodyItem[1].contains("Описание")) {
                         listCategories.add(tbodyItem[0]);
                         listTableTr.add(new Table.TypeTrTable("Описание", tbodyItem[2]));
                         listTable.add(new Table(listCategories.get(i), listTableTr));
-                    }else {
+                    } else {
                         listCategories.add(tbodyItem[0]);
                         List<WebElement> TRCollection = tbody.findElements(By.tagName("tr"));
                         for (WebElement tr : TRCollection) {
@@ -175,10 +175,10 @@ public class OnlinerServiceImpl implements OnlinerService {
                                 }
                             }
                         }
-                        if (listCategories.get(0).contains("Общая информация") && countTdElements == 1){
+                        if (listCategories.get(0).contains("Общая информация") && countTdElements == 1) {
                             listTable.add(new Table(listCategories.get(i + 1), listTableTr));
                             i++;
-                        }else {
+                        } else {
                             listTable.add(new Table(listCategories.get(i), listTableTr));
                             i++;
                         }
@@ -404,11 +404,11 @@ public class OnlinerServiceImpl implements OnlinerService {
                 for (WebElement tbody : TBodyCollection) {
                     String[] tbodyItem = tbody.getText().split("\\n");
                     listTableTr = new ArrayList<>();
-                    if (tbodyItem[1].contains("Описание")){
+                    if (tbodyItem[1].contains("Описание")) {
                         listCategories.add(tbodyItem[0]);
                         listTableTr.add(new Table.TypeTrTable("Описание", tbodyItem[2]));
                         listTable.add(new Table(listCategories.get(i), listTableTr));
-                    }else {
+                    } else {
                         listCategories.add(tbodyItem[0]);
                         List<WebElement> TRCollection = tbody.findElements(By.tagName("tr"));
                         for (WebElement tr : TRCollection) {
@@ -438,10 +438,10 @@ public class OnlinerServiceImpl implements OnlinerService {
                                 }
                             }
                         }
-                        if (listCategories.get(0).contains("Общая информация") && countTdElements == 1){
+                        if (listCategories.get(0).contains("Общая информация") && countTdElements == 1) {
                             listTable.add(new Table(listCategories.get(i + 1), listTableTr));
                             i++;
-                        }else {
+                        } else {
                             listTable.add(new Table(listCategories.get(i), listTableTr));
                             i++;
                         }
@@ -457,6 +457,30 @@ public class OnlinerServiceImpl implements OnlinerService {
         driver.close();
         return listTable;
     }
+
+    @Override
+    public Onliner getGoods(String url, String sku) {
+
+        String decodedUrl = new String(Base64.getDecoder().decode(url));
+
+        DesiredCapabilities caps = new DesiredCapabilities();
+        caps.setJavascriptEnabled(true);
+        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+                "D:\\phantomjs\\bin\\phantomjs.exe");
+        WebDriver driver = new PhantomJSDriver(caps);
+
+        String shortDescription = getShortDescription(decodedUrl, driver);
+        System.out.println(shortDescription);
+//            List<Review> reviews = getReviews(itemList.getUrl(), driver);
+//            System.out.println(reviews);
+        ArrayList<Table> description = getDescription(decodedUrl, driver);
+        System.out.println(description);
+        List<String> images = getImages(decodedUrl, driver);
+        System.out.println(images);
+        Onliner onliner = new Onliner(sku, shortDescription, description, images);
+        driver.close();
+        return onliner;
+}
 
 
 //        driver.navigate().to("https://www.bp.com/ru_ru/on-the-road/russia/find-nearest-bp.html");
@@ -503,7 +527,6 @@ public class OnlinerServiceImpl implements OnlinerService {
 //            out.flush();
 //            out.close();
 //        System.out.println("sg");
-
 
 
 //

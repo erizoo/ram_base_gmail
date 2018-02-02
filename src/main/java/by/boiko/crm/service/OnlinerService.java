@@ -49,4 +49,6 @@ public interface OnlinerService {
     void equalsToDb();
 
     List<Table> test() throws IOException;
+
+    Onliner getGoods(String url, String sku);
 }

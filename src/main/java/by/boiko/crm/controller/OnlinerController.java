@@ -101,6 +101,12 @@ public class OnlinerController {
         return onlinerService.getAllGoods(skuModelsList);
     }
 
+    @ResponseBody
+    @GetMapping(value = "/all_goods/{url}/{sku}")
+    public Onliner getGoodsFast(@PathVariable(value = "url") String url, @PathVariable(value = "sku") String sku) {
+        return onlinerService.getGoods(url, sku);
+    }
+
 
     /**
      * Save to database goods for sku and url.

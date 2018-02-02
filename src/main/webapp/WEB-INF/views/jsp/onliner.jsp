@@ -107,17 +107,38 @@
         }
 
         function setSku(url) {
+            var json;
             var sku = document.getElementById('setSkuText').value;
             var encodeUrl = btoa(url);
-            console.log(url);
             $.ajax({
-                type: "POST",
-                url: "/bind/" + sku + "/" + encodeUrl,
-                dataType: "text",
+                type: "GET",
+                dataType: 'text',
+                contentType: "application/json",
+                url: "/all_goods/" + encodeUrl + "/" + sku,
                 success: function (data) {
-                    location.reload();
+                    console.log(data);
+                    function download(text, name, type) {
+                        var a = document.createElement("a");
+                        var file = new Blob([text], {type: type});
+                        a.href = URL.createObjectURL(file);
+                        a.download = name;
+                        a.click();
+                    }
+
+                    download(data, 'test.json', 'text/plain');
                 }
             });
+            // var sku = document.getElementById('setSkuText').value;
+            // var encodeUrl = btoa(url);
+            // console.log(url);
+            // $.ajax({
+            //     type: "POST",
+            //     url: "/bind/" + sku + "/" + encodeUrl,
+            //     dataType: "text",
+            //     success: function (data) {
+            //         location.reload();
+            //     }
+            // });
         }
     </script>
     <div class="input-group">
