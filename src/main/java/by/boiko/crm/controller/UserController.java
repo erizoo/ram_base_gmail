@@ -4,7 +4,9 @@ package by.boiko.crm.controller;
 import by.boiko.crm.model.Category;
 import by.boiko.crm.model.Email;
 import by.boiko.crm.model.Order;
+import by.boiko.crm.model.Parser;
 import by.boiko.crm.service.UserService;
+import by.boiko.crm.service.YandexMailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,44 +27,44 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private YandexMailService yandexMailService;
 
     @RequestMapping(value = "/")
     public ModelAndView getIndexPage() {
         return new ModelAndView("index");
     }
 
-    @RequestMapping(value = "/start")
-    public String downloadFile() throws IOException {
-        userService.downloadFile();
-        return "redirect:/categories";
-    }
-
-    @RequestMapping(value = "/categories")
-    public ModelAndView getAllCategories() throws IOException {
-        ModelAndView mv = new ModelAndView("listCat");
-        mv.addObject("counts", userService.getCount());
-        mv.addObject("categories", userService.getAll());
-        return mv;
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/categories_json/{page}")
-    public List<Category> getAllCategoriesJson(@PathVariable(value = "page") int page) throws IOException {
-        return userService.getAllFromPage(page);
-    }
-
-    @RequestMapping(value = "/user/{number}")
-    public ModelAndView getAllUsersForNumber(@PathVariable(value = "number") int number) throws IOException {
-        ModelAndView mv = new ModelAndView("list");
-        mv.addObject("users", userService.getTop(number));
-        return mv;
-    }
+//    @RequestMapping(value = "/start")
+//    public String downloadFile() throws IOException {
+//        userService.downloadFile();
+//        return "redirect:/categories";
+//    }
+//
+//    @RequestMapping(value = "/categories")
+//    public ModelAndView getAllCategories() throws IOException {
+//        ModelAndView mv = new ModelAndView("listCat");
+//        mv.addObject("counts", userService.getCount());
+//        mv.addObject("categories", userService.getAll());
+//        return mv;
+//    }
+//
+//    @ResponseBody
+//    @RequestMapping(value = "/categories_json/{page}")
+//    public List<Category> getAllCategoriesJson(@PathVariable(value = "page") int page) throws IOException {
+//        return userService.getAllFromPage(page);
+//    }
+//
+//    @RequestMapping(value = "/user/{number}")
+//    public ModelAndView getAllUsersForNumber(@PathVariable(value = "number") int number) throws IOException {
+//        ModelAndView mv = new ModelAndView("list");
+//        mv.addObject("users", userService.getTop(number));
+//        return mv;
+//    }
 
     @GetMapping(value = "/email")
     @ResponseBody
-    public List<Order> getAllEmails() throws MessagingException {
-        return userService.getEmails();
+    public List<Parser> getAllEmails() throws MessagingException, IOException {
+        return yandexMailService.check();
     }
 
 }

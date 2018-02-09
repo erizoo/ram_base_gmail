@@ -1,36 +1,36 @@
-package by.boiko.crm.model;
+package by.boiko.crm.service.impl.ParserMail;
+
+import by.boiko.crm.model.ItemsOrder;
 
 import java.util.List;
 
-public class Parser {
+public class Unishop {
 
     private String name;
     private String phoneNumber;
     private String address;
     private String notes;
+    private String email;
     private List<ItemsOrder> listOrder;
-    private String source;
 
-    public Parser(String name, String phoneNumber, String address, String notes, List<ItemsOrder> listOrder, String source) {
+    public Unishop() {
+    }
+
+    public Unishop(String name, String phoneNumber, String address, String notes, String email, List<ItemsOrder> listOrder) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.notes = notes;
+        this.email = email;
         this.listOrder = listOrder;
-        this.source = source;
     }
 
-    public Parser(String name, String phoneNumber, String source) {
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.source = source;
+    public String getEmail() {
+        return email;
     }
 
-    public Parser(String name, String phoneNumber, List<ItemsOrder> listOrder, String source) {
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.listOrder = listOrder;
-        this.source = source;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getName() {
@@ -71,13 +71,5 @@ public class Parser {
 
     public void setListOrder(List<ItemsOrder> listOrder) {
         this.listOrder = listOrder;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
     }
 }

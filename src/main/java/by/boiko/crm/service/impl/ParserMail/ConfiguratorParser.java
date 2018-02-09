@@ -13,17 +13,10 @@ import java.util.stream.IntStream;
 
 public class ConfiguratorParser {
 
-    private List itemsList = new ArrayList();
-    private List itemsListTwo = new ArrayList();
-    private List itemsListThree = new ArrayList();
     private List<ItemsOrder> list = new ArrayList<>();
     private List<String> listSku = new ArrayList<>();
     private List<String> listAmount = new ArrayList<>();
     private List<String> listPrice = new ArrayList<>();
-    private String[] strings;
-    private String sku;
-    private String amount;
-    private String price;
 
     public Configurator parser(String[] lines) {
         Configurator configurator = new Configurator();

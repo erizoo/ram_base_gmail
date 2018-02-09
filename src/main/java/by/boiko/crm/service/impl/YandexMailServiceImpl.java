@@ -1,8 +1,9 @@
 package by.boiko.crm.service.impl;
 
 import by.boiko.crm.model.Parser;
-import by.boiko.crm.service.impl.ParserMail.Configurator;
-import by.boiko.crm.service.impl.ParserMail.ConfiguratorParser;
+import by.boiko.crm.service.YandexMailService;
+import by.boiko.crm.service.impl.ParserMail.*;
+import org.springframework.stereotype.Service;
 
 import javax.mail.*;
 import javax.mail.internet.MimeMultipart;
@@ -11,19 +12,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class YandexMail {
+@Service
+public class YandexMailServiceImpl implements YandexMailService {
 
     private static final String HOST = "pop.yandex.ru";
     private static final String USERNAME = "ram.misnk@yandex.by";
-    private static final String PASSWORD = "smartshop12";
+    private static final String PASSWORD = "Alex20968";
     private static final String MAIL_STORE_TYPE = "pop3";
     private static final String MAIL_PORT = "995";
     private static final String TYPE_EMAIL = "INBOX";
     private static final String TYPE_STORE = "pop3s";
     private static List<Parser> orderList = new ArrayList<>();
 
-    public static void check(String host, String storeType, String user,
-                             String password) throws IOException {
+    public List<Parser> check() throws IOException {
         try {
             Message message;
             Properties properties = new Properties();
@@ -32,7 +33,7 @@ public class YandexMail {
             properties.put("mail.pop3.starttls.enable", "true");
             Session emailSession = Session.getDefaultInstance(properties);
             Store store = emailSession.getStore(TYPE_STORE);
-            store.connect(host, user, password);
+            store.connect(HOST, USERNAME, PASSWORD);
             Folder emailFolder = store.getFolder(TYPE_EMAIL);
             emailFolder.open(Folder.READ_ONLY);
 
@@ -43,8 +44,8 @@ public class YandexMail {
                 System.out.println("messages.length---" + messages.length);
                 Object content = null;
                 for (Message items : messages) {
-                    System.out.println("Subject: " + items.getSubject());
-                    System.out.println("From: " + items.getFrom()[0]);
+//                    System.out.println("Subject: " + items.getSubject());
+//                    System.out.println("From: " + items.getFrom()[0]);
                     content = items.getContent();
                     String context = null;
                     if (content instanceof String) {
@@ -52,7 +53,7 @@ public class YandexMail {
                     } else if (content instanceof Multipart) {
                         Multipart mp = (Multipart) content;
                         context = getTextFromMimeMultipart((MimeMultipart) mp);
-                        System.out.println(context);
+
                     }
                     assert context != null;
                     String[] linesEmail = context.split("[\\r\\n]+", -1);
@@ -60,6 +61,18 @@ public class YandexMail {
                         ConfiguratorParser configuratorParser = new ConfiguratorParser();
                         Configurator configurator = configuratorParser.parser(linesEmail);
                         orderList.add(new Parser(configurator.getName(), configurator.getPhoneNumber(), configurator.getAddress(), configurator.getNotes(), configurator.getListOrder(), "Конфигуратор"));
+                    }if (context.contains("поступил заказ на звонок")){
+                        UnishopParser unishopParser = new UnishopParser();
+                        Unishop unishop = unishopParser.parserCall(linesEmail);
+                        orderList.add(new Parser(unishop.getName(), unishop.getPhoneNumber(), "UNISHOP"));
+                    } if (context.contains("В ваш магазин \"Ram.by\" поступил новый заказ!")){
+                        UnishopParser unishopParser = new UnishopParser();
+                        Unishop unishop = unishopParser.parser(linesEmail);
+                        orderList.add(new Parser(unishop.getName(), unishop.getPhoneNumber(), unishop.getAddress(), unishop.getNotes(), unishop.getListOrder(), "UNISHOP"));
+                    } if (context.contains("Заказ компьютера по параметрам")){
+                        PCForPrametrsParser pcForPrametrsParser = new PCForPrametrsParser();
+                        PCForPrametrs pcForPrametrs = pcForPrametrsParser.parser(linesEmail);
+                        orderList.add(new Parser(pcForPrametrs.getName(), pcForPrametrs.getPhoneNumber(), pcForPrametrs.getListOrder(), "Компьютер по параметрам"));
                     }
                         store.close();
                 }
@@ -67,12 +80,7 @@ public class YandexMail {
         } catch (MessagingException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-
-        check(HOST, MAIL_STORE_TYPE, USERNAME, PASSWORD);
-
+        return orderList;
     }
 
     private static String getTextFromMimeMultipart(
