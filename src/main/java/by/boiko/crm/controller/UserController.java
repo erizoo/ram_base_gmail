@@ -29,6 +29,10 @@ public class UserController {
     @Autowired
     private YandexMailService yandexMailService;
 
+    @Autowired
+    private UserService userService;
+
+
     @RequestMapping(value = "/")
     public ModelAndView getIndexPage() {
         return new ModelAndView("index");
@@ -63,8 +67,8 @@ public class UserController {
 
     @GetMapping(value = "/email")
     @ResponseBody
-    public List<Parser> getAllEmails() throws MessagingException, IOException {
-        return yandexMailService.check();
+    public List<Order> getAllEmails() throws MessagingException, IOException {
+        return userService.getEmails();
     }
 
 }
