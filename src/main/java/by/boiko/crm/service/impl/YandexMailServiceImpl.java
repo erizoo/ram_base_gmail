@@ -1,5 +1,6 @@
 package by.boiko.crm.service.impl;
 
+import by.boiko.crm.model.Order;
 import by.boiko.crm.model.Parser;
 import by.boiko.crm.service.YandexMailService;
 import by.boiko.crm.service.impl.ParserMail.*;
@@ -25,6 +26,7 @@ public class YandexMailServiceImpl implements YandexMailService {
     private static List<Parser> orderList = new ArrayList<>();
 
     public List<Parser> check() throws IOException {
+        orderList.clear();
         try {
             Message message;
             Properties properties = new Properties();
@@ -35,17 +37,16 @@ public class YandexMailServiceImpl implements YandexMailService {
             Store store = emailSession.getStore(TYPE_STORE);
             store.connect(HOST, USERNAME, PASSWORD);
             Folder emailFolder = store.getFolder(TYPE_EMAIL);
-            emailFolder.open(Folder.READ_ONLY);
-
+            emailFolder.open(Folder.READ_WRITE);
             Message[] messages = emailFolder.getMessages();
+            emailFolder.setFlags(messages, new Flags(Flags.Flag.SEEN), true);
             if (messages.length == 0) {
+                orderList.add(new Parser("No emails"));
                 System.out.println("No emails");
             } else {
                 System.out.println("messages.length---" + messages.length);
                 Object content = null;
                 for (Message items : messages) {
-//                    System.out.println("Subject: " + items.getSubject());
-//                    System.out.println("From: " + items.getFrom()[0]);
                     content = items.getContent();
                     String context = null;
                     if (content instanceof String) {
@@ -53,7 +54,6 @@ public class YandexMailServiceImpl implements YandexMailService {
                     } else if (content instanceof Multipart) {
                         Multipart mp = (Multipart) content;
                         context = getTextFromMimeMultipart((MimeMultipart) mp);
-
                     }
                     assert context != null;
                     String[] linesEmail = context.split("[\\r\\n]+", -1);
@@ -73,12 +73,19 @@ public class YandexMailServiceImpl implements YandexMailService {
                         PCForPrametrsParser pcForPrametrsParser = new PCForPrametrsParser();
                         PCForPrametrs pcForPrametrs = pcForPrametrsParser.parser(linesEmail);
                         orderList.add(new Parser(pcForPrametrs.getName(), pcForPrametrs.getPhoneNumber(), pcForPrametrs.getListOrder(), "Компьютер по параметрам"));
+                    } else {
+                        orderList.add(new Parser("No emails"));
                     }
-                        store.close();
+                    items.setFlag(Flags.Flag.DELETED, true);
                 }
             }
+            emailFolder.close(true);
+            store.close();
         } catch (MessagingException e) {
+            orderList.clear();
+            orderList.add(new Parser(e.getMessage()));
             e.printStackTrace();
+            return orderList;
         }
         return orderList;
     }

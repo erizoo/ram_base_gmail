@@ -21,13 +21,11 @@ public class PCForPrametrsParser {
             } if (lines[i].contains("Мобильный")){
                 String[] str = lines[i + 2].split(">");
                 pcForPrametrs.setPhoneNumber(str[1].substring(4, str[1].length()-4));
-                System.out.println("dsgg");
             } if (lines[i].contains("Процессор")){
                 String[] str = lines[i + 3].split(">");
                 listSku.add("Процессор" + " " + str[2]);
                 listAmount.add("1");
                 listPrice.add(lines[i + 6].trim());
-                System.out.println("sdg");
             } if (lines[i].contains("Кулер")){
                 listSku.add("Кулер");
                 listAmount.add("1");

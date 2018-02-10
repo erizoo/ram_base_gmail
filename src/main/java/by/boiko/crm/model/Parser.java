@@ -11,6 +11,10 @@ public class Parser {
     private List<ItemsOrder> listOrder;
     private String source;
 
+    public Parser(String source) {
+        this.source = source;
+    }
+
     public Parser(String name, String phoneNumber, String address, String notes, List<ItemsOrder> listOrder, String source) {
         this.name = name;
         this.phoneNumber = phoneNumber;
