@@ -218,7 +218,7 @@ public class OnlinerServiceImpl implements OnlinerService {
         SkuModel skuModel = new SkuModel();
         skuModel.setSku(sku);
         skuModel.setUrl(decodedUrl);
-        onlinerDao.save(skuModel);
+//        onlinerDao.save(skuModel);
     }
 
     @Override
@@ -377,7 +377,7 @@ public class OnlinerServiceImpl implements OnlinerService {
             skuModel.setSku(items.getSku());
             skuModel.setName(items.getName());
             skuModel.setUrl(items.getUrl());
-            onlinerDao.save(skuModel);
+//            onlinerDao.save(skuModel);
         }
     }
 
