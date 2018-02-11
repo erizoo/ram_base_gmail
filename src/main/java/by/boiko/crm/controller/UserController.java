@@ -67,8 +67,8 @@ public class UserController {
 
     @GetMapping(value = "/email")
     @ResponseBody
-    public List<Order> getAllEmails() throws MessagingException, IOException {
-        return userService.getEmails();
+    public List<Parser> getAllEmails() throws MessagingException, IOException {
+        return yandexMailService.check();
     }
 
 }

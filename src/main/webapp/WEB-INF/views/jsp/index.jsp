@@ -16,6 +16,7 @@
     <spring:url value="/start" var="loginUrl"/>
     <spring:url value="/email" var="loginUrlGmail"/>
     <spring:url value="/onliner" var="loginUrlOnliner"/>
+    <spring:url value="/start" var="loginUrlMarket"/>
     <%--<form action="${loginUrl}" method="post">--%>
         <%--<br>--%>
         <%--<button class="btn btn-lg btn-danger btn-block" onclick="location.href='${loginUrl}'">Парсер Маркет</button>--%>
@@ -27,6 +28,10 @@
     <form action="${loginUrlOnliner}" method="get">
         <br>
         <button class="btn btn-lg btn-danger btn-block" onclick="location.href='${loginUrlGmail}'">Парсер Onliner</button>
+    </form>
+    <form action="${loginUrlMarket}" method="get">
+        <br>
+        <button class="btn btn-lg btn-danger btn-block" onclick="location.href='${loginUrlMarket}'">Парсер Market</button>
     </form>
 </div>
 </body>
