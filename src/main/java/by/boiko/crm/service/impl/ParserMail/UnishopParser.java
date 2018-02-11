@@ -61,6 +61,7 @@ public class UnishopParser {
                 unishop.setPhoneNumber(String.valueOf(stringBuilder));
             }
         }
+        unishop.setNotes("Заказ звонка");
         return unishop;
     }
 

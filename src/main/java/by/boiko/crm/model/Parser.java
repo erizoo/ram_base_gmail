@@ -37,6 +37,19 @@ public class Parser {
         this.source = source;
     }
 
+    public Parser(String name, String phoneNumber, String address, List<ItemsOrder> listOrder, String source) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.listOrder = listOrder;
+        this.source = source;
+    }
+
+    public Parser(String phoneNumber, String source) {
+        this.phoneNumber = phoneNumber;
+        this.source = source;
+    }
+
     public String getName() {
         return name;
     }

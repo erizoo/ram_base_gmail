@@ -61,20 +61,31 @@ public class YandexMailServiceImpl implements YandexMailService {
                         ConfiguratorParser configuratorParser = new ConfiguratorParser();
                         Configurator configurator = configuratorParser.parser(linesEmail);
                         orderList.add(new Parser(configurator.getName(), configurator.getPhoneNumber(), configurator.getAddress(), configurator.getNotes(), configurator.getListOrder(), "Конфигуратор"));
-                    }if (context.contains("поступил заказ на звонок")){
+                    }
+                    if (context.contains("поступил заказ на звонок")){
                         UnishopParser unishopParser = new UnishopParser();
                         Unishop unishop = unishopParser.parserCall(linesEmail);
-                        orderList.add(new Parser(unishop.getName(), unishop.getPhoneNumber(), "UNISHOP"));
-                    } if (context.contains("В ваш магазин \"Ram.by\" поступил новый заказ!")){
+                        orderList.add(new Parser(unishop.getName(), unishop.getPhoneNumber(), "Заказ на звонок UNISHOP"));
+                    }
+                    if (context.contains("В ваш магазин \"Ram.by\" поступил новый заказ!")){
                         UnishopParser unishopParser = new UnishopParser();
                         Unishop unishop = unishopParser.parser(linesEmail);
                         orderList.add(new Parser(unishop.getName(), unishop.getPhoneNumber(), unishop.getAddress(), unishop.getNotes(), unishop.getListOrder(), "UNISHOP"));
-                    } if (context.contains("Заказ компьютера по параметрам")){
+                    }
+                    if (context.contains("Заказ компьютера по параметрам")){
                         PCForPrametrsParser pcForPrametrsParser = new PCForPrametrsParser();
                         PCForPrametrs pcForPrametrs = pcForPrametrsParser.parser(linesEmail);
                         orderList.add(new Parser(pcForPrametrs.getName(), pcForPrametrs.getPhoneNumber(), pcForPrametrs.getListOrder(), "Компьютер по параметрам"));
-                    } else {
-                        orderList.add(new Parser("No emails"));
+                    }
+                    if (context.contains("Здравствуйте, Евгений!")){
+                        DealByParser dealByParser = new DealByParser();
+                        DealBy dealBy = dealByParser.parser(linesEmail);
+                        orderList.add(new Parser(dealBy.getName(), dealBy.getPhoneNumber(), dealBy.getAddress(), dealBy.getListOrder(), "DEAL.BY"));
+                    }
+                    if (context.contains("Отложенный звонок с сайта")) {
+                        DeferredCallParser deferredCallParser = new DeferredCallParser();
+                        DeferredCall deferredCall = deferredCallParser.parser(linesEmail);
+                        orderList.add(new Parser(deferredCall.getPhoneNumber(),"Отложенный звонок с сайта"));
                     }
                     items.setFlag(Flags.Flag.DELETED, true);
                 }
