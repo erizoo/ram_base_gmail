@@ -4,7 +4,9 @@ import by.boiko.crm.model.Onliner;
 import by.boiko.crm.model.Table;
 import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.pojo.UnattachedGoods;
+import by.boiko.crm.service.MarketService;
 import by.boiko.crm.service.OnlinerService;
+import by.boiko.crm.service.impl.MarketParserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +27,11 @@ import static org.apache.commons.io.FileUtils.getFile;
 @Controller
 public class OnlinerController {
 
+    @Autowired
     private final OnlinerService onlinerService;
+
+    @Autowired
+    private MarketService marketService;
 
     @Autowired
     public OnlinerController(OnlinerService onlinerService) {
@@ -156,6 +162,12 @@ public class OnlinerController {
     @GetMapping(value = "/test")
     public List<Table> test() throws IOException {
         return onlinerService.test();
+    }
+
+    @GetMapping(value = "/start")
+    public String startParser() throws IOException, InterruptedException {
+        marketService.startParser();
+        return "redirect:/onliner";
     }
 
 }

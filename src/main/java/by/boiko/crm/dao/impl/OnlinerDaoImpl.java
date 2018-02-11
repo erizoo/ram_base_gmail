@@ -1,6 +1,7 @@
 package by.boiko.crm.dao.impl;
 
 import by.boiko.crm.dao.OnlinerDao;
+import by.boiko.crm.model.Market;
 import by.boiko.crm.model.pojo.PendingGoods;
 import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.pojo.UnattachedGoods;
@@ -20,8 +21,8 @@ public class OnlinerDaoImpl implements OnlinerDao {
     private SessionFactory sessionFactory;
 
     @Override
-    public void save(SkuModel skuModel) {
-        sessionFactory.getCurrentSession().save(skuModel);
+    public void save(Market market) {
+        sessionFactory.getCurrentSession().save(market);
     }
 
     @Override

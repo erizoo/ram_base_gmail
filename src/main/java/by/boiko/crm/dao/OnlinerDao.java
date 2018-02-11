@@ -1,5 +1,6 @@
 package by.boiko.crm.dao;
 
+import by.boiko.crm.model.Market;
 import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.pojo.UnattachedGoods;
 
@@ -11,7 +12,7 @@ import java.util.List;
 
 public interface OnlinerDao {
 
-    void save(SkuModel skuModel);
+    void save(Market market);
 
     List loadAllGoods(int page);
 
