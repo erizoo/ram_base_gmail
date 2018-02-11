@@ -23,7 +23,7 @@ public class YandexMailServiceImpl implements YandexMailService {
     private static final String MAIL_PORT = "995";
     private static final String TYPE_EMAIL = "INBOX";
     private static final String TYPE_STORE = "pop3s";
-    private static List<Parser> orderList = new ArrayList<>();
+    private List<Parser> orderList = new ArrayList<>();
 
     public List<Parser> check() throws IOException {
         orderList.clear();

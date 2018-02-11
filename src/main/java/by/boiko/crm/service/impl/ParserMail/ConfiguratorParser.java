@@ -47,8 +47,6 @@ public class ConfiguratorParser {
         return configurator;
     }
 
-
-
     private static <K, V> Map<K, V> zipToMap(List<K> keys, List<V> values) {
         Iterator<K> keyIter = keys.iterator();
         Iterator<V> valIter = values.iterator();
