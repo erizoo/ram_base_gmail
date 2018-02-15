@@ -31,97 +31,85 @@ import java.util.stream.Stream;
  */
 @Service
 @Transactional
-public class MarketParserServiceImpl implements MarketService {
+public class MarketParserServiceImpl {
 
     @Autowired
     private MarketDao marketDao;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
+        String fileName = "resultMarketVideo.txt";
+        Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("resultMarketVideoWithUrl.txt"), "utf-8"));
+        Stream<String> stream = Files.lines(Paths.get(fileName));
+        List<String> result = stream.collect(Collectors.toList());
+        List<String> marketList = new ArrayList<>();
+        DesiredCapabilities caps = new DesiredCapabilities();
+        System.setProperty("webdriver.gecko.driver",
+                "D:\\geckodriver.exe");
+        WebDriver driver = new FirefoxDriver();
+        for (String items : result) {
+            Thread.sleep(5000);
+            String[] strings = items.split(";");
+            driver.navigate().to(strings[1]);
+            try {
+                WebElement image = driver.findElement(By.xpath("//iframe[@class='sandbox']"));
+                String urlVideo = image.getAttribute("src");
+                String[] strs = urlVideo.split("youtube.com");
+                String[] strings1 = strs[1].split("%3F");
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("www.youtube.com").append(strings1[0].replaceAll("%2F", "/"));
+                System.out.println(strings[0] + ";" + stringBuilder);
+                writer.write(strings[0] + ";" + stringBuilder);
+                writer.write("\n");
+                writer.flush();
+            } catch (Exception e){
+                writer.write(strings[0] + ";" + "нету");
+                System.out.println(strings[0] + ";" + "нету");
+                writer.write("\n");
+                writer.flush();
+            }
+
+        }
+//        String fileName = "C:\\Users\\Erizo\\Downloads\\Telegram Desktop\\out.txt";
 //        DesiredCapabilities caps = new DesiredCapabilities();
-//        caps.setJavascriptEnabled(true);
-//        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-//                "D:\\phantomjs\\phantomjs\\bin\\phantomjs.exe");
-//        WebDriver driver = new PhantomJSDriver(caps);
-//        String fileName = "F://out.txt";
-//        Stream<String> stream = Files.lines(Paths.get(fileName));
-//        List<String> result = stream.collect(Collectors.toList());
-//        int count = 0;
-//        String[] strings = null;
-//        String urlImage = null;
-//        String resultMar = null;
-//        stream.close();
-//        List<Market> marketList = new ArrayList<>();
-//        for (String items : result) {
-//            try {
-//                Thread.sleep(30000);
-//                strings = items.split(";");
-//                driver.navigate().to(strings[1]);
-//                WebElement iamge = driver.findElement(By.xpath("//div[@class='n-gallery__item']"));
-//                WebElement image = iamge.findElement(By.className("n-gallery__image"));
-//                urlImage = image.getAttribute("src");
-//                resultMar = strings[0] + ";" + urlImage;
-//                System.out.println(resultMar);
-//                marketList.add(new Market(strings[0], urlImage));
-//                count++;
-//            } catch (Exception e) {
-//                System.out.println(e.getMessage());
-//            }
-//        }
-//        PrintWriter pw = new PrintWriter(new FileWriter("F://outResult.txt"));
-//        for (Market items : marketList) {
-//            pw.write(items.getSku() + ";" + items.getUrl());
-//            pw.write("\n");
-//        }
-//        pw.close();
-//        System.out.println("sdg");
-
-
-//        String fileName = "F://out.txt";
-//        Stream<String> stream = Files.lines(Paths.get(fileName));
-//        List<String> result = stream.collect(Collectors.toList());
 //        System.setProperty("webdriver.gecko.driver",
 //                "D:\\geckodriver.exe");
 //        WebDriver driver = new FirefoxDriver();
+//        driver.navigate().to("https://market.yandex.by/product/13811586");
+//        WebElement image = driver.findElement(By.xpath("//iframe[@class='sandbox']"));
+//        String urlVideo= image.getAttribute("src");
+//        String str = "https://yastatic.net/video-player/0xf7edcf0/pages-common/youtube/youtube.html#html=%3Ciframe%20src%3D%22%2F%2Fwww.youtube.com%2Fembed%2FQ4zQJmw3ZoA%3Fenablejsapi%3D1%26amp%3Bwmode%3Dopaque%22%20frameborder%3D%220%22%20scrolling%3D%22no%22%20allowfullscreen%3D%221%22%20aria-label%3D%22Video%22%3E%3C%2Fiframe%3E";
+//        String[] strings = str.split("youtube.com");
+//        String[] strings1 = strings[1].split("%3F");
+//        StringBuilder stringBuilder = new StringBuilder();
+//        stringBuilder.append("www.youtube.com").append(strings1[0].replaceAll("%2F", "/"));
+//        System.out.println("sdg");
+
+//        driver.close();
+//        Stream<String> stream = Files.lines(Paths.get(fileName));
+//        List<String> result = stream.collect(Collectors.toList());
 //        List<Market> marketList = new ArrayList<>();
+//        Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("resultMarket.txt"), "utf-8"));
 //        for (String items : result) {
 //            try {
-//                Thread.sleep(30000);
+//                Thread.sleep(2000);
 //                String[] strings = items.split(";");
-//                while (strings[0].equals("310738"))
 //                driver.navigate().to(strings[1]);
 //                WebElement iamge = driver.findElement(By.xpath("//div[@class='n-gallery__item']"));
 //                WebElement image = iamge.findElement(By.className("n-gallery__image"));
 //                String urlImage = image.getAttribute("src");
 //                String resultMar = strings[0] + ";" + urlImage;
 //                System.out.println(resultMar);
-//
 //                marketList.add(new Market(strings[0], urlImage));
-//                driver.close();
+//                String fileText = strings[0] + ";" + urlImage;
+//                writer.write(fileText);
+//                writer.write("\n");
+//                writer.flush();
 //            } catch (Exception e) {
 //                System.out.println(e.getMessage());
 //            }
 //        }
-//
-//        Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("resultMarket.txt"), "utf-8"));
-//        for (Market items : marketList) {
-//            String fileText = items.getSku() + ";" + items.getUrl();
-//            writer.write(fileText);
-//            writer.write("\n");
-//        }
-//         writer.close();
-//
-//        driver.close();
-
-        Document doc = Jsoup.connect("https://market.yandex.ru/product/1715265482").get();
-        Element masthead = doc.select("div.n-gallery__item").first();
-        Elements newsHeadlines = doc.select("#mp-itn b a");
-        Elements urlimage = masthead.getElementsByTag("img");
-        String result = urlimage.attr("src");
-        System.out.println("dgsg");
+//        writer.close();
 
     }
 
-    public void startParser() throws IOException, InterruptedException {
-
-    }
 }
