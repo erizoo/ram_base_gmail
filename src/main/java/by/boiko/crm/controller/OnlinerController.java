@@ -31,9 +31,6 @@ public class OnlinerController {
     private final OnlinerService onlinerService;
 
     @Autowired
-    private MarketService marketService;
-
-    @Autowired
     public OnlinerController(OnlinerService onlinerService) {
         this.onlinerService = onlinerService;
     }
@@ -166,7 +163,6 @@ public class OnlinerController {
 
     @GetMapping(value = "/start")
     public String startParser() throws IOException, InterruptedException {
-        marketService.startParser();
         return "redirect:/onliner";
     }
 

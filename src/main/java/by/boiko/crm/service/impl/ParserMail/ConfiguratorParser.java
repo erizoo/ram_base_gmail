@@ -27,8 +27,6 @@ public class ConfiguratorParser {
                 configurator.setPhoneNumber(lines[i + 1]);
             }if (lines[i].equals("Адрес")){
                 configurator.setAddress(lines[i + 1]);
-            }if (lines[i].equals("Примечание")){
-                configurator.setNotes(lines[i + 1]);
             }
             String regex = "(?<!\\d)\\d{6}(?!\\d)";
             Matcher m = Pattern.compile(regex).matcher(lines[i]);
@@ -39,19 +37,15 @@ public class ConfiguratorParser {
             }if (lines[i].contains("руб")){
                 listPrice.add(lines[i]);
             }
+            if (lines[i].contains("Сумма заказа")){
+                configurator.setNotes(lines[i]);
+            }
         }
         for (int i = 0; i < listSku.size() ; i++) {
             list.add(new ItemsOrder(listSku.get(i), listAmount.get(i), listPrice.get(i)));
             configurator.setListOrder(list);
         }
         return configurator;
-    }
-
-    private static <K, V> Map<K, V> zipToMap(List<K> keys, List<V> values) {
-        Iterator<K> keyIter = keys.iterator();
-        Iterator<V> valIter = values.iterator();
-        return IntStream.range(0, keys.size()).boxed()
-                .collect(Collectors.toMap(_i -> keyIter.next(), _i -> valIter.next()));
     }
 
 }
