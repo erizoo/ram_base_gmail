@@ -14,18 +14,17 @@ import java.util.stream.Stream;
 public class Main {
     public static void main(String[] argv) throws IOException {
 
-        String fileName = "D:\\result.txt";
+        String fileName = "D:\\бойко.txt";
         BufferedImage image = null;
         Stream<String> stream = Files.lines(Paths.get(fileName));
         List<String> result = stream.collect(Collectors.toList());
+        int count = 0;
         for (String items : result) {
-            String[] strings = items.split(";");
-            Files.createDirectories(Paths.get("D:\\market\\" + strings[0]));
-//            new File("D:\\market\\" + strings[0]).mkdir();
-            URL url = new URL(strings[1]);
-            image = ImageIO.read(url);
-            System.out.println(url);
-            ImageIO.write(image, "jpg", new File("D:\\market\\" + strings[0] + "\\" + "0.jpg"));
+            Files.createDirectories(Paths.get("D:\\foto\\" + items));
+            count++;
+            if (count == 1500){
+                break;
+            }
         }
 
     }
