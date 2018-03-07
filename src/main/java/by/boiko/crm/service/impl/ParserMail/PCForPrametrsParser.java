@@ -75,7 +75,7 @@ public class PCForPrametrsParser {
                 listPrice.add(lines[i + 6].trim());
             }
             if (lines[i].contains("Сумма заказа:")){
-                pcForPrametrs.setNotes(lines[i]);
+                pcForPrametrs.setNotes(lines[i].trim());
             }
         }
         for (int i = 0; i < listSku.size(); i++) {

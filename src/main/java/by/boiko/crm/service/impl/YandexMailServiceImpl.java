@@ -75,7 +75,7 @@ public class YandexMailServiceImpl implements YandexMailService {
                     if (context.contains("Заказ компьютера по параметрам")){
                         PCForPrametrsParser pcForPrametrsParser = new PCForPrametrsParser();
                         PCForPrametrs pcForPrametrs = pcForPrametrsParser.parser(linesEmail);
-                        orderList.add(new Parser(pcForPrametrs.getName(), pcForPrametrs.getPhoneNumber(), pcForPrametrs.getListOrder(), "Компьютер по параметрам"));
+                        orderList.add(new Parser(pcForPrametrs.getName(), pcForPrametrs.getPhoneNumber(), pcForPrametrs.getListOrder(), "Компьютер по параметрам" + " " + pcForPrametrs.getNotes()));
                     }
                     if (context.contains("Здравствуйте, Евгений!")){
                         DealByParser dealByParser = new DealByParser();
