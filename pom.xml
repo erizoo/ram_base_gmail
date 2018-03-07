@@ -29,6 +29,11 @@
     <dependencies>
         <!-- hibernate -->
         <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
+            <version>1.0.0.Final</version>
+        </dependency>
+        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>
@@ -156,12 +161,6 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>${servletapi.version}</version>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
-            <version>1.0.2</version>
         </dependency>
 
         <dependency>
