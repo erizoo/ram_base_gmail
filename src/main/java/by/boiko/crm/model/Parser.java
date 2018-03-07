@@ -11,6 +11,9 @@ public class Parser {
     private List<ItemsOrder> listOrder;
     private String source;
 
+    public Parser() {
+    }
+
     public Parser(String source) {
         this.source = source;
     }
