@@ -1,6 +1,7 @@
 package by.boiko.crm.service.impl.ParserMail;
 
 import by.boiko.crm.model.ItemsOrder;
+import by.boiko.crm.model.Parser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ public class PCForPrametrsParser {
     private List<String> listAmount = new ArrayList<>();
     private List<String> listPrice = new ArrayList<>();
 
-    public PCForPrametrs parser(String[] lines) {
+    public Parser parser(String[] lines) {
         PCForPrametrs pcForPrametrs = new PCForPrametrs();
         for (int i = 0; i < lines.length; i++) {
             if (lines[i].contains("Имя")) {
@@ -74,7 +75,7 @@ public class PCForPrametrsParser {
                 listAmount.add("1");
                 listPrice.add(lines[i + 6].trim());
             }
-            if (lines[i].contains("Сумма заказа:")){
+            if (lines[i].contains("Сумма заказа:")) {
                 pcForPrametrs.setNotes(lines[i].trim());
             }
         }
@@ -83,7 +84,12 @@ public class PCForPrametrsParser {
             pcForPrametrs.setListOrder(list);
         }
         System.out.println("sdgg");
-        return pcForPrametrs;
+        Parser parser = new Parser();
+        parser.setName(pcForPrametrs.getName());
+        parser.setPhoneNumber(pcForPrametrs.getPhoneNumber());
+        parser.setNotes(pcForPrametrs.getNotes());
+        parser.setListOrder(pcForPrametrs.getListOrder());
+        return parser;
     }
 
 }
