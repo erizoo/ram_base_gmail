@@ -23,21 +23,30 @@ public class ConfiguratorParser {
         for (int i = 0; i < lines.length; i++) {
             if (lines[i].equals("ФИО")) {
                 configurator.setName(lines[i + 1]);
-            }if (lines[i].equals("Мобильный")){
+            }
+            if (lines[i].equals("Мобильный")) {
                 configurator.setPhoneNumber(lines[i + 1]);
-            }if (lines[i].equals("Адрес")){
+            }
+            if (lines[i].equals("Адрес")) {
                 configurator.setAddress(lines[i + 1]);
             }
             String regex = "(?<!\\d)\\d{6}(?!\\d)";
+            String regexFive = "(?<!\\d)\\d{5}(?!\\d)";
             Matcher m = Pattern.compile(regex).matcher(lines[i]);
+            Matcher mFive = Pattern.compile(regexFive).matcher(lines[i]);
             if (m.find() && lines[i].length() == 6) {
                 listSku.add((m.group(0).trim().substring(0, 6)));
-            }if (lines[i].contains("шт")){
-                listAmount.add(lines[i].substring(0,1));
-            }if (lines[i].contains("руб")){
+            }
+            if (mFive.find() && lines[i].length() == 5) {
+                listSku.add((mFive.group(0).trim().substring(0, 5)));
+            }
+            if (lines[i].contains("шт")) {
+                listAmount.add(lines[i].substring(0, 1));
+            }
+            if (lines[i].contains("руб")) {
                 listPrice.add(lines[i]);
             }
-            if (lines[i].contains("Сумма заказа")){
+            if (lines[i].contains("Сумма заказа")) {
                 configurator.setNotes(lines[i]);
             }
         }
