@@ -41,7 +41,7 @@ public class ConfiguratorParser {
                 configurator.setNotes(lines[i]);
             }
         }
-        for (int i = 0; i < listSku.size() - 1 ; i++) {
+        for (int i = 0; i < listSku.size(); i++) {
             list.add(new ItemsOrder(listSku.get(i), listAmount.get(i), listPrice.get(i)));
             configurator.setListOrder(list);
         }
