@@ -34,6 +34,10 @@ public class Onliner {
         this.images = images;
     }
 
+    public Onliner(List<Table> tables) {
+        this.tables = tables;
+    }
+
     public String getDescription() {
         return description;
     }

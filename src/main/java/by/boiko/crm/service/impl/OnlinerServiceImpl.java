@@ -28,6 +28,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -460,7 +461,13 @@ public class OnlinerServiceImpl implements OnlinerService {
 
     @Override
     public Onliner getGoods(String url, String sku) {
+        Writer writer = null;
 
+        try {
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("D:\\test.txt"), "utf-8"));
+        } catch (UnsupportedEncodingException | FileNotFoundException e) {
+            e.printStackTrace();
+        }
         String decodedUrl = new String(Base64.getDecoder().decode(url));
 
         DesiredCapabilities caps = new DesiredCapabilities();
@@ -474,13 +481,32 @@ public class OnlinerServiceImpl implements OnlinerService {
 //            List<Review> reviews = getReviews(itemList.getUrl(), driver);
 //            System.out.println(reviews);
         ArrayList<Table> description = getDescription(decodedUrl, driver);
-        System.out.println(description);
-        List<String> images = getImages(decodedUrl, driver);
-        System.out.println(images);
-        Onliner onliner = new Onliner(sku, shortDescription, description, images);
+        try {
+            LocalDateTime currentTime = LocalDateTime.now();
+            writer.write("<!-- boiko-" + currentTime + "-->");
+            writer.write("\\n");
+            writer.write("<table>");
+            for (Table item : description) {
+                writer.write("<tr>\n" +
+                        "<td colspan=\"2\" class=\"param-block\"><b>" + item.getCategory() + "</b></td>\n" +
+                        "</tr>");
+                for (Table.TypeTrTable items: item.getListRow()) {
+                    writer.write("<tr>\n" +
+                            "<td class=\"param-name\">" + items.getParameter() + "</td>\n" +
+                            "<td>" + items.getValue() + "</td>\n" +
+                            "</tr>");
+                }
+
+            }
+            writer.write("</table>");
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Onliner onliner = new Onliner(description);
         driver.close();
         return onliner;
-}
+    }
 
 
 //        driver.navigate().to("https://www.bp.com/ru_ru/on-the-road/russia/find-nearest-bp.html");
