@@ -37,12 +37,10 @@ public class MarketParserServiceImpl {
     private MarketDao marketDao;
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        String fileName = "resultMarketVideo.txt";
+        String fileName = "videoMarket.txt";
         Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("resultMarketVideoWithUrl.txt"), "utf-8"));
         Stream<String> stream = Files.lines(Paths.get(fileName));
         List<String> result = stream.collect(Collectors.toList());
-        List<String> marketList = new ArrayList<>();
-        DesiredCapabilities caps = new DesiredCapabilities();
         System.setProperty("webdriver.gecko.driver",
                 "D:\\geckodriver.exe");
         WebDriver driver = new FirefoxDriver();
@@ -62,9 +60,7 @@ public class MarketParserServiceImpl {
                 writer.write("\n");
                 writer.flush();
             } catch (Exception e){
-                writer.write(strings[0] + ";" + "нету");
                 System.out.println(strings[0] + ";" + "нету");
-                writer.write("\n");
                 writer.flush();
             }
 

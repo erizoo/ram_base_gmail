@@ -29,6 +29,7 @@ import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -483,8 +484,10 @@ public class OnlinerServiceImpl implements OnlinerService {
         ArrayList<Table> description = getDescription(decodedUrl, driver);
         try {
             LocalDateTime currentTime = LocalDateTime.now();
-            writer.write("<!-- boiko-" + currentTime + "-->");
-            writer.write("\\n");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formatDateTime = currentTime.format(formatter);
+            writer.write("<!-- boiko-" + formatDateTime + "-->");
+            writer.write("\n");
             writer.write("<table>");
             for (Table item : description) {
                 writer.write("<tr>\n" +
