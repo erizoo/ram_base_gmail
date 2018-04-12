@@ -64,13 +64,13 @@ public class Main {
                 JavascriptExecutor executor = (JavascriptExecutor) driver;
                 executor.executeScript("arguments[0].click();", webElement);
                 WebElement img = driver.findElement(By.xpath("//div[@class='irc_land irc_bg']"));
-                WebElement imgURL = img.findElement(By.xpath("//div[@id='Rd1Chf']"));
-                WebElement divIRC = imgURL.findElement(By.xpath("//div[@id='irc_cc']"));
-                WebElement divIRC2 = divIRC.findElement(By.xpath("//div[@class='irc_c i8187 immersive-container']"));
-                WebElement divIRC3 = divIRC2.findElement(By.xpath("//div[@class='irc_t i30052']"));
-                List<WebElement> divIRC4 = divIRC3.findElements(By.xpath("//div"));
-                List<WebElement> divIRC5 = divIRC4.get(4).findElements(By.xpath("//a"));
-                WebElement divIRC6 = divIRC5.get(0).findElement(By.xpath("//img[@class='irc_mi']"));
+//                WebElement imgURL = img.findElement(By.xpath("//div[@id='Rd1Chf']"));
+//                WebElement divIRC = imgURL.findElement(By.xpath("//div[@id='irc_cc']"));
+//                WebElement divIRC2 = divIRC.findElement(By.xpath("//div[@class='irc_c i8187 immersive-container']"));
+//                WebElement divIRC3 = divIRC2.findElement(By.xpath("//div[@class='irc_t i30052']"));
+//                List<WebElement> divIRC4 = divIRC3.findElements(By.xpath("//div"));
+//                List<WebElement> divIRC5 = divIRC4.get(4).findElements(By.xpath("//a"));
+                WebElement divIRC6 = img.findElement(By.xpath("//img[@class='irc_mi']"));
                 String urlSTR = divIRC6.getAttribute("src");
                 System.out.println("sdgs");
 

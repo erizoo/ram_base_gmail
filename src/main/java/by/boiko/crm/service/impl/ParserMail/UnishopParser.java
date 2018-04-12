@@ -11,6 +11,7 @@ public class UnishopParser {
     private List<String> listName = new ArrayList<>();
     private List<String> listAmount = new ArrayList<>();
     private List<String> listPrice = new ArrayList<>();
+    boolean check = false;
 
     public Unishop parser(String[] lines) {
         Unishop unishop = new Unishop();
@@ -31,12 +32,14 @@ public class UnishopParser {
             if (items.contains("Адрес доставки:")) {
                 unishop.setAddress(items.substring(16, items.length()));
             }
-            if (items.contains("Кол-во:")) {
-                String[] strings = items.split("//");
-                listName.add(strings[0].substring(3, strings[0].length()));
-                String[] amountStr = strings[1].split(" ");
-                listAmount.add(amountStr[2]);
-                listPrice.add(strings[2].substring(8, strings[2].length()));
+        }
+        for (int i = 0; i < lines.length; i++) {
+            if (lines[i].contains("---------") && !check) {
+                String[] strings = lines[i + 1].split("/");
+                listName.add(strings[0].trim());
+                listAmount.add("1");
+                listPrice.add(strings[1].substring(0, strings[1].length()-5));
+                check = true;
             }
         }
         for (int i = 0; i < listAmount.size(); i++) {
