@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,7 @@ public interface OnlinerService {
 
     void delete(int sku);
 
-    void moveGoods(int id);
+    void moveGoods(String id, String url);
 
     List<Onliner> getAllGoods(List<SkuModel> decodedUrl) throws URISyntaxException, IOException;
 
@@ -51,4 +50,6 @@ public interface OnlinerService {
     List<Table> test() throws IOException;
 
     Onliner getGoods(String url, String sku);
+
+    void getCheckGood() throws FileNotFoundException, UnsupportedEncodingException;
 }

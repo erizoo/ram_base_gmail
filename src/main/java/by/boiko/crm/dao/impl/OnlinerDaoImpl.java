@@ -42,6 +42,11 @@ public class OnlinerDaoImpl implements OnlinerDao {
     }
 
     @Override
+    public List<PendingGoods> getCheckGoods() {
+        return sessionFactory.getCurrentSession().createQuery("from PendingGoods").list();
+    }
+
+    @Override
     public List<SkuModel> loadGoods() {
         return sessionFactory.getCurrentSession().createQuery("from SkuModel").setFirstResult(1).setMaxResults(1).list();
     }
@@ -73,11 +78,11 @@ public class OnlinerDaoImpl implements OnlinerDao {
     }
 
     @Override
-    public void moveGoods(int id) {
-        UnattachedGoods unattachedGoods = (UnattachedGoods) sessionFactory.getCurrentSession().createQuery("select u from UnattachedGoods u where id = :id")
-                .setParameter("id", id).uniqueResult();
+    public void moveGoods(String id, String url) {
+        UnattachedGoods unattachedGoods = (UnattachedGoods) sessionFactory.getCurrentSession().createQuery("select u from UnattachedGoods u where sku = :sku")
+                .setParameter("sku", id).uniqueResult();
         PendingGoods pendingGoods = new PendingGoods();
-        pendingGoods.setName(unattachedGoods.getName());
+        pendingGoods.setName(url);
         pendingGoods.setSku(unattachedGoods.getSku());
         sessionFactory.getCurrentSession().delete(unattachedGoods);
         sessionFactory.getCurrentSession().save(pendingGoods);

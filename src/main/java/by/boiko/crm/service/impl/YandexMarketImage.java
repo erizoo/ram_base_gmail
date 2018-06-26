@@ -1,0 +1,105 @@
+package by.boiko.crm.service.impl;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+/**
+ * Created by Erizo on 23.06.2018.
+ */
+public class YandexMarketImage {
+
+    private static final String MARKET_PRODUCT_URL = "https://market.yandex.by/product/";
+
+//    public static void main(String[] args) throws IOException {
+//
+//        String fileName = "market.txt";
+//        Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("resultMarketImageWithUrl.txt"), "utf-8"));
+//        Stream<String> stream = Files.lines(Paths.get(fileName));
+//        List<String> result = stream.collect(Collectors.toList());
+//        System.setProperty("webdriver.gecko.driver",
+//                "D:\\geckodriver.exe");
+//        WebDriver driver = new FirefoxDriver();
+//        List<String> urlList;
+//        for (String items : result) {
+//            String[] strings = items.split(",");
+//            String skuProduct = strings[1].replaceAll("\"", "");
+//            driver.navigate().to(MARKET_PRODUCT_URL + skuProduct + "#gallery");
+//            try {
+//                urlList = new ArrayList<>();
+//                WebElement imageContainer = driver.findElement(By.xpath("//ul[@class='n-gallery__thumbs']"));
+//                List<WebElement> images = imageContainer.findElements(By.xpath("//li[@class='n-gallery-popup__thumbs-item']"));
+//                for (WebElement urlItems : images) {
+//                    JavascriptExecutor executor = (JavascriptExecutor) driver;
+//                    executor.executeScript("arguments[0].click();", urlItems);
+//                    WebElement image = driver.findElement(By.xpath("//div[@class='n-gallery-popup__item-wrap n-gallery-popup__item-wrap_active_yes']"));
+//                    String img = image.findElement(By.tagName("img")).getAttribute("src");
+//                    urlList.add(img);
+//                }
+//                writer.write(new Gson().toJson(new YandexMarketImageModel(strings[0], urlList)));
+//                writer.write(",");
+//                writer.flush();
+//            } catch (Exception e) {
+//                try {
+//                    urlList = new ArrayList<>();
+//                    driver.navigate().to(MARKET_PRODUCT_URL + skuProduct);
+//                    WebElement webElement = driver.findElement(By.xpath("//div[@class='n-gallery__item']"));
+//                    String img = webElement.findElement(By.tagName("img")).getAttribute("src");
+//                    urlList.add(img);
+//                    writer.write(new Gson().toJson(new YandexMarketImageModel(strings[0], urlList)));
+//                    writer.write(",");
+//                    writer.flush();
+//                } catch (Exception message) {
+//                    urlList = new ArrayList<>();
+//                    urlList.add("");
+//                    writer.write(new Gson().toJson(new YandexMarketImageModel(strings[0], urlList)));
+//                    writer.write(",");
+//                    writer.flush();
+//                }
+//
+//            }
+//            System.out.println("dsg");
+//        }
+//    }
+
+    public static void main(String[] args) throws IOException {
+        Gson gson = new Gson();
+        Stream<String> streamFirst = Files.lines(Paths.get("D:\\resultMarketImageWithUrl.txt"));
+        List<String> resultFirst = streamFirst.collect(Collectors.toList());
+        String json = resultFirst.get(0);
+        ObjectMapper mapper = new ObjectMapper();
+        List<YandexMarketImageModel> obj = mapper.readValue(new File("D:\\resultMarketImageWithUrl.json"),
+                mapper.getTypeFactory().constructCollectionType(List.class, YandexMarketImageModel.class));
+        for (YandexMarketImageModel items : obj) {
+            String sku = items.getSku().replaceAll("\"", "");
+            Files.createDirectories(Paths.get("D:\\foto\\" + sku));
+            for (int i = 0; i < items.getUrl().size(); i++) {
+                String url = items.getUrl().get(i).replaceAll("\"", "");
+                if (!url.equals("")){
+                    InputStream in = new URL(url).openStream();
+                    Files.copy(in, Paths.get("D:/foto/" + sku + "/" + i +".webp"));
+                    try {
+                        File file2= new File("D:/foto/" + sku + "/" + i + ".jpg");
+                        BufferedImage im = ImageIO.read(new File("D:/foto/" + sku + "/" + i + ".webp"));
+                        ImageIO.write(im, "jpg", file2);
+                        File file1= new File("D:/foto/" + sku + "/" + i + ".webp");
+                        file1.delete();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+}

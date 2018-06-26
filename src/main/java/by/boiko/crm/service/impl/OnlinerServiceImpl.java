@@ -4,9 +4,11 @@ import by.boiko.crm.dao.OnlinerDao;
 import by.boiko.crm.model.Onliner;
 import by.boiko.crm.model.Review;
 import by.boiko.crm.model.Table;
+import by.boiko.crm.model.pojo.PendingGoods;
 import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.pojo.UnattachedGoods;
 import by.boiko.crm.service.OnlinerService;
+import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
 import org.cloudinary.json.JSONArray;
 import org.cloudinary.json.JSONObject;
@@ -42,6 +44,10 @@ public class OnlinerServiceImpl implements OnlinerService {
 
     @Autowired
     private OnlinerDao onlinerDao;
+
+    public static void main(String[] args) throws IOException {
+
+    }
 
     @Override
     public List<Review> getReviews(String decodedUrl, WebDriver driver) throws URISyntaxException, IOException {
@@ -234,39 +240,36 @@ public class OnlinerServiceImpl implements OnlinerService {
     }
 
     @Override
-    public void moveGoods(int id) {
-        onlinerDao.moveGoods(id);
+    public void moveGoods(String id, String url) {
+        onlinerDao.moveGoods(id,url);
     }
 
+
     @Override
-    public List<Onliner> getAllGoods(List<SkuModel> skuModelList) throws URISyntaxException, IOException {
-
-
+    public List<Onliner> getAllGoods(List<SkuModel> skuModelList) throws IOException {
+        Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("D:\\resultParsing.txt"), "utf-8"));
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setJavascriptEnabled(true);
         caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
                 "D:\\phantomjs\\bin\\phantomjs.exe");
         WebDriver driver = new PhantomJSDriver(caps);
-
-
+        List<PendingGoods> pendingGoods = onlinerDao.getCheckGoods();
         List<Onliner> onlinerList = new ArrayList<>();
-        for (SkuModel itemList : skuModelList) {
+        for (PendingGoods itemList : pendingGoods) {
             String shortDescription;
             try {
-                shortDescription = getShortDescription("https://catalog.onliner.by/notebook/lenovo/80ml009dpb", driver);
+                shortDescription = getShortDescription(itemList.getName(), driver);
                 System.out.println(shortDescription);
             } catch (Exception e) {
                 shortDescription = "nope";
                 System.out.println(shortDescription);
             }
             System.out.println(itemList.getSku() + " " + itemList.getName());
-//            List<Review> reviews = getReviews(itemList.getUrl(), driver);
-//            System.out.println(reviews);
-            ArrayList<Table> description = getDescription("https://catalog.onliner.by/notebook/lenovo/80ml009dpb", driver);
+            ArrayList<Table> description = getDescription(itemList.getName(), driver);
             System.out.println(description);
-            List<String> images = getImages("https://catalog.onliner.by/notebook/lenovo/80ml009dpb", driver);
-            System.out.println(images);
-            onlinerList.add(new Onliner("302092", shortDescription, description, images));
+            writer.write(new Gson().toJson(new Onliner(itemList.getSku(), shortDescription, description)));
+            writer.write(",");
+            writer.flush();
         }
         driver.close();
         return onlinerList;
@@ -512,167 +515,22 @@ public class OnlinerServiceImpl implements OnlinerService {
     }
 
 
-//        driver.navigate().to("https://www.bp.com/ru_ru/on-the-road/russia/find-nearest-bp.html");
-//        WebElement divElement = driver.findElement(By.className("page-container"));
-//        WebElement nvPage = driver.findElement(By.className("nv-page-content"));
-//        System.out.println("dg");
-//        WebElement nvPageContent = driver.findElement(By.className("nv-page-content-wrap"));
-
-//
-//        WebElement divElement = driver.findElement(By.className("slider-filter__list"));
-//        List<WebElement> divList = divElement.findElements(By.className("slider-filter__item"));
-//        List<GazProm> list = new ArrayList<>();
-//        for (WebElement item : divList) {
-////            WebElement webElementList = driver.findElement(By.id("point-ctl-1"));
-//            WebElement webElement = item.findElement(By.className("point-company"));
-//
-//
-//            List<WebElement> webElementList1 = webElement.findElements(By.tagName("div"));
-//            WebElement textSpan = webElementList1.get(0).findElement(By.tagName("span"));
-//            String strSpan = textSpan.getText();
-//
-//            List<WebElement> text = webElementList1.get(2).findElements(By.tagName("span"));
-//            String lat = text.get(0).getAttribute("data-lat");
-//            String lng = text.get(0).getAttribute("data-lng");
-//            System.out.println(webElementList1.get(2).getText());
-//            list.add(new GazProm(strSpan, lat, lng));
-//        }
-//        File fileDir = new File("D:\\neft.csv");
-//            Writer out = new BufferedWriter(new OutputStreamWriter(
-//                    new FileOutputStream(fileDir), "cp1251"));
-//
-//            for (GazProm d : list) {
-//                out.write("НефтьМагистраль");
-//                out.append(";");
-//                out.append("Заправка");
-//                out.append(";");
-//                out.append(d.getAddress());
-//                out.append(";");
-//                out.append(d.getLatitud());
-//                out.append(";");
-//                out.append(d.getLongitud());
-//                out.append('\n');
-//            }
-//            out.flush();
-//            out.close();
-//        System.out.println("sg");
-
-
-//
-//        DesiredCapabilities caps = new DesiredCapabilities();
-//        caps.setJavascriptEnabled(true);
-//        caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-//                "D:\\phantomjs\\bin\\phantomjs.exe");
-//        WebDriver driver = new PhantomJSDriver(caps);
-//
-//        driver.navigate().to("https://catalog.onliner.by/gps/prestigio/geovisiontour2");
-//        ArrayList<Table> listTable = new ArrayList<>();
-//        List<Table.TypeTrTable> listTableTr = null;
-//
-//        List<WebElement> listReviewsText = driver.findElements(By.cssSelector("table.product-specs__table"));
-//        ArrayList<String> listCategories = new ArrayList<>();
-//        int i = 0;
-//        for (WebElement list : listReviewsText) {
-//            List<WebElement> TBodyCollection = list.findElements(By.tagName("tbody"));
-//            for (WebElement tbody : TBodyCollection) {
-//                String[] tbodyItem = tbody.getText().split("\\n");
-//                listCategories.add(tbodyItem[0]);
-//                List<WebElement> TRCollection = tbody.findElements(By.tagName("tr"));
-//                listTableTr = new ArrayList<>();
-//                String label = null;
-//                for (WebElement tr : TRCollection) {
-//                    WebElement span = (WebElement) tr.findElement(By.ByClassName.className("i-tip"));
-//
-//                    System.out.println("dg");
-
-//                    if (tr.findElement(By.className("i-x")) != null){
-//                        listTableTr.add(new Table.TypeTrTable(tr.getText(), "нет"));
-//                    }if (tr.findElement(By.className("i-tip")) != null){
-//                        listTableTr.add(new Table.TypeTrTable(tr.getText(), "есть"));
-//                    }else {
-//                        if (tr.getText().contains("\n")) {
-//                            String[] item = tr.getText().split("\n");
-//                            ArrayList<String> listParameters = new ArrayList<>();
-//                            ArrayList<String> listValues = new ArrayList<>();
-//                            if (item.length > 2) {
-//                                String str = null;
-//                                int count = 0;
-//                                for (int j = 1; j < item.length; j++) {
-//                                    if (item[j].trim().isEmpty()) {
-//                                        count++;
-//                                    } else {
-//                                        str = item[j];
-//                                    }
-//                                }
-//                                if (count == 0) {
-//                                    listParameters.add("Комплект поставки");
-//                                    StringBuilder stringBuilder = new StringBuilder();
-//                                    for (String anItem : item) {
-//                                        String[] strItem = anItem.split("-");
-//                                        stringBuilder.append(strItem[1]);
-//                                    }
-//                                    listValues.add(String.valueOf(stringBuilder));
-//                                } else {
-//                                    listParameters.add(item[0]);
-//                                    listValues.add(str);
-//                                }
-//                            } else {
-//                                listParameters.add(item[0]);
-//                                listValues.add(item[1]);
-//                            }
-//                            listTableTr.add(new Table.TypeTrTable(listParameters.get(0), listValues.get(0)));
-//                        }
-//                        if (tbodyItem.length < 2) {
-//                            String[] strings = tbodyItem[1].split(" ");
-//                            listTableTr.add(new Table.TypeTrTable(strings[0], strings[1]));
-//                            break;
-//                        }
-//                        if (tbodyItem[0].contains("Размеры и вес")) {
-//                            if (tbodyItem.length > 5) {
-//                                for (int j = 1; j < tbodyItem.length; j++) {
-//                                    if (tbodyItem[j].contains("Длина")) {
-//                                        String[] strings = tbodyItem[j + 1].split(" ");
-//                                        listTableTr.add(new Table.TypeTrTable("Длина", strings[0] + " " + strings[1]));
-//                                    }
-//                                    if (tbodyItem[j].contains("Ширина")) {
-//                                        String[] strings = tbodyItem[j + 1].split(" ");
-//                                        listTableTr.add(new Table.TypeTrTable("Ширина", strings[0] + " " + strings[1]));
-//                                    }
-//                                    if (tbodyItem[j].contains("Толщина")) {
-//                                        String[] strings = tbodyItem[j + 1].split(" ");
-//                                        listTableTr.add(new Table.TypeTrTable("Толщина", strings[0] + " " + strings[1]));
-//                                    }
-//                                    if (tbodyItem[j].contains("Вес")) {
-//                                        String[] strings = tbodyItem[j + 1].split(" ");
-//                                        listTableTr.add(new Table.TypeTrTable("Вес", strings[0] + " " + strings[1]));
-//                                    }
-//                                }
-//                            } else {
-//                                for (int j = 1; j < tbodyItem.length; j++) {
-//                                    String[] strings = tbodyItem[j].split(" ");
-//                                    if (strings.length > 2) {
-//                                        listTableTr.add(new Table.TypeTrTable(strings[0], strings[1] + " " + strings[2]));
-//                                    } else {
-//                                        listTableTr.add(new Table.TypeTrTable(strings[0], strings[1]));
-//                                    }
-//                                }
-//                            }
-//
-//                            break;
-//                        }
-//                    }
-//                }
-//                listTable.add(new Table(listCategories.get(i), listTableTr));
-//                i++;
-//            }
-//
-//        }
-//
-//        return listTable;
-
-
-    public static void main(String[] args) throws IOException {
-
+    @Override
+    public void getCheckGood() throws FileNotFoundException, UnsupportedEncodingException {
+        List<PendingGoods> list = onlinerDao.getCheckGoods();
+        Writer writer = new BufferedWriter(
+                new OutputStreamWriter(
+                        new FileOutputStream("D:\\pendingGoods.txt"), "utf-8"));
+        for (PendingGoods items : list) {
+            System.out.println(items.getName());
+            try {
+                writer.write(items.getSku());
+                writer.write("\n");
+                writer.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 

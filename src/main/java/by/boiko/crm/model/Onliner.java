@@ -14,6 +14,12 @@ public class Onliner {
     public Onliner() {
     }
 
+    public Onliner(String sku, String description, List<Table> tables) {
+        this.sku = sku;
+        this.description = description;
+        this.tables = tables;
+    }
+
     public Onliner(List<Review> reviews, List<Table> tables, List<String> images) {
         this.reviews = reviews;
         this.tables = tables;

@@ -26,6 +26,9 @@
     </span>
 </div>
     <div style="margin-top: 10%">
+        <button class="btn btn-primary" type="submit" onclick="getCheckGoods()">Выгрузка привязанных товаров</button>
+    </div>
+    <div style="margin-top: 10%">
         <button class="btn btn-primary" type="submit" onclick="writeJsonInFile()">LOAD</button>
     </div>
 
@@ -66,6 +69,15 @@
                 });
 
             }
+        });
+    }
+
+    function getCheckGoods() {
+        $.ajax({
+            type: "GET",
+            dataType: 'text',
+            contentType: "application/json",
+            url: "/get_check_good",
         });
     }
 

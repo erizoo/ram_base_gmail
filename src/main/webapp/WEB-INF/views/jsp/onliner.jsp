@@ -37,10 +37,24 @@
                 getGoodsForPagination(page);
             }
         });
+
         function deleteGoods(id) {
             $.ajax({
                 type: "POST",
                 url: "/delete_goods/" + id,
+                dataType: "text",
+                success: function (data) {
+                    location.reload();
+                }
+            });
+        }
+
+        function moved(id) {
+            console.log(urlJson)
+            var encodeUrl = btoa(urlJson);
+            $.ajax({
+                type: "POST",
+                url: "/move_goods/" + id + "/" + encodeUrl,
                 dataType: "text",
                 success: function (data) {
                     location.reload();
@@ -61,9 +75,14 @@
                         newrow = document.all.my_body_goods.insertRow();
                         newcell = newrow.insertCell(0);
                         newcell.innerText = item.sku;
+                        skuGood = item.sku;
                         newcell = newrow.insertCell(1);
                         newcell.innerText = item.name;
+                        nameGood = item.name;
                         newcell = newrow.insertCell(2);
+                        newcell.innerHTML = newcell.innerHTML + " <button type='button' class='btn btn-info' " +
+                            "onclick = getData(nameGood) >Поиск</button><br>";
+                        newcell = newrow.insertCell(3);
                         newcell.innerHTML = newcell.innerHTML + " <button type='button' class='btn btn-danger' " +
                             "onclick = deleteGoods('" + item.id + "') >Удалить</button><br>";
                     });
@@ -75,7 +94,9 @@
 
 
         var urlJson;
+
         function getData(name) {
+            console.log(name);
             $.ajax({
                 type: "GET",
                 contentType: "application/json",
@@ -88,6 +109,8 @@
                         alert("Совпадений не найдено");
                     } else {
                         $('#mybody').html('');
+                        console.log(skuGood)
+                        $("#setSkuText").val(skuGood);
                         for (var i = 0; i < obj.products.length; i++) {
                             newrow = document.all.mybody.insertRow();
                             newcell = newrow.insertCell(0);
@@ -98,7 +121,7 @@
                                 "onclick = window.open('" + obj.products[i].html_url + "') >Ссылка на ОНЛАЙНЕР</button><br>";
                             newcell = newrow.insertCell(2);
                             newcell.innerHTML = newcell.innerHTML + "<button class='btn btn-primary' type='submit' " +
-                                "onclick=setSku('" + obj.products[i].html_url + "') " +
+                                "onclick=moved(document.getElementById('setSkuText').value) " +
                                 "<span class='glyphicon glyphicon-search' aria-hidden='true'> </span> Привязать</button> </span> </div>";
                         }
                     }
@@ -117,6 +140,7 @@
                 url: "/all_goods/" + encodeUrl + "/" + sku,
                 success: function (data) {
                     console.log(data);
+
                     function download(text, name, type) {
                         var a = document.createElement("a");
                         var file = new Blob([text], {type: type});

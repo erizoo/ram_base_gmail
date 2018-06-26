@@ -14,9 +14,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.util.Base64;
 import java.util.List;
 
 import static org.apache.commons.io.FileUtils.getFile;
@@ -81,8 +83,14 @@ public class OnlinerController {
     }
 
     @GetMapping(value = "/save_goods")
-    public String saveGoods() throws URISyntaxException, IOException {
+    public String saveGoods() {
         onlinerService.saveToDb();
+        return "redirect:/onliner";
+    }
+
+    @GetMapping(value = "/get_check_good")
+    public String getCheckGood() throws FileNotFoundException, UnsupportedEncodingException {
+        onlinerService.getCheckGood();
         return "redirect:/onliner";
     }
 
@@ -148,9 +156,10 @@ public class OnlinerController {
      * @param id
      * @return redirect page onliner.jsp
      */
-    @GetMapping(value = "/move_goods/{id}")
-    public String moveGoods(@PathVariable(value = "id") int id) {
-        onlinerService.moveGoods(id);
+    @PostMapping(value = "/move_goods/{id}/{url}")
+    public String moveGoods(@PathVariable(value = "id") String id, @PathVariable(value = "url") String url) {
+        String decoded = new String(Base64.getDecoder().decode(url));
+        onlinerService.moveGoods(id, decoded);
         return "redirect:/onliner";
     }
 
