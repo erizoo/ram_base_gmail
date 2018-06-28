@@ -321,6 +321,9 @@ public class OnlinerServiceImpl implements OnlinerService {
             for (String items : stringList) {
                 skuList.add(items.substring(0, 6));
                 nameList.add(items.substring(7, items.length()));
+                String[] strings = items.split(";");
+                skuList.add(strings[0]);
+                nameList.add(strings[1]);
             }
             for (int i = 0; i < nameList.size() - 1; i++) {
                 onlinerDao.saveGoods(skuList.get(i), nameList.get(i));
