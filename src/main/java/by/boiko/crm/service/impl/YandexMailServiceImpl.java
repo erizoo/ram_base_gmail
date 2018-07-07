@@ -78,7 +78,7 @@ public class YandexMailServiceImpl implements YandexMailService {
                         parser.setSource("Компьютер по параметрам");
                         orderList.add(parser);
                     }
-                    if (context.contains("Здравствуйте, Евгений!")){
+                    if (context.contains("Содержание нового заказа №")){
                         DealByParser dealByParser = new DealByParser();
                         DealBy dealBy = dealByParser.parser(linesEmail);
                         orderList.add(new Parser(dealBy.getName(), dealBy.getPhoneNumber(), dealBy.getAddress(), dealBy.getListOrder(), "DEAL.BY"));

@@ -319,9 +319,7 @@ public class OnlinerServiceImpl implements OnlinerService {
         try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
             stringList = stream.collect(Collectors.toList());
             for (String items : stringList) {
-                skuList.add(items.substring(0, 6));
-                nameList.add(items.substring(7, items.length()));
-                String[] strings = items.split(";");
+                String[] strings = items.split(",");
                 skuList.add(strings[0]);
                 nameList.add(strings[1]);
             }

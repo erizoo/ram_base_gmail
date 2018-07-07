@@ -25,7 +25,7 @@ public class Main {
 
     public static void main(String[] argv) throws IOException {
 
-        String fileName = "pendingGoods.txt";
+        String fileName = "D:\\pendingGoods.txt";
         BufferedImage image = null;
         Stream<String> stream = Files.lines(Paths.get(fileName));
         List<String> result = stream.collect(Collectors.toList());
