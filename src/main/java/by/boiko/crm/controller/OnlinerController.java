@@ -146,7 +146,7 @@ public class OnlinerController {
      */
     @PostMapping(value = "/delete_goods/{id}")
     public String deleteGoods(@PathVariable(value = "id") int id) {
-        onlinerService.delete(id);
+        onlinerService.deleteGoods(id);
         return "redirect:/onliner";
     }
 

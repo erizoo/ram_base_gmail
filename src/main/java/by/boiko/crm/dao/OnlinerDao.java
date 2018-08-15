@@ -14,11 +14,11 @@ import java.util.List;
 
 public interface OnlinerDao {
 
-    void save(Market market);
+    void save(SkuModel skuModel);
 
     List loadAllGoods(int page);
 
-    void delete(int id);
+    void delete(String sku);
 
     UnattachedGoods findBySky(String sku);
 
@@ -33,4 +33,8 @@ public interface OnlinerDao {
     List<UnattachedGoods> loadAllUnattachedGoods();
 
     List<PendingGoods> getCheckGoods();
+
+    List<UnattachedGoods> getUnattachedGoods();
+
+    void deleteGoods(int id);
 }

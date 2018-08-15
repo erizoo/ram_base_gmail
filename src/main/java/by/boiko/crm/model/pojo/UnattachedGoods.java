@@ -26,6 +26,10 @@ public class UnattachedGoods {
     public UnattachedGoods() {
     }
 
+    public UnattachedGoods(String sku) {
+        this.sku = sku;
+    }
+
     public UnattachedGoods(String sku, String name) {
         this.sku = sku;
         this.name = name;

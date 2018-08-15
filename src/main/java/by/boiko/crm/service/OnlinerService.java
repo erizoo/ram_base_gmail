@@ -29,7 +29,7 @@ public interface OnlinerService {
 
     List getAllUnattachedGoods(int page);
 
-    void delete(int sku);
+    void delete(String sku);
 
     void moveGoods(String id, String url);
 
@@ -52,4 +52,6 @@ public interface OnlinerService {
     Onliner getGoods(String url, String sku);
 
     void getCheckGood() throws FileNotFoundException, UnsupportedEncodingException;
+
+    void deleteGoods(int id);
 }

@@ -7,9 +7,14 @@ import by.boiko.crm.model.Table;
 import by.boiko.crm.model.pojo.PendingGoods;
 import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.pojo.UnattachedGoods;
+import by.boiko.crm.service.Api;
 import by.boiko.crm.service.OnlinerService;
-import com.google.gson.Gson;
+import com.google.gson.*;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.cloudinary.json.JSONArray;
 import org.cloudinary.json.JSONObject;
 import org.openqa.selenium.By;
@@ -21,6 +26,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import retrofit2.Response;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -45,14 +51,14 @@ public class OnlinerServiceImpl implements OnlinerService {
     @Autowired
     private OnlinerDao onlinerDao;
 
+    private Api api;
+
     public static void main(String[] args) throws IOException {
 
     }
 
     @Override
     public List<Review> getReviews(String decodedUrl, WebDriver driver) throws URISyntaxException, IOException {
-
-
         List<Review> listReviews = new ArrayList<>();
         List<String> listStarsForReviews = new ArrayList<>();
         List<String> listTextForReviews = new ArrayList<>();
@@ -235,13 +241,13 @@ public class OnlinerServiceImpl implements OnlinerService {
     }
 
     @Override
-    public void delete(int id) {
-        onlinerDao.delete(id);
+    public void delete(String sku) {
+        onlinerDao.delete(sku);
     }
 
     @Override
     public void moveGoods(String id, String url) {
-        onlinerDao.moveGoods(id,url);
+        onlinerDao.moveGoods(id, url);
     }
 
 
@@ -320,7 +326,7 @@ public class OnlinerServiceImpl implements OnlinerService {
             stringList = stream.collect(Collectors.toList());
             for (String items : stringList) {
                 String[] strings = items.split(",");
-                skuList.add(strings[0]);
+                skuList.add(strings[0].replaceAll("\"", ""));
                 nameList.add(strings[1]);
             }
             for (int i = 0; i < nameList.size() - 1; i++) {
@@ -333,58 +339,48 @@ public class OnlinerServiceImpl implements OnlinerService {
     }
 
     public void equalsToDb() {
-        List<SkuModel> skuModels = new ArrayList<>();
-        List<Integer> deleteGoods = new ArrayList<>();
-        List<UnattachedGoods> loadAllUnattachedGoods = onlinerDao.loadAllUnattachedGoods();
-        for (UnattachedGoods unattachedGoods : loadAllUnattachedGoods) {
-
+        List<UnattachedGoods> unattachedGoodsList = onlinerDao.getUnattachedGoods();
+        List<UnattachedGoods> deleteGoods = new ArrayList<>();
+        List<PendingGoods> pendingGoodsList = new ArrayList<>();
+        for (UnattachedGoods items : unattachedGoodsList) {
             try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+//                Thread.sleep(5000);
+                String name = items.getName().replaceAll(" ", "%20").replaceAll("\"", "");
+                String url = "https://catalog.api.onliner.by/search/products?query=" + name;
 
-            Integer id = unattachedGoods.getId();
-            String name = unattachedGoods.getName().replaceAll(" ", "%20");
-            String sku = unattachedGoods.getSku();
-            try {
-                URL oracle = new URL("https://catalog.api.onliner.by/search/products?query=" + name);
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(oracle.openStream()));
+                HttpClient client = HttpClientBuilder.create().build();
+                HttpGet request = new HttpGet(url);
+                HttpResponse response = client.execute(request);
+                System.out.println("Response Code : "
+                        + response.getStatusLine().getStatusCode());
 
-                String inputLine;
-                StringBuilder sb = new StringBuilder();
-                while ((inputLine = in.readLine()) != null)
-                    sb.append(inputLine);
-                in.close();
-                String str = String.valueOf(sb);
-                JSONObject json = new JSONObject(str);
-                JSONArray products = json.getJSONArray("products");
-                if (products.length() == 1) {
-                    JSONObject url = products.getJSONObject(0);
-                    String strUrl = url.getString("html_url");
-                    System.out.println(strUrl);
-                    String urlStr = url.getString("url");
-                    deleteGoods.add(id);
-                    skuModels.add(new SkuModel(sku, name, strUrl, urlStr));
+                BufferedReader rd = new BufferedReader(
+                        new InputStreamReader(response.getEntity().getContent()));
 
+                StringBuffer result = new StringBuffer();
+                String line = "";
+                while ((line = rd.readLine()) != null) {
+                    result.append(line);
                 }
-
+                JsonObject jsonObject = new JsonParser().parse(result.toString()).getAsJsonObject();
+                int total = jsonObject.get("total").getAsInt();
+                JsonArray productJson = jsonObject.getAsJsonArray("products");
+                JsonObject urlJson = productJson.get(0).getAsJsonObject();
+                String urlResult = urlJson.get("html_url").getAsString();
+                if (total == 1) {
+                    System.out.println(urlResult);
+                    deleteGoods.add(new UnattachedGoods(items.getSku()));
+                    pendingGoodsList.add(new PendingGoods(items.getSku(), urlResult));
+//                    onlinerDao.saveGoods(items.getSku(), urlResult);
+                } else {
+                    System.out.println("много элементов");
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        for (Integer idItems : deleteGoods) {
-            onlinerDao.delete(idItems);
-        }
 
-        for (SkuModel items : skuModels) {
-            SkuModel skuModel = new SkuModel();
-            skuModel.setSku(items.getSku());
-            skuModel.setName(items.getName());
-            skuModel.setUrl(items.getUrl());
-//            onlinerDao.save(skuModel);
-        }
+        System.out.println();
     }
 
     @Override
@@ -497,7 +493,7 @@ public class OnlinerServiceImpl implements OnlinerService {
                 writer.write("<tr>\n" +
                         "<td colspan=\"2\" class=\"param-block\"><b>" + item.getCategory() + "</b></td>\n" +
                         "</tr>");
-                for (Table.TypeTrTable items: item.getListRow()) {
+                for (Table.TypeTrTable items : item.getListRow()) {
                     writer.write("<tr>\n" +
                             "<td class=\"param-name\">" + items.getParameter() + "</td>\n" +
                             "<td>" + items.getValue() + "</td>\n" +
@@ -532,6 +528,11 @@ public class OnlinerServiceImpl implements OnlinerService {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void deleteGoods(int id) {
+        onlinerDao.deleteGoods(id);
     }
 
 
