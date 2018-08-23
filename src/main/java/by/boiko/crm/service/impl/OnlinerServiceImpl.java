@@ -7,7 +7,6 @@ import by.boiko.crm.model.Table;
 import by.boiko.crm.model.pojo.PendingGoods;
 import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.pojo.UnattachedGoods;
-import by.boiko.crm.service.Api;
 import by.boiko.crm.service.OnlinerService;
 import com.google.gson.*;
 import org.apache.commons.io.FileUtils;
@@ -15,7 +14,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.cloudinary.json.JSONArray;
 import org.cloudinary.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -26,7 +24,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import retrofit2.Response;
+
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -51,7 +49,6 @@ public class OnlinerServiceImpl implements OnlinerService {
     @Autowired
     private OnlinerDao onlinerDao;
 
-    private Api api;
 
     public static void main(String[] args) throws IOException {
 
