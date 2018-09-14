@@ -17,7 +17,7 @@ public class ConfiguratorParser {
     private List<String> listSku = new ArrayList<>();
     private List<String> listAmount = new ArrayList<>();
     private List<String> listPrice = new ArrayList<>();
-    private int check = 0;
+    private boolean check = false;
 
     public Configurator parser(String[] lines) {
         Configurator configurator = new Configurator();
@@ -32,9 +32,9 @@ public class ConfiguratorParser {
                 configurator.setAddress(lines[i + 1]);
             }
             if (lines[i].equals("sku")){
-                check = i;
+                check = true;
             }
-            if (i > check){
+            if (check){
                 String regex = "(?<!\\d)\\d{6}(?!\\d)";
                 String regexFive = "(?<!\\d)\\d{5}(?!\\d)";
                 Matcher m = Pattern.compile(regex).matcher(lines[i]);
@@ -56,7 +56,7 @@ public class ConfiguratorParser {
                 configurator.setNotes(lines[i]);
             }
         }
-        for (int i = 0; i < listPrice.size(); i++) {
+        for (int i = 0; i < listSku.size(); i++) {
             list.add(new ItemsOrder(listSku.get(i), listAmount.get(i), listPrice.get(i)));
             configurator.setListOrder(list);
         }
