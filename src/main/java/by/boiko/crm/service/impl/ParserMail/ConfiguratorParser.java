@@ -17,6 +17,7 @@ public class ConfiguratorParser {
     private List<String> listSku = new ArrayList<>();
     private List<String> listAmount = new ArrayList<>();
     private List<String> listPrice = new ArrayList<>();
+    private int check = 0;
 
     public Configurator parser(String[] lines) {
         Configurator configurator = new Configurator();
@@ -30,21 +31,26 @@ public class ConfiguratorParser {
             if (lines[i].equals("Адрес")) {
                 configurator.setAddress(lines[i + 1]);
             }
-            String regex = "(?<!\\d)\\d{6}(?!\\d)";
-            String regexFive = "(?<!\\d)\\d{5}(?!\\d)";
-            Matcher m = Pattern.compile(regex).matcher(lines[i]);
-            Matcher mFive = Pattern.compile(regexFive).matcher(lines[i]);
-            if (m.find() && lines[i].length() == 6) {
-                listSku.add((m.group(0).trim().substring(0, 6)));
+            if (lines[i].equals("sku")){
+                check = i;
             }
-            if (mFive.find() && lines[i].length() == 5) {
-                listSku.add((mFive.group(0).trim().substring(0, 5)));
-            }
-            if (lines[i].contains("шт")) {
-                listAmount.add(lines[i].substring(0, 1));
-            }
-            if (lines[i].contains("руб")) {
-                listPrice.add(lines[i]);
+            if (i > check){
+                String regex = "(?<!\\d)\\d{6}(?!\\d)";
+                String regexFive = "(?<!\\d)\\d{5}(?!\\d)";
+                Matcher m = Pattern.compile(regex).matcher(lines[i]);
+                Matcher mFive = Pattern.compile(regexFive).matcher(lines[i]);
+                if (m.find() && lines[i].length() == 6) {
+                    listSku.add((m.group(0).trim().substring(0, 6)));
+                }
+                if (mFive.find() && lines[i].length() == 5) {
+                    listSku.add((mFive.group(0).trim().substring(0, 5)));
+                }
+                if (lines[i].contains("шт")) {
+                    listAmount.add(lines[i].substring(0, 1));
+                }
+                if (lines[i].contains("руб")) {
+                    listPrice.add(lines[i]);
+                }
             }
             if (lines[i].contains("Сумма заказа")) {
                 configurator.setNotes(lines[i]);
