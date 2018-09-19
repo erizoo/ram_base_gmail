@@ -18,7 +18,7 @@ public class YandexMailServiceImpl implements YandexMailService {
 
     private static final String HOST = "pop.yandex.ru";
     private static final String USERNAME = "ram.misnk@yandex.by";
-    private static final String PASSWORD = "Alex20968";
+    private static final String PASSWORD = "Alex209688";
     private static final String MAIL_STORE_TYPE = "pop3";
     private static final String MAIL_PORT = "995";
     private static final String TYPE_EMAIL = "INBOX";
