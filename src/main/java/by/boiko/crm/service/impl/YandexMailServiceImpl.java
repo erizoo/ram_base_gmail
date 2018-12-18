@@ -63,18 +63,18 @@ public class YandexMailServiceImpl implements YandexMailService {
                         orderList.add(new Parser(configurator.getName(), configurator.getPhoneNumber(), configurator.getAddress(), configurator.getNotes(), configurator.getListOrder(), "Конфигуратор"));
                     }
                     if (context.contains("Посмотреть сообщение и ответить")){
-                        orderList.add(new Parser("TOMAS.BY" + "---" + "https://tomas.by/cabinet/mail/"));
+                        orderList.add(new Parser("TOMAS" + "29 6969000" + "Проверить URL (https://tomas.by/cabinet/mail/)"));
                     }
                     if (context.contains("Посмотреть заказ")){
-                        orderList.add(new Parser("TOMAS.BY" + "---" + "https://tomas.by/cabinet/orders"));
+                        orderList.add(new Parser("TOMAS" + "29 6969000" + "Проверить URL (https://tomas.by/cabinet/orders)"));
                     }
                     if (context.contains("Посмотреть отзыв")){
-                        orderList.add(new Parser("TOMAS.BY" + "---" + "https://tomas.by/cabinet/comments"));
+                        orderList.add(new Parser("TOMAS" + "29 6969000" + "Проверить URL (https://tomas.by/cabinet/comments)"));
                     }
                     if (context.contains("MIGOMBY")){
                         MigomParser migomParser = new MigomParser();
                         Migom migom = migomParser.parser(linesEmail);
-                        orderList.add(new Parser(migom.getName(), migom.getPhoneNumber(), "MIGOMBY"));
+                        orderList.add(new Parser(migom.getName(), migom.getPhoneNumber(), migom.getUrl(), "",null,"MIGOMBY"));
                     }
                     if (context.contains("поступил заказ на звонок")){
                         UnishopParser unishopParser = new UnishopParser();

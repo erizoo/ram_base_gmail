@@ -4,13 +4,23 @@ public class Migom {
 
     private String name;
     private String phoneNumber;
+    private String url;
 
     public Migom() {
     }
 
-    public Migom(String name, String phoneNumber) {
+    public Migom(String name, String phoneNumber, String url) {
         this.name = name;
         this.phoneNumber = phoneNumber;
+        this.url = url;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getName() {

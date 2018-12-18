@@ -5,6 +5,12 @@ public class MigomParser {
     public Migom parser(String[] lines) {
         Migom migom = new Migom();
         for (int i = 0; i < lines.length; i++) {
+            if (lines[i].contains("Заказ №")){
+                String[] strings = lines[i].split("href");
+                String[] str = strings[1].split(">");
+                String result = str[0].substring(2).replace("\"", "");
+                migom.setUrl(result);
+            }
             if (lines[i].contains("tel:")) {
                 String[] strings = lines[i].split(">");
                 String result = strings[1].substring(0, strings[1].length() - 3);
