@@ -57,42 +57,42 @@ public class YandexMailServiceImpl implements YandexMailService {
                     }
                     assert context != null;
                     String[] linesEmail = context.split("[\\r\\n]+", -1);
-                    if (items.getFrom()[0].toString().contains("Configurator")){
+                    if (items.getFrom()[0].toString().contains("Configurator")) {
                         ConfiguratorParser configuratorParser = new ConfiguratorParser();
                         Configurator configurator = configuratorParser.parser(linesEmail);
                         orderList.add(new Parser(configurator.getName(), configurator.getPhoneNumber(), configurator.getAddress(), configurator.getNotes(), configurator.getListOrder(), "Конфигуратор"));
                     }
-                    if (context.contains("Посмотреть сообщение и ответить")){
-                        orderList.add(new Parser("TOMAS" + "29 6969000" + "Проверить URL (https://tomas.by/cabinet/mail/)"));
+                    if (context.contains("Посмотреть сообщение и ответить")) {
+                        orderList.add(new Parser("TOMAS", "29 6969000", "","Проверить URL (https://tomas.by/cabinet/mail)",null , "TOMAS.BY"));
                     }
-                    if (context.contains("Посмотреть заказ")){
-                        orderList.add(new Parser("TOMAS" + "29 6969000" + "Проверить URL (https://tomas.by/cabinet/orders)"));
+                    if (context.contains("Посмотреть заказ")) {
+                        orderList.add(new Parser("TOMAS", "29 6969000", "","Проверить URL (https://tomas.by/cabinet/orders)",null , "TOMAS.BY"));
                     }
-                    if (context.contains("Посмотреть отзыв")){
+                    if (context.contains("Посмотреть отзыв")) {
                         orderList.add(new Parser("TOMAS" + "29 6969000" + "Проверить URL (https://tomas.by/cabinet/comments)"));
                     }
-                    if (context.contains("MIGOMBY")){
+                    if (context.contains("MIGOMBY")) {
                         MigomParser migomParser = new MigomParser();
                         Migom migom = migomParser.parser(linesEmail);
                         orderList.add(new Parser(migom.getName(), migom.getPhoneNumber(), "", migom.getUrl(), null, "MIGOMBY"));
                     }
-                    if (context.contains("поступил заказ на звонок")){
+                    if (context.contains("поступил заказ на звонок")) {
                         UnishopParser unishopParser = new UnishopParser();
                         Unishop unishop = unishopParser.parserCall(linesEmail);
                         orderList.add(new Parser(unishop.getName(), unishop.getPhoneNumber(), "Заказ на звонок UNISHOP"));
                     }
-                    if (context.contains("В ваш магазин \"Ram.by\" поступил новый заказ!")){
+                    if (context.contains("В ваш магазин \"Ram.by\" поступил новый заказ!")) {
                         UnishopParser unishopParser = new UnishopParser();
                         Unishop unishop = unishopParser.parser(linesEmail);
                         orderList.add(new Parser(unishop.getName(), unishop.getPhoneNumber(), unishop.getAddress(), unishop.getNotes(), unishop.getListOrder(), "UNISHOP"));
                     }
-                    if (context.contains("Заказ компьютера по параметрам")){
+                    if (context.contains("Заказ компьютера по параметрам")) {
                         PCForPrametrsParser pcForPrametrsParser = new PCForPrametrsParser();
                         Parser parser = pcForPrametrsParser.parser(linesEmail);
                         parser.setSource("Компьютер по параметрам");
                         orderList.add(parser);
                     }
-                    if (context.contains("Содержание нового заказа №")){
+                    if (context.contains("Содержание нового заказа №")) {
                         DealByParser dealByParser = new DealByParser();
                         DealBy dealBy = dealByParser.parser(linesEmail);
                         orderList.add(new Parser(dealBy.getName(), dealBy.getPhoneNumber(), dealBy.getAddress(), dealBy.getListOrder(), "DEAL.BY"));
@@ -100,7 +100,7 @@ public class YandexMailServiceImpl implements YandexMailService {
                     if (context.contains("Отложенный звонок с сайта")) {
                         DeferredCallParser deferredCallParser = new DeferredCallParser();
                         DeferredCall deferredCall = deferredCallParser.parser(linesEmail);
-                        orderList.add(new Parser(deferredCall.getPhoneNumber(),"Отложенный звонок с сайта"));
+                        orderList.add(new Parser(deferredCall.getPhoneNumber(), "Отложенный звонок с сайта"));
                     }
                     items.setFlag(Flags.Flag.DELETED, true);
                 }
