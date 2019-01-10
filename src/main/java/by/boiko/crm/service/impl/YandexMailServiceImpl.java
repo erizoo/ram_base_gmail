@@ -74,7 +74,7 @@ public class YandexMailServiceImpl implements YandexMailService {
                     if (context.contains("MIGOMBY")){
                         MigomParser migomParser = new MigomParser();
                         Migom migom = migomParser.parser(linesEmail);
-                        orderList.add(new Parser(migom.getName(), migom.getPhoneNumber(), migom.getUrl(), "",null,"MIGOMBY"));
+                        orderList.add(new Parser(migom.getName(), migom.getPhoneNumber(), "", migom.getUrl(), null, "MIGOMBY"));
                     }
                     if (context.contains("поступил заказ на звонок")){
                         UnishopParser unishopParser = new UnishopParser();

@@ -13,8 +13,10 @@ public class MigomParser {
             }
             if (lines[i].contains("tel:")) {
                 String[] strings = lines[i].split(">");
-                String result = strings[1].substring(0, strings[1].length() - 3);
-                migom.setPhoneNumber(result);
+                String result = strings[1].substring(4, strings[1].length() - 3);
+                StringBuilder sb = new StringBuilder(result);
+                sb.insert(2," ");
+                migom.setPhoneNumber(sb.toString());
             }
             if (lines[i].contains("Покупатель")) {
                 String str = lines[i + 6].replaceAll("[^А-Яа-я]", "");
