@@ -21,18 +21,18 @@
         <%--<br>--%>
         <%--<button class="btn btn-lg btn-danger btn-block" onclick="location.href='${loginUrl}'">Парсер Маркет</button>--%>
     <%--</form>--%>
-    <form action="${loginUrlGmail}" method="get">
-        <br>
-        <button class="btn btn-lg btn-danger btn-block" >Парсер Gmail</button>
-    </form>
-    <form action="${loginUrlOnliner}" method="get">
-        <br>
-        <button class="btn btn-lg btn-danger btn-block" >Парсер Onliner</button>
-    </form>
-    <form action="${loginUrlMarket}" method="get">
-        <br>
-        <button class="btn btn-lg btn-danger btn-block" >Парсер Market</button>
-    </form>
+    <%--<form action="${loginUrlGmail}" method="get">--%>
+        <%--<br>--%>
+        <%--<button class="btn btn-lg btn-danger btn-block" >Парсер Gmail</button>--%>
+    <%--</form>--%>
+    <%--<form action="${loginUrlOnliner}" method="get">--%>
+        <%--<br>--%>
+        <%--<button class="btn btn-lg btn-danger btn-block" >Парсер Onliner</button>--%>
+    <%--</form>--%>
+    <%--<form action="${loginUrlMarket}" method="get">--%>
+        <%--<br>--%>
+        <%--<button class="btn btn-lg btn-danger btn-block" >Парсер Market</button>--%>
+    <%--</form>--%>
 </div>
 </body>
 </html>
