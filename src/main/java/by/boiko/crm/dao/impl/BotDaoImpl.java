@@ -4,6 +4,7 @@ import by.boiko.crm.dao.BotDao;
 import by.boiko.crm.model.pojo.BotOrders;
 import by.boiko.crm.model.pojo.UnattachedGoods;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +19,15 @@ public class BotDaoImpl implements BotDao {
     private SessionFactory sessionFactory;
 
     @Override
-    public List<BotOrders> loadAll() {
-        return sessionFactory.getCurrentSession().createQuery("from BotOrders").list();
+    public List<BotOrders> loadAll(String type) {
+        Query query = null;
+        if (type.equals("BOT")){
+            query = sessionFactory.getCurrentSession().createQuery("FROM BotOrders D WHERE D.type = 'TENDER BOT'");
+        } else {
+            query = sessionFactory.getCurrentSession().createQuery("FROM BotOrders D WHERE D.type = 'YANDEX TAXI'");
+        }
+        assert false;
+        return query.list();
     }
 
     @Override

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface BotDao {
 
-    List<BotOrders> loadAll();
+    List<BotOrders> loadAll(String type);
 
     void deleteItem(Long id);
 

@@ -8,7 +8,7 @@ import java.util.List;
 @Service
 public interface BotService {
 
-    List<BotOrders> getAll();
+    List<BotOrders> getAll(String type);
 
     void deleteItem(Long id);
 

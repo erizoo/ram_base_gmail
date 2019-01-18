@@ -16,7 +16,14 @@ public class BotController {
     @GetMapping(value = "/bot")
     public ModelAndView getOrders() {
         ModelAndView mv = new ModelAndView("bot");
-        mv.addObject("orders", botService.getAll());
+        mv.addObject("orders", botService.getAll("BOT"));
+        return mv;
+    }
+
+    @GetMapping(value = "/taxi")
+    public ModelAndView getOrdersTaxi() {
+        ModelAndView mv = new ModelAndView("bot");
+        mv.addObject("orders", botService.getAll("TAXI"));
         return mv;
     }
 
