@@ -68,6 +68,9 @@ public class YandexMailServiceImpl implements YandexMailService {
                     if (context.contains("Посмотреть заказ")) {
                         orderList.add(new Parser("TOMAS", "29 6969000", "","Проверить URL (https://tomas.by/cabinet/orders)",null , "TOMAS.BY"));
                     }
+                    if (context.contains("оформил заказ у Вашей компании «ООО «СмартШоп»».")) {
+                        orderList.add(new Parser("TOMAS", "29 6969000", "","Проверить URL (https://tomas.by/cabinet/orders)",null , "TOMAS.BY"));
+                    }
                     if (context.contains("Посмотреть отзыв")) {
                         orderList.add(new Parser("TOMAS" + "29 6969000" + "Проверить URL (https://tomas.by/cabinet/comments)"));
                     }
