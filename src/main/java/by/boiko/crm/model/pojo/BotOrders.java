@@ -1,9 +1,10 @@
 package by.boiko.crm.model.pojo;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import com.google.api.client.util.DateTime;
+import org.hibernate.annotations.CreationTimestamp;
+
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @javax.persistence.Table(name = "bot_orders")
@@ -19,6 +20,11 @@ public class BotOrders {
     private String number;
     @Column(name = "TYPE")
     private String type;
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "TIME")
+    private Date date;
+
 
     public BotOrders() {
     }
@@ -27,6 +33,14 @@ public class BotOrders {
         this.name = name;
         this.number = number;
         this.type = type;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public Long getId() {

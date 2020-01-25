@@ -20,6 +20,7 @@
         <tr>
             <th>Номер</th>
             <th>Имя</th>
+            <th>Дата</th>
             <th>Телефон</th>
             <th>Тип</th>
             <th></th>
@@ -30,6 +31,7 @@
             <tr>
                 <td>${myIndex.index + 1}</td>
                 <td>${orders.name}</td>
+                <td>${orders.date}</td>
                 <td>${orders.number}</td>
                 <td>${orders.type}</td>
                 <td><button class="btn btn-info" onclick = "finishOrder(${orders.id})">Выполнить заявку</button></td>

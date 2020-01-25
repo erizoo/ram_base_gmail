@@ -2,7 +2,6 @@ package by.boiko.crm.dao.impl;
 
 import by.boiko.crm.dao.BotDao;
 import by.boiko.crm.model.pojo.BotOrders;
-import by.boiko.crm.model.pojo.UnattachedGoods;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
