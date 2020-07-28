@@ -23,6 +23,9 @@ public class UnattachedGoods {
     @Column(name = "NAME")
     private String name;
 
+    @Column(name = "DESCRIPTION")
+    private String description;
+
     public UnattachedGoods() {
     }
 
@@ -30,9 +33,18 @@ public class UnattachedGoods {
         this.sku = sku;
     }
 
-    public UnattachedGoods(String sku, String name) {
+    public UnattachedGoods(String sku, String name, String description) {
         this.sku = sku;
         this.name = name;
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Integer getId() {

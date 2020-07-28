@@ -293,7 +293,7 @@ public class OnlinerServiceImpl implements OnlinerService {
     public void saveGoods(String sku, String name) throws UnsupportedEncodingException {
         String decodedUrl = new String(Base64.getDecoder().decode(name));
         String result = URLDecoder.decode(decodedUrl, "UTF-8");
-        onlinerDao.saveGoods(sku, result);
+//        onlinerDao.saveGoods(sku, result, descriptionList.get(i));
     }
 
     @Override
@@ -318,16 +318,18 @@ public class OnlinerServiceImpl implements OnlinerService {
         List<String> stringList = new ArrayList<>();
         List<String> skuList = new ArrayList<>();
         List<String> nameList = new ArrayList<>();
+        List<String> descriptionList = new ArrayList<>();
         //read file into stream, try-with-resources
         try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
             stringList = stream.collect(Collectors.toList());
             for (String items : stringList) {
-                String[] strings = items.split(",");
-                skuList.add(strings[0].replaceAll("\"", ""));
+                String[] strings = items.split(";");
+                skuList.add(strings[0]);
                 nameList.add(strings[1]);
+                descriptionList.add(strings[2]);
             }
             for (int i = 0; i < nameList.size() - 1; i++) {
-                onlinerDao.saveGoods(skuList.get(i), nameList.get(i));
+                onlinerDao.saveGoods(skuList.get(i), nameList.get(i), descriptionList.get(i));
             }
 
         } catch (IOException e) {

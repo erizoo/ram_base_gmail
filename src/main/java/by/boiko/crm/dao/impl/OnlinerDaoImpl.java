@@ -1,7 +1,6 @@
 package by.boiko.crm.dao.impl;
 
 import by.boiko.crm.dao.OnlinerDao;
-import by.boiko.crm.model.Market;
 import by.boiko.crm.model.pojo.PendingGoods;
 import by.boiko.crm.model.pojo.SkuModel;
 import by.boiko.crm.model.pojo.UnattachedGoods;
@@ -66,18 +65,19 @@ public class OnlinerDaoImpl implements OnlinerDao {
     }
 
     @Override
-    public void saveGoods(String sku, String name) {
-        PendingGoods pendingGoods = new PendingGoods();
-        pendingGoods.setName(name);
-        pendingGoods.setSku(sku);
-        sessionFactory.getCurrentSession().save(pendingGoods);
-        UnattachedGoods unattachedGoods = (UnattachedGoods) sessionFactory.getCurrentSession().createQuery("select u from UnattachedGoods u where sku = :sku")
-                .setParameter("sku", sku).uniqueResult();
-        sessionFactory.getCurrentSession().delete(unattachedGoods);
-//        UnattachedGoods unattachedGoods = new UnattachedGoods();
-//        unattachedGoods.setSku(sku);
-//        unattachedGoods.setName(name);
-//        sessionFactory.getCurrentSession().save(unattachedGoods);
+    public void saveGoods(String sku, String name, String description) {
+//        PendingGoods pendingGoods = new PendingGoods();
+//        pendingGoods.setName(name);
+//        pendingGoods.setSku(sku);
+//        sessionFactory.getCurrentSession().save(pendingGoods);
+//        UnattachedGoods unattachedGoods = (UnattachedGoods) sessionFactory.getCurrentSession().createQuery("select u from UnattachedGoods u where sku = :sku")
+//                .setParameter("sku", sku).uniqueResult();
+//        sessionFactory.getCurrentSession().delete(unattachedGoods);
+        UnattachedGoods unattachedGoods = new UnattachedGoods();
+        unattachedGoods.setSku(sku);
+        unattachedGoods.setName(name);
+        unattachedGoods.setDescription(description);
+        sessionFactory.getCurrentSession().save(unattachedGoods);
     }
 
     @Override

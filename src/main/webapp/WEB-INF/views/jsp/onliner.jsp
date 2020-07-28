@@ -80,9 +80,12 @@
                         newcell.innerText = item.name;
                         nameGood = item.name;
                         newcell = newrow.insertCell(2);
+                        newcell.innerText = item.description;
+                        nameDescription = item.description;
+                        newcell = newrow.insertCell(3);
                         newcell.innerHTML = newcell.innerHTML + " <button type='button' class='btn btn-info' " +
                             "onclick = getData(nameGood) >Поиск</button><br>";
-                        newcell = newrow.insertCell(3);
+                        newcell = newrow.insertCell(4);
                         newcell.innerHTML = newcell.innerHTML + " <button type='button' class='btn btn-danger' " +
                             "onclick = deleteGoods('" + item.id + "') >Удалить</button><br>";
                     });
