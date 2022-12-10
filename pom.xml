@@ -12,7 +12,7 @@
 
     <properties>
         <jdk.version>1.8</jdk.version>
-        <spring.version>5.0.1.RELEASE</spring.version>
+        <spring.version>6.0.0</spring.version>
         <hibernate.version>5.2.12.Final</hibernate.version>
         <jstl.version>1.2</jstl.version>
         <servletapi.version>3.1.0</servletapi.version>
